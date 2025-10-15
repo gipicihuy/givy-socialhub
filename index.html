@@ -1,126 +1,106 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Givy - Simple Link Hub</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Givy - Simple Link Hub</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <style>
-        /* Background Murni Hitam */
-        .pure-black-bg {
-            background-color: #000000;
-        }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* Background Murni Hitam */
+        .pure-black-bg {
+            background-color: #000000;
+        }
 
-        /* Efek Tombol Modern & Kecil */
-        .link-button {
-            transition: all 0.3s ease; 
-        }
-        .link-button:hover {
-            transform: scale(1.02); 
-            box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
-        }
+        /* Efek Tombol Modern & Kecil */
+        .link-button {
+            transition: all 0.3s ease; 
+        }
+        .link-button:hover {
+            transform: scale(1.02); 
+            box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+        }
 
-        /* Pastikan ikon memiliki warna putih */
-        .link-button i {
-            color: white; 
-        }
+        /* Pastikan ikon memiliki warna putih */
+        .link-button i {
+            color: white; 
+        }
 
-        /* --- KEYFRAMES UNTUK ANIMASI (Fade In & Slide Up) --- */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* --- KEYFRAMES UNTUK ANIMASI (Fade In & Slide Up) --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-        /* Class untuk Menerapkan Animasi */
-        .animate-entry {
-            opacity: 0; 
-            animation: fadeIn 0.8s ease-out forwards; 
-        }
-    </style>
+        /* Class untuk Menerapkan Animasi */
+        .animate-entry {
+            opacity: 0; 
+            animation: fadeIn 0.8s ease-out forwards; 
+        }
+    </style>
 </head>
 
 <body class="pure-black-bg p-4 text-white font-sans">
 
-    <div class="flex flex-col items-center w-full min-h-screen">
-        
-        <div id="profile-section" class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg animate-entry" style="animation-delay: 0.1s;">
-            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
-                 alt="Givy Profile" 
-                 class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
-            >
-            
-            <h1 class="text-2xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
-            <p class="text-sm text-gray-400 italic">Social Media</p> 
-            <p class="mt-2 text-xs text-gray-300 max-w-xs">My digital life. One link. Simple hub.</p>
-        </div>
+    <div class="flex flex-col items-center w-full min-h-screen">
+        
+        <div id="profile-section" class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg animate-entry" style="animation-delay: 0.1s;">
+            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
+                 alt="Givy Profile" 
+                 class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
+            
+            <h1 class="text-2xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-sm text-gray-400 italic">Social Media</p> 
+            <p class="mt-2 text-xs text-gray-300 max-w-xs">My digital life. One link. Simple hub.</p>
+        </div>
 
-        <div id="link-list" class="space-y-3 w-full max-w-lg mb-8">
-            
-            <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
-               target="_blank" 
-               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
-               style="animation-delay: 0.3s;"
-            >
-                <i class="fa-brands fa-instagram mr-3 text-lg"></i>
-                Instagram
-            </a>
+        <div id="link-list" class="space-y-3 w-full max-w-lg mb-8">
+            
+            <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
+               target="_blank" 
+               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+               style="animation-delay: 0.3s;"
+            >
+                <i class="fa-brands fa-instagram mr-3 text-lg"></i>
+                Instagram
+            </a>
 
-            <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
-               target="_blank" 
-               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
-               style="animation-delay: 0.45s;"
-            >
-                <i class="fa-brands fa-youtube mr-3 text-lg"></i>
-                YouTube
-            </a>
-            
-            <a href="https://discord.gg/Ganti_dengan_Link_Invite_Anda" 
-               target="_blank" 
-               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
-               style="animation-delay: 0.6s;"
-            >
-                <i class="fa-brands fa-discord mr-3 text-lg"></i>
-                Discord
-            </a>
+            <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
+               target="_blank" 
+               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+               style="animation-delay: 0.45s;"
+            >
+                <i class="fa-brands fa-youtube mr-3 text-lg"></i>
+                YouTube
+            </a>
+            
+            <a href="https://discord.gg/Ganti_dengan_Link_Invite_Anda" 
+               target="_blank" 
+               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+               style="animation-delay: 0.6s;"
+            >
+                <i class="fa-brands fa-discord mr-3 text-lg"></i>
+                Discord
+            </a>
 
-            <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
-               target="_blank" 
-               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
-               style="animation-delay: 0.75s;"
-            >
-                <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
-                TikTok
-            </a>
+            <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
+               target="_blank" 
+               class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+               style="animation-delay: 0.75s;"
+            >
+                <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
+                TikTok
+            </a>
 
-        </div>
+        </div>
 
-        <div class="w-full max-w-lg mb-8 animate-entry" style="animation-delay: 0.9s;">
-            <h3 class="text-sm font-semibold text-gray-400 mb-2 uppercase tracking-wider text-center">🎶 My Current Vibe 🎶</h3>
-            
-            <iframe 
-                style="border-radius:12px" 
-                src="https://open.spotify.com/embed/playlist/7COR5ndl6zQfwESDBoYBqj?utm_source=generator&theme=0" 
-                width="100%" 
-                height="152" 
-                frameBorder="0" 
-                allowfullscreen="" 
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
-                loading="lazy">
-            </iframe>
+        <div class="text-center text-xs text-gray-500 pb-4 animate-entry" style="animation-delay: 0.9s;">
+            <p>Givy | Made with <span class="text-white">🤍</span></p>
+        </div>
 
-            <p class="text-xs text-gray-500 mt-1 text-center">
-                <span class="text-red-500 font-bold">PENTING:</span> Ganti ID playlist di kode agar sesuai dengan musik Anda.
-            </p>
-        </div>
-
-        <div class="text-center text-xs text-gray-500 pb-4 animate-entry" style="animation-delay: 1.05s;">
-            <p>Givy | Made with <span class="text-white">🤍</span></p>
-        </div>
-
-    </div>
-</body>
+    </div> </body>
 </html>
