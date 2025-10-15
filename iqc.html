@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Givy - IQC Maker</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        /* Background Murni Hitam */
+        .pure-black-bg {
+            background-color: #000000;
+        }
+
+        /* Efek Tombol Modern & Kecil */
+        .link-button {
+            transition: all 0.3s ease; 
+        }
+        .link-button:hover {
+            transform: scale(1.02); 
+            box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+        }
+
+        /* Input Styling */
+        .form-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            background-color: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* --- KEYFRAMES UNTUK ANIMASI (Fade In & Slide Up) --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Class untuk Menerapkan Animasi */
+        .animate-entry {
+            opacity: 0; 
+            animation: fadeIn 0.8s ease-out forwards; 
+        }
+    </style>
+</head>
+
+<body class="pure-black-bg p-4 text-white font-sans min-h-screen">
+
+    <div class="flex flex-col items-center w-full max-w-lg mx-auto py-8">
+        
+        <!-- Profile Section -->
+        <div id="profile-section" class="flex flex-col items-center mb-8 text-center w-full animate-entry" style="animation-delay: 0.1s;">
+            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
+                 alt="Givy Profile" 
+                 class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
+            >
+            
+            <h1 class="text-2xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-sm text-gray-400 italic">IQC Maker</p> 
+            <p class="mt-2 text-xs text-gray-300 max-w-xs">Create Instagram Quote Cards easily</p>
+        </div>
+
+        <!-- IQC Form -->
+        <div class="w-full space-y-4 animate-entry" style="animation-delay: 0.3s;">
+            <form id="iqc-form" class="space-y-4">
+                <!-- Text Input -->
+                <div>
+                    <label for="text" class="block text-sm font-medium text-gray-300 mb-2">
+                        <i class="fa-solid fa-quote-left mr-2"></i>Teks Kutipan
+                    </label>
+                    <textarea 
+                        id="text" 
+                        name="text" 
+                        rows="4" 
+                        placeholder="Tulis kutipan menarikmu di sini..."
+                        class="form-input w-full py-3 px-4 rounded-lg text-base resize-none"
+                    ></textarea>
+                </div>
+                
+                <!-- Time Inputs -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label for="chatTime" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fa-solid fa-clock mr-2"></i>Waktu Chat
+                        </label>
+                        <input 
+                            type="text" 
+                            id="chatTime" 
+                            name="chatTime" 
+                            value="23.46" 
+                            required
+                            class="form-input w-full py-3 px-4 rounded-lg text-base text-center"
+                        >
+                    </div>
+                    
+                    <div>
+                        <label for="statusBarTime" class="block text-sm font-medium text-gray-300 mb-2">
+                            <i class="fa-solid fa-mobile-screen mr-2"></i>Status Bar
+                        </label>
+                        <input 
+                            type="text" 
+                            id="statusBarTime" 
+                            name="statusBarTime" 
+                            value="23.46" 
+                            required
+                            class="form-input w-full py-3 px-4 rounded-lg text-base text-center"
+                        >
+                    </div>
+                </div>
+
+                <!-- Generate Button -->
+                <button 
+                    type="submit" 
+                    id="generate-button"
+                    class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-6"
+                >
+                    <i class="fa-solid fa-wand-magic-sparkles mr-3 text-lg"></i>
+                    Buat Gambar IQC
+                </button>
+            </form>
+        </div>
+
+        <!-- Result Area -->
+        <div id="result-area" class="w-full mt-8 text-center animate-entry" style="animation-delay: 0.5s;">
+            <h2 class="text-lg font-medium text-gray-300 mb-4">
+                <i class="fa-solid fa-image mr-2"></i>Hasil IQC
+            </h2>
+            
+            <!-- Loading Message -->
+            <div class="loading hidden" id="loading-message">
+                <div class="flex items-center justify-center space-x-2 text-gray-400">
+                    <i class="fa-solid fa-spinner fa-spin"></i>
+                    <span>Memuat gambar... Mohon tunggu.</span>
+                </div>
+            </div>
+            
+            <!-- Error Message -->
+            <div class="error hidden" id="error-message">
+                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-3 px-4 rounded-lg">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Gagal memuat gambar dari API.</span>
+                </div>
+            </div>
+            
+            <!-- IQC Image -->
+            <div class="mt-4">
+                <img id="iqc-image" alt="Hasil Gambar IQC" class="rounded-lg border border-white/20 hidden mx-auto max-w-full">
+            </div>
+            
+            <!-- Download Button -->
+            <div id="download-section" class="hidden mt-4">
+                <a href="#" id="download-link" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-lg text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Unduh Gambar
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center text-xs text-gray-500 mt-8 pt-4 border-t border-white/10 animate-entry" style="animation-delay: 0.7s;">
+            <p>Givy IQC Maker | Made with <span class="text-white">🤍</span></p>
+        </div>
+
+    </div>
+
+    <script>
+        const form = document.getElementById('iqc-form');
+        const textInput = document.getElementById('text');
+        const chatTimeInput = document.getElementById('chatTime');
+        const statusBarTimeInput = document.getElementById('statusBarTime');
+        const iqcImage = document.getElementById('iqc-image');
+        const loadingMessage = document.getElementById('loading-message');
+        const errorMessage = document.getElementById('error-message');
+        const generateButton = document.getElementById('generate-button');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+        
+        // URL dasar API
+        const API_BASE_URL = 'https://api.deline.my.id/maker/iqc';
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Mencegah form melakukan submit standar
+
+            // Sembunyikan hasil sebelumnya
+            iqcImage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            downloadSection.classList.add('hidden');
+            
+            // Tampilkan loading
+            loadingMessage.classList.remove('hidden');
+            generateButton.disabled = true;
+            generateButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-3"></i>Memproses...';
+
+            // Ambil nilai dari input
+            const text = textInput.value.trim();
+            const chatTime = chatTimeInput.value.trim();
+            const statusBarTime = statusBarTimeInput.value.trim();
+
+            // Validasi input
+            if (!text) {
+                showError('Silakan masukkan teks kutipan terlebih dahulu.');
+                return;
+            }
+
+            // Encode teks
+            const encodedText = encodeURIComponent(text);
+            
+            // Bangun URL API lengkap
+            const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
+            
+            // Set URL gambar
+            iqcImage.src = finalUrl;
+
+            // Gunakan event load dan error pada gambar untuk feedback pengguna
+            iqcImage.onload = function() {
+                loadingMessage.classList.add('hidden');
+                generateButton.disabled = false;
+                generateButton.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-3"></i>Buat Gambar IQC';
+                iqcImage.classList.remove('hidden');
+                
+                // Tampilkan download button
+                downloadLink.href = finalUrl;
+                downloadLink.download = `iqc-givy-${Date.now()}.png`;
+                downloadSection.classList.remove('hidden');
+            };
+
+            iqcImage.onerror = function() {
+                loadingMessage.classList.add('hidden');
+                generateButton.disabled = false;
+                generateButton.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-3"></i>Buat Gambar IQC';
+                showError('Gagal memuat gambar dari API. Pastikan parameter dan API berfungsi dengan benar.');
+            };
+        });
+
+        function showError(message) {
+            errorMessage.querySelector('span').textContent = message;
+            errorMessage.classList.remove('hidden');
+        }
+
+        // Auto-format time inputs
+        [chatTimeInput, statusBarTimeInput].forEach(input => {
+            input.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/[^\d.]/g, '');
+                if (value.length > 5) {
+                    value = value.slice(0, 5);
+                }
+                e.target.value = value;
+            });
+        });
+    </script>
+</body>
+</html>
