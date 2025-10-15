@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,12 +9,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <style>
-        /* Background Murni Hitam */
+        /* Pure Black Background */
         .pure-black-bg {
             background-color: #000000;
         }
 
-        /* Efek Tombol Modern & Kecil */
+        /* Modern Button Effects */
         .link-button {
             transition: all 0.3s ease; 
         }
@@ -39,13 +39,12 @@
             color: rgba(255, 255, 255, 0.5);
         }
 
-        /* --- KEYFRAMES UNTUK ANIMASI (Fade In & Slide Up) --- */
+        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Class untuk Menerapkan Animasi */
         .animate-entry {
             opacity: 0; 
             animation: fadeIn 0.8s ease-out forwards; 
@@ -57,7 +56,7 @@
 
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
         
-        <!-- Profile Section - Diperkecil -->
+        <!-- Profile Section -->
         <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay: 0.1s;">
             <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
                  alt="Givy Profile" 
@@ -72,36 +71,36 @@
         <!-- IQC Form -->
         <div class="w-full space-y-3 animate-entry" style="animation-delay: 0.3s;">
             <form id="iqc-form" class="space-y-3">
-                <!-- Text Input - Diperkecil -->
+                <!-- Text Input -->
                 <div>
                     <label for="text" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-quote-left mr-1"></i>Teks Kutipan
+                        <i class="fa-solid fa-quote-left mr-1"></i>Quote Text
                     </label>
                     <textarea 
                         id="text" 
                         name="text" 
                         rows="3" 
-                        placeholder="Tulis kutipan singkat..."
+                        placeholder="Write your quote here..."
                         class="form-input w-full py-2 px-3 rounded text-sm resize-none"
                         maxlength="120"
                     ></textarea>
                     <div class="text-right text-xs text-gray-500 mt-1">
-                        <span id="char-count">0</span>/120 karakter
+                        <span id="char-count">0</span>/120 characters
                     </div>
                 </div>
                 
-                <!-- Time Inputs - Diperkecil & Auto Time -->
+                <!-- Time Inputs -->
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label for="chatTime" class="block text-xs font-medium text-gray-300 mb-1">
-                            <i class="fa-solid fa-clock mr-1"></i>Waktu Chat
+                            <i class="fa-solid fa-clock mr-1"></i>Chat Time
                         </label>
                         <input 
                             type="text" 
                             id="chatTime" 
                             name="chatTime" 
+                            value="23.46"
                             class="form-input w-full py-2 px-3 rounded text-sm text-center"
-                            readonly
                         >
                     </div>
                     
@@ -113,47 +112,35 @@
                             type="text" 
                             id="statusBarTime" 
                             name="statusBarTime" 
+                            value="23.46"
                             class="form-input w-full py-2 px-3 rounded text-sm text-center"
-                            readonly
                         >
                     </div>
                 </div>
 
-                <!-- Auto Time Button -->
-                <div class="text-center">
-                    <button 
-                        type="button" 
-                        id="auto-time-btn"
-                        class="link-button inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded text-xs font-medium transition-all duration-300"
-                    >
-                        <i class="fa-solid fa-rotate mr-1"></i>
-                        Update Waktu Sekarang
-                    </button>
-                </div>
-
-                <!-- Generate Button - Diperkecil -->
+                <!-- Generate Button -->
                 <button 
                     type="submit" 
                     id="generate-button"
                     class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4"
                 >
                     <i class="fa-brands fa-whatsapp mr-2 text-sm"></i>
-                    Buat WhatsApp IQC
+                    Generate WhatsApp IQC
                 </button>
             </form>
         </div>
 
-        <!-- Result Area - Diperkecil -->
+        <!-- Result Area -->
         <div id="result-area" class="w-full mt-6 text-center animate-entry" style="animation-delay: 0.5s;">
             <h2 class="text-sm font-medium text-gray-300 mb-3">
-                <i class="fa-solid fa-image mr-1"></i>Hasil WhatsApp IQC
+                <i class="fa-solid fa-image mr-1"></i>Result
             </h2>
             
             <!-- Loading Message -->
             <div class="loading hidden" id="loading-message">
                 <div class="flex items-center justify-center space-x-2 text-gray-400 text-xs">
                     <i class="fa-solid fa-spinner fa-spin"></i>
-                    <span>Memuat gambar...</span>
+                    <span>Loading image...</span>
                 </div>
             </div>
             
@@ -161,25 +148,25 @@
             <div class="error hidden" id="error-message">
                 <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>Gagal memuat gambar.</span>
+                    <span>Failed to load image.</span>
                 </div>
             </div>
             
-            <!-- IQC Image -->
+            <!-- IQC Image - Larger Display -->
             <div class="mt-3">
-                <img id="iqc-image" alt="Hasil Gambar WhatsApp IQC" class="rounded border border-white/20 hidden mx-auto max-w-full" style="max-height: 200px;">
+                <img id="iqc-image" alt="WhatsApp IQC Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-sm">
             </div>
             
             <!-- Download Button -->
             <div id="download-section" class="hidden mt-3">
-                <a href="#" id="download-link" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-1.5 px-4 rounded text-xs font-medium transition-all duration-300">
-                    <i class="fa-solid fa-download mr-1"></i>
-                    Unduh Gambar
-                </a>
+                <button id="download-button" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-download mr-2"></i>
+                    Download
+                </button>
             </div>
         </div>
 
-        <!-- Footer - Diperkecil -->
+        <!-- Footer -->
         <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay: 0.7s;">
             <p>Givy WhatsApp IQC | Made with <span class="text-white">🤍</span></p>
         </div>
@@ -196,37 +183,16 @@
         const errorMessage = document.getElementById('error-message');
         const generateButton = document.getElementById('generate-button');
         const downloadSection = document.getElementById('download-section');
-        const downloadLink = document.getElementById('download-link');
-        const autoTimeBtn = document.getElementById('auto-time-btn');
+        const downloadButton = document.getElementById('download-button');
         const charCount = document.getElementById('char-count');
         
         // URL dasar API
         const API_BASE_URL = 'https://api.deline.my.id/maker/iqc';
 
-        // Fungsi untuk update waktu real-time
-        function updateCurrentTime() {
-            const now = new Date();
-            const hours = now.getHours().toString().padStart(2, '0');
-            const minutes = now.getMinutes().toString().padStart(2, '0');
-            const timeString = `${hours}.${minutes}`;
-            
-            chatTimeInput.value = timeString;
-            statusBarTimeInput.value = timeString;
-        }
-
-        // Update waktu saat pertama kali load
-        updateCurrentTime();
-
-        // Update waktu setiap 30 detik
-        setInterval(updateCurrentTime, 30000);
-
         // Character counter untuk textarea
         textInput.addEventListener('input', function() {
             charCount.textContent = this.value.length;
         });
-
-        // Auto time button
-        autoTimeBtn.addEventListener('click', updateCurrentTime);
 
         form.addEventListener('submit', function(e) {
             e.preventDefault(); // Mencegah form melakukan submit standar
@@ -239,7 +205,7 @@
             // Tampilkan loading
             loadingMessage.classList.remove('hidden');
             generateButton.disabled = true;
-            generateButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
+            generateButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
             // Ambil nilai dari input
             const text = textInput.value.trim();
@@ -248,7 +214,7 @@
 
             // Validasi input
             if (!text) {
-                showError('Silakan masukkan teks kutipan terlebih dahulu.');
+                showError('Please enter quote text first.');
                 return;
             }
 
@@ -265,20 +231,40 @@
             iqcImage.onload = function() {
                 loadingMessage.classList.add('hidden');
                 generateButton.disabled = false;
-                generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Buat WhatsApp IQC';
+                generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Generate WhatsApp IQC';
                 iqcImage.classList.remove('hidden');
                 
                 // Tampilkan download button
-                downloadLink.href = finalUrl;
-                downloadLink.download = `whatsapp-iqc-givy-${Date.now()}.png`;
                 downloadSection.classList.remove('hidden');
+                
+                // Setup download functionality
+                downloadButton.onclick = function() {
+                    fetch(finalUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            a.download = `whatsapp-iqc-${Date.now()}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(a);
+                        })
+                        .catch(err => {
+                            console.error('Download error:', err);
+                            // Fallback: open in new tab if download fails
+                            window.open(finalUrl, '_blank');
+                        });
+                };
             };
 
             iqcImage.onerror = function() {
                 loadingMessage.classList.add('hidden');
                 generateButton.disabled = false;
-                generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Buat WhatsApp IQC';
-                showError('Gagal memuat gambar dari API. Pastikan parameter dan API berfungsi dengan benar.');
+                generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2"></i>Generate WhatsApp IQC';
+                showError('Failed to load image from API. Please check your parameters.');
             };
         });
 
