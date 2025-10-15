@@ -3,85 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Givy</title>
+    <title>Givy - Social Link Hub</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'accent-cyan': '#00F0FF', // Warna aksen neon/futuristik
-                        'dark-bg': '#0F172A',     // Warna latar belakang sangat gelap
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ8uR07JBYi8/M6p6JmYp49b+D+8n1fC9U5B48e89j8Q50J9K5J12p5p+I6F5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     <style>
-        /* Latar Belakang Gradien Gelap */
-        .futuristic-bg {
-            background-image: linear-gradient(to bottom right, #0F172A, #1E293B);
+        /* Background Murni Hitam */
+        .pure-black-bg {
+            background-color: #000000;
         }
 
-        /* Efek Tombol Modern */
+        /* Efek Tombol Modern & Kecil */
         .link-button {
             transition: all 0.3s ease; /* Transisi halus */
         }
         .link-button:hover {
-            transform: scale(1.03); /* Membesar sedikit saat di-hover */
-            /* Shadow dengan aksen neon untuk kesan futuristik */
-            box-shadow: 0 10px 15px -3px rgba(0, 250, 255, 0.3), 0 4px 6px -2px rgba(0, 250, 255, 0.05); 
+            transform: scale(1.02); /* Membesar sedikit saat di-hover */
+            /* Shadow Putih/Gray Tipis */
+            box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
         }
     </style>
 </head>
 
-<body class="futuristic-bg min-h-screen flex items-center justify-center p-4 text-white font-sans">
+<body class="pure-black-bg min-h-screen flex flex-col items-center p-4 text-white font-sans">
 
-    <div id="givy-container" class="w-full max-w-lg mx-auto py-10 px-6 rounded-xl shadow-2xl backdrop-blur-sm bg-white/5 border border-white/10">
+    <div class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg">
+        <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
+             alt="Givy Profile" 
+             class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
+        >
+        
+        <h1 class="text-2xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+        <p class="text-sm text-gray-400 italic">@social_media_hub</p>
+        <p class="mt-2 text-xs text-gray-300 max-w-xs">Connecting you. Simple. Clean.</p>
+    </div>
 
-        <div class="flex flex-col items-center mb-10 text-center">
-            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
-                 alt="Givy Profile" 
-                 class="w-32 h-32 rounded-full object-cover border-4 border-accent-cyan shadow-xl mb-4 transform hover:scale-105 transition-transform duration-300 ease-in-out"
-            >
-            
-            <h1 class="text-3xl font-bold tracking-wider uppercase mb-1 text-accent-cyan">Givy</h1>
-            <p class="text-lg text-gray-400 font-light italic">@social_media_hub</p>
-            <p class="mt-3 text-sm text-gray-300 max-w-xs">Connecting you to my digital world. Simple. Clean. Fast.</p>
-        </div>
+    <div id="link-list" class="space-y-3 w-full max-w-lg mb-8">
+        
+        <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
+           target="_blank" 
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
+        >
+            <i class="fa-brands fa-instagram mr-3 text-lg"></i>
+            Instagram Profile
+        </a>
 
-        <div id="link-list" class="space-y-4">
-            
-            <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
-               target="_blank" 
-               class="link-button block w-full bg-gray-800 text-white py-4 px-6 rounded-lg text-lg font-semibold uppercase tracking-widest text-center border-2 border-transparent hover:border-accent-cyan hover:bg-gray-700/50"
-            >
-                📸 Instagram Profile
-            </a>
+        <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
+           target="_blank" 
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
+        >
+            <i class="fa-brands fa-youtube mr-3 text-lg"></i>
+            YouTube Channel
+        </a>
 
-            <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
-               target="_blank" 
-               class="link-button block w-full bg-gray-800 text-white py-4 px-6 rounded-lg text-lg font-semibold uppercase tracking-widest text-center border-2 border-transparent hover:border-accent-cyan hover:bg-gray-700/50"
-            >
-                ▶️ YouTube Channel
-            </a>
+        <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
+           target="_blank" 
+           class="link-button flex items-center justify-center w-full bg-white text-black py-3 px-4 rounded-lg text-base font-bold tracking-wide text-center hover:bg-gray-200 shadow-md"
+        >
+            <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
+            Follow Me on TikTok!
+        </a>
 
-            <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
-               target="_blank" 
-               class="link-button block w-full bg-accent-cyan text-dark-bg py-4 px-6 rounded-lg text-lg font-bold uppercase tracking-widest text-center hover:opacity-90 shadow-lg"
-            >
-                🎵 Follow Me on TikTok!
-            </a>
+    </div>
 
-        </div>
-
-        <div class="mt-10 text-center text-sm text-gray-500">
-            <p>Built with <span class="text-red-500">♥</span> using Tailwind CSS</p>
-        </div>
-
+    <div class="mt-auto text-center text-xs text-gray-500 pb-4">
+        <p>Givy | Built with <span class="text-white">Minimalism</span></p>
     </div>
 
 </body>
