@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Givy - Simple Link Hub</title>
     
-    <!-- Tailwind CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ8uR07JBYi8/M6p6JmYp49b+D+8n1fC9U5B48e89j8Q50J9K5J12p5p+I6F5g==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <style>
         /* Background Murni Hitam */
         .pure-black-bg {
@@ -24,28 +24,16 @@
             box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
         }
 
-        /* FIX: Pastikan ikon memiliki warna yang jelas (putih) */
+        /* FIX: Pastikan ikon memiliki warna putih */
         .link-button i {
-            color: white !important; 
-            width: 20px; /* Tambahkan lebar tetap */
-            text-align: center; /* Pusatkan ikon */
-        }
-        
-        /* Animasi untuk profile picture */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
+            color: white; 
         }
     </style>
 </head>
 
 <body class="pure-black-bg min-h-screen flex flex-col items-center p-4 text-white font-sans">
 
-    <div class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg fade-in">
+    <div class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg">
         <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
              alt="Givy Profile" 
              class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -56,11 +44,11 @@
         <p class="mt-2 text-xs text-gray-300 max-w-xs">Connecting you. Simple. Clean.</p>
     </div>
 
-    <div id="link-list" class="space-y-3 w-full max-w-lg mb-8 fade-in">
+    <div id="link-list" class="space-y-3 w-full max-w-lg mb-8">
         
         <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
         >
             <i class="fa-brands fa-instagram mr-3 text-lg"></i>
             Instagram
@@ -68,7 +56,7 @@
 
         <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
         >
             <i class="fa-brands fa-youtube mr-3 text-lg"></i>
             YouTube
@@ -76,7 +64,7 @@
 
         <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
         >
             <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
             TikTok
@@ -84,28 +72,9 @@
 
     </div>
 
-    <div class="mt-auto text-center text-xs text-gray-500 pb-4 fade-in">
-        <p>Givy | Built with <span class="text-white font-medium">Minimalism</span></p>
+    <div class="mt-auto text-center text-xs text-gray-500 pb-4">
+        <p>Givy | Built with <span class="text-white">Minimalism</span></p>
     </div>
-
-    <!-- Script untuk memastikan Font Awesome berjalan -->
-    <script>
-        // Cek apakah Font Awesome sudah terload
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Font Awesome status:', 
-                document.querySelector('link[href*="font-awesome"]') ? 'Loaded' : 'Not Loaded');
-            
-            // Tambahkan fallback jika ikon masih tidak muncul
-            const icons = document.querySelectorAll('i');
-            icons.forEach(icon => {
-                if (getComputedStyle(icon).fontFamily.indexOf('Font Awesome') === -1) {
-                    console.warn('Font Awesome tidak terdeteksi untuk ikon:', icon);
-                    // Fallback: tambahkan warna manual
-                    icon.style.color = 'white';
-                }
-            });
-        });
-    </script>
 
 </body>
 </html>
