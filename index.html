@@ -24,16 +24,28 @@
             box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
         }
 
-        /* FIX: Pastikan ikon memiliki warna putih */
+        /* Pastikan ikon memiliki warna putih */
         .link-button i {
             color: white; 
+        }
+
+        /* --- KEYFRAMES UNTUK ANIMASI (Fade In & Slide Up) --- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Class untuk Menerapkan Animasi */
+        .animate-entry {
+            opacity: 0; /* Mulai tersembunyi */
+            animation: fadeIn 0.8s ease-out forwards; /* Durasi 0.8 detik */
         }
     </style>
 </head>
 
 <body class="pure-black-bg min-h-screen flex flex-col items-center p-4 text-white font-sans">
 
-    <div class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg">
+    <div id="profile-section" class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg animate-entry" style="animation-delay: 0.1s;">
         <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" 
              alt="Givy Profile" 
              class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out"
@@ -48,7 +60,8 @@
         
         <a href="https://instagram.com/Ganti_dengan_Username_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+           style="animation-delay: 0.3s;"
         >
             <i class="fa-brands fa-instagram mr-3 text-lg"></i>
             Instagram
@@ -56,7 +69,8 @@
 
         <a href="https://youtube.com/Ganti_dengan_Channel_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+           style="animation-delay: 0.45s;"
         >
             <i class="fa-brands fa-youtube mr-3 text-lg"></i>
             YouTube
@@ -64,7 +78,8 @@
 
         <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20 animate-entry"
+           style="animation-delay: 0.6s;"
         >
             <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
             TikTok
@@ -72,7 +87,7 @@
 
     </div>
 
-    <div class="mt-auto text-center text-xs text-gray-500 pb-4">
+    <div class="mt-auto text-center text-xs text-gray-500 pb-4 animate-entry" style="animation-delay: 0.75s;">
         <p>Givy | Built with <span class="text-white">Minimalism</span></p>
     </div>
 
