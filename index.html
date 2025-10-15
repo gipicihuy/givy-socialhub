@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLMDJ8uR07JBYi8/M6p6JmYp49b+D+8n1fC9U5B48e89j8Q50J9K5J12p5p+I6F5g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <style>
         /* Background Murni Hitam */
         .pure-black-bg {
@@ -22,6 +22,11 @@
         .link-button:hover {
             transform: scale(1.02); 
             box-shadow: 0 8px 10px -4px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+        }
+
+        /* FIX: Pastikan ikon memiliki warna yang jelas (putih) */
+        .link-button i {
+            color: white; 
         }
     </style>
 </head>
@@ -59,7 +64,7 @@
 
         <a href="https://tiktok.com/@Ganti_dengan_TikTok_Anda" 
            target="_blank" 
-           class="link-button flex items-center justify-center w-full bg-white text-black py-3 px-4 rounded-lg text-base font-bold tracking-wide text-center hover:bg-gray-200 shadow-md"
+           class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-4 rounded-lg text-base font-medium tracking-wide text-center hover:bg-white/20"
         >
             <i class="fa-brands fa-tiktok mr-3 text-lg"></i>
             TikTok
