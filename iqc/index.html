@@ -86,121 +86,132 @@
     
     <script>
     const form = document.getElementById("iqc-form"),
-          textInput = document.getElementById("text"),
-          chatTimeInput = document.getElementById("chatTime"),
-          statusBarTimeInput = document.getElementById("statusBarTime"),
-          iqcImage = document.getElementById("iqc-image"),
-          errorMessage = document.getElementById("error-message"),
-          generateButton = document.getElementById("generate-button"),
-          downloadSection = document.getElementById("download-section"),
-          downloadButton = document.getElementById("download-button"),
-          charCount = document.getElementById("char-count"),
-          resultArea = document.getElementById("result-area"),
-          API_BASE_URL = "https://api.deline.my.id/maker/iqc";
+      textInput = document.getElementById("text"),
+      chatTimeInput = document.getElementById("chatTime"),
+      statusBarTimeInput = document.getElementById("statusBarTime"),
+      iqcImage = document.getElementById("iqc-image"),
+      errorMessage = document.getElementById("error-message"),
+      generateButton = document.getElementById("generate-button"),
+      downloadSection = document.getElementById("download-section"),
+      downloadButton = document.getElementById("download-button"),
+      charCount = document.getElementById("char-count"),
+      resultArea = document.getElementById("result-area"),
+      API_BASE_URL = "https://api.deline.my.id/maker/iqc";
 
-    // Konstanta untuk ikon
-    const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
-    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+// Konstanta untuk ikon
+const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
+const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
-    function getCurrentTime() {
-        const date = new Date(),
-            hours = date.getHours().toString().padStart(2, "0"),
-            minutes = date.getMinutes().toString().padStart(2, "0");
-        return `${hours}.${minutes}`;
+function getCurrentTime() {
+    const date = new Date(),
+        hours = date.getHours().toString().padStart(2, "0"),
+        minutes = date.getMinutes().toString().padStart(2, "0");
+    return `${hours}.${minutes}`;
+}
+
+function setCurrentTime() {
+    const time = getCurrentTime();
+    chatTimeInput.value = time;
+    statusBarTimeInput.value = time;
+}
+
+function showError(message) {
+    errorMessage.querySelector("span").textContent = message;
+    errorMessage.classList.remove("hidden");
+    
+    generateButton.disabled = false;
+    generateButton.innerHTML = GENERATE_ICON_HTML;
+
+    // Tampilkan result-area untuk menampilkan error
+    resultArea.classList.remove("hidden");
+    
+    // Sembunyikan elemen lain di result-area
+    iqcImage.classList.add("hidden");
+    downloadSection.classList.add("hidden");
+}
+
+function hideError() {
+    errorMessage.classList.add("hidden");
+}
+
+// Set waktu saat halaman dimuat
+setCurrentTime();
+
+// Listener untuk hitungan karakter
+textInput.addEventListener("input", function() {
+    charCount.textContent = this.value.length;
+});
+
+// Listener untuk submit form
+form.addEventListener("submit", function(e) {
+    e.preventDefault();
+    
+    // 1. Reset tampilan: sembunyikan semua elemen hasil
+    hideError();
+    iqcImage.classList.add("hidden");
+    downloadSection.classList.add("hidden");
+    
+    // 2. Ambil nilai input
+    const text = textInput.value.trim(),
+          chatTime = chatTimeInput.value.trim(),
+          statusBarTime = statusBarTimeInput.value.trim();
+    
+    // 3. VALIDASI - Hentikan eksekusi jika tidak valid
+    if (!text) {
+        showError("Please enter quote text first."); 
+        return; // Hentikan eksekusi form di sini
     }
+    
+    // 4. Tampilkan result-area untuk mempersiapkan hasil
+    resultArea.classList.remove("hidden");
+    
+    // 5. Proses (hanya jika validasi lolos)
+    generateButton.disabled = true;
+    generateButton.innerHTML = PROCESSING_ICON_HTML; 
 
-    function setCurrentTime() {
-        const time = getCurrentTime();
-        chatTimeInput.value = time;
-        statusBarTimeInput.value = time;
-    }
-
-    function showError(message) {
-        errorMessage.querySelector("span").textContent = message;
-        errorMessage.classList.remove("hidden");
-        
+    const encodedText = encodeURIComponent(text);
+    const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
+    
+    // 6. Atur sumber gambar dan handler
+    iqcImage.src = finalUrl;
+    
+    iqcImage.onload = function() {
+        // Berhasil: tampilkan elemen di dalam result-area
         generateButton.disabled = false;
-        generateButton.innerHTML = GENERATE_ICON_HTML;
-
-        // Pastikan area hasil tersembunyi jika ada error
-        resultArea.classList.add("hidden"); 
-    }
-
-    // Set waktu saat halaman dimuat
-    setCurrentTime();
-    
-    // Listener untuk hitungan karakter
-    textInput.addEventListener("input", function() {
-        charCount.textContent = this.value.length;
-    });
-    
-    // Listener untuk submit form
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
+        generateButton.innerHTML = GENERATE_ICON_HTML; 
+        iqcImage.classList.remove("hidden");
+        downloadSection.classList.remove("hidden");
+        hideError();
         
-        // 1. Reset tampilan: sembunyikan semua elemen hasil
+        // Konfigurasi tombol download
+        downloadButton.onclick = function() {
+            fetch(finalUrl)
+                .then(response => response.blob())
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob),
+                          a = document.createElement("a");
+                    a.style.display = "none";
+                    a.href = blobUrl;
+                    a.download = `whatsapp-iqc-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(blobUrl);
+                    document.body.removeChild(a);
+                })
+                .catch(err => {
+                    console.error("Download error:", err);
+                    window.open(finalUrl, "_blank");
+                });
+        };
+    };
+    
+    iqcImage.onerror = function() {
+        // Gagal: tampilkan error
+        showError("Failed to load image from API. Please check your quote text or try again later.");
         iqcImage.classList.add("hidden");
-        errorMessage.classList.add("hidden");
         downloadSection.classList.add("hidden");
-        resultArea.classList.add("hidden"); // Sembunyikan result-area secara keseluruhan
-        
-        // 2. Ambil nilai input
-        const text = textInput.value.trim(),
-            chatTime = chatTimeInput.value.trim(),
-            statusBarTime = statusBarTimeInput.value.trim();
-        
-        // 3. V A L I D A S I (Dibuat lebih eksplisit untuk menghentikan form)
-        if (!text) {
-            showError("Please enter quote text first."); 
-            return; // Hentikan eksekusi form di sini
-        }
-        
-        // 4. Proses (hanya jika validasi lolos)
-        generateButton.disabled = true;
-        generateButton.innerHTML = PROCESSING_ICON_HTML; 
-
-        const encodedText = encodeURIComponent(text);
-        const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
-        
-        // 5. Atur sumber gambar dan handler
-        iqcImage.src = finalUrl;
-        
-        iqcImage.onload = function() {
-            // Berhasil: tampilkan result-area dan elemen di dalamnya
-            generateButton.disabled = false;
-            generateButton.innerHTML = GENERATE_ICON_HTML; 
-            iqcImage.classList.remove("hidden");
-            downloadSection.classList.remove("hidden");
-            resultArea.classList.remove("hidden"); // Tampilkan result-area setelah berhasil
-            
-            // Konfigurasi tombol download
-            downloadButton.onclick = function() {
-                fetch(finalUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const blobUrl = window.URL.createObjectURL(blob),
-                            a = document.createElement("a");
-                        a.style.display = "none";
-                        a.href = blobUrl;
-                        a.download = `whatsapp-iqc-${Date.now()}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(blobUrl);
-                        document.body.removeChild(a);
-                    })
-                    .catch(err => {
-                        console.error("Download error:", err);
-                        window.open(finalUrl, "_blank");
-                    });
-            };
-        };
-        
-        iqcImage.onerror = function() {
-            // Gagal: tampilkan error dan pastikan result-area tersembunyi
-            showError("Failed to load image from API. Please check the API URL or parameters.");
-            iqcImage.classList.add("hidden"); 
-        };
-    });
+    };
+});
 </script>
 </body>
 </html>
