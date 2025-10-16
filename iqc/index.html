@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4">
-                    <i class="fa-brands fa-whatsapp mr-2 text-sm"></i>Generate IQC
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC
                 </button>
             </form>
         </div>
@@ -97,10 +97,14 @@
               charCount = document.getElementById("char-count"),
               API_BASE_URL = "https://api.deline.my.id/maker/iqc";
 
+        // Konstanta untuk ikon
+        const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
+        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+
         function getCurrentTime() {
             const date = new Date(),
-                  hours = date.getHours().toString().padStart(2, "0"),
-                  minutes = date.getMinutes().toString().padStart(2, "0");
+                hours = date.getHours().toString().padStart(2, "0"),
+                minutes = date.getMinutes().toString().padStart(2, "0");
             return `${hours}.${minutes}`;
         }
 
@@ -115,9 +119,9 @@
             errorMessage.querySelector("span").textContent = message;
             errorMessage.classList.remove("hidden");
             
-            // Pastikan tombol kembali ke keadaan normal
+            // Pastikan tombol kembali ke keadaan normal dengan ikon baru
             generateButton.disabled = false;
-            generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2 text-sm"></i>Generate IQC';
+            generateButton.innerHTML = GENERATE_ICON_HTML;
         }
 
         // Set waktu saat halaman dimuat
@@ -139,8 +143,8 @@
             
             // 2. Ambil nilai input
             const text = textInput.value.trim(),
-                  chatTime = chatTimeInput.value.trim(),
-                  statusBarTime = statusBarTimeInput.value.trim();
+                chatTime = chatTimeInput.value.trim(),
+                statusBarTime = statusBarTimeInput.value.trim();
             
             // 3. V A L I D A S I
             if (!text) {
@@ -150,7 +154,7 @@
             
             // 4. Proses (hanya jika validasi lolos)
             generateButton.disabled = true;
-            generateButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+            generateButton.innerHTML = PROCESSING_ICON_HTML; // Menggunakan ikon processing
 
             const encodedText = encodeURIComponent(text);
             const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
@@ -161,7 +165,7 @@
             iqcImage.onload = function() {
                 // Berhasil
                 generateButton.disabled = false;
-                generateButton.innerHTML = '<i class="fa-brands fa-whatsapp mr-2 text-sm"></i>Generate IQC';
+                generateButton.innerHTML = GENERATE_ICON_HTML; // Kembali ke ikon generate
                 iqcImage.classList.remove("hidden");
                 downloadSection.classList.remove("hidden");
                 
@@ -171,7 +175,7 @@
                         .then(response => response.blob())
                         .then(blob => {
                             const blobUrl = window.URL.createObjectURL(blob),
-                                  a = document.createElement("a");
+                                a = document.createElement("a");
                             a.style.display = "none";
                             a.href = blobUrl;
                             a.download = `whatsapp-iqc-${Date.now()}.png`;
