@@ -116,22 +116,28 @@ function setCurrentTime() {
 }
 
 function showError(message) {
+    // Tampilkan result-area hanya untuk error
+    resultArea.classList.remove("hidden");
     errorMessage.querySelector("span").textContent = message;
     errorMessage.classList.remove("hidden");
-    
-    generateButton.disabled = false;
-    generateButton.innerHTML = GENERATE_ICON_HTML;
-
-    // Tampilkan result-area untuk menampilkan error
-    resultArea.classList.remove("hidden");
     
     // Sembunyikan elemen lain di result-area
     iqcImage.classList.add("hidden");
     downloadSection.classList.add("hidden");
+    
+    generateButton.disabled = false;
+    generateButton.innerHTML = GENERATE_ICON_HTML;
 }
 
 function hideError() {
     errorMessage.classList.add("hidden");
+}
+
+function showSuccess() {
+    resultArea.classList.remove("hidden");
+    hideError();
+    iqcImage.classList.remove("hidden");
+    downloadSection.classList.remove("hidden");
 }
 
 // Set waktu saat halaman dimuat
@@ -150,6 +156,7 @@ form.addEventListener("submit", function(e) {
     hideError();
     iqcImage.classList.add("hidden");
     downloadSection.classList.add("hidden");
+    resultArea.classList.add("hidden"); // SEMBUNYIKAN result-area di awal
     
     // 2. Ambil nilai input
     const text = textInput.value.trim(),
@@ -162,26 +169,21 @@ form.addEventListener("submit", function(e) {
         return; // Hentikan eksekusi form di sini
     }
     
-    // 4. Tampilkan result-area untuk mempersiapkan hasil
-    resultArea.classList.remove("hidden");
-    
-    // 5. Proses (hanya jika validasi lolos)
+    // 4. Proses (hanya jika validasi lolos)
     generateButton.disabled = true;
     generateButton.innerHTML = PROCESSING_ICON_HTML; 
 
     const encodedText = encodeURIComponent(text);
     const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
     
-    // 6. Atur sumber gambar dan handler
+    // 5. Atur sumber gambar dan handler
     iqcImage.src = finalUrl;
     
     iqcImage.onload = function() {
-        // Berhasil: tampilkan elemen di dalam result-area
+        // Berhasil: tampilkan result-area dan elemen di dalamnya
         generateButton.disabled = false;
         generateButton.innerHTML = GENERATE_ICON_HTML; 
-        iqcImage.classList.remove("hidden");
-        downloadSection.classList.remove("hidden");
-        hideError();
+        showSuccess(); // Tampilkan result-area dengan hasil sukses
         
         // Konfigurasi tombol download
         downloadButton.onclick = function() {
