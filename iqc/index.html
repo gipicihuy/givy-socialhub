@@ -116,27 +116,17 @@ function setCurrentTime() {
 }
 
 function showError(message) {
-    // Tampilkan result area HANYA untuk error message
-    resultArea.classList.remove("hidden");
-    errorMessage.querySelector("span").textContent = message;
-    errorMessage.classList.remove("hidden");
-    
-    // Sembunyikan elemen hasil lainnya
-    iqcImage.classList.add("hidden");
-    downloadSection.classList.add("hidden");
+    // HANYA tampilkan alert biasa, JANGAN tampilkan result area
+    alert(message); // PAKAI ALERT BIASA!
     
     generateButton.disabled = false;
     generateButton.innerHTML = GENERATE_ICON_HTML;
 }
 
-function hideError() {
-    errorMessage.classList.add("hidden");
-}
-
 function showSuccess() {
     // Tampilkan result area dengan hasil yang sukses
     resultArea.classList.remove("hidden");
-    hideError();
+    errorMessage.classList.add("hidden");
     iqcImage.classList.remove("hidden");
     downloadSection.classList.remove("hidden");
 }
@@ -153,8 +143,9 @@ textInput.addEventListener("input", function() {
 form.addEventListener("submit", function(e) {
     e.preventDefault();
     
-    // 1. Reset: sembunyikan SEMUA elemen di dalam result area
-    hideError();
+    // 1. Sembunyikan result area di awal
+    resultArea.classList.add("hidden");
+    errorMessage.classList.add("hidden");
     iqcImage.classList.add("hidden");
     downloadSection.classList.add("hidden");
     
@@ -208,8 +199,9 @@ form.addEventListener("submit", function(e) {
     };
     
     iqcImage.onerror = function() {
-        // Gagal: tampilkan error
+        // Gagal: tampilkan error (tetap sembunyikan result area)
         showError("Failed to load image from API. Please check your quote text or try again later.");
+        resultArea.classList.add("hidden"); // Pastikan result area tetap tersembunyi
     };
 });
 </script>
