@@ -57,7 +57,7 @@
                 </button>
             </form>
         </div>
-        <div id="result-area" class="w-full mt-6 text-center animate-entry" style="animation-delay:.5s">
+        <div id="result-area" class="w-full mt-6 text-center hidden"> 
             <h2 class="text-sm font-medium text-gray-300 mb-3">
                 <i class="fa-solid fa-image mr-1"></i>Result
             </h2>
@@ -70,7 +70,7 @@
             </div>
             
             <div class="mt-3">
-                <img id="iqc-image" alt="WhatsApp IQC Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-sm">
+                <img id="iqc-image" alt="WhatsApp IQC Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-xs">
             </div>
             
             <div id="download-section" class="hidden mt-3">
@@ -95,6 +95,7 @@
               downloadSection = document.getElementById("download-section"),
               downloadButton = document.getElementById("download-button"),
               charCount = document.getElementById("char-count"),
+              resultArea = document.getElementById("result-area"), // Tambahkan referensi ke result-area
               API_BASE_URL = "https://api.deline.my.id/maker/iqc";
 
         // Konstanta untuk ikon
@@ -115,13 +116,14 @@
         }
 
         function showError(message) {
-            // Atur teks error dan tampilkan div error
             errorMessage.querySelector("span").textContent = message;
             errorMessage.classList.remove("hidden");
             
-            // Pastikan tombol kembali ke keadaan normal dengan ikon baru
             generateButton.disabled = false;
             generateButton.innerHTML = GENERATE_ICON_HTML;
+
+            // Pastikan area hasil tersembunyi jika ada error
+            resultArea.classList.add("hidden"); 
         }
 
         // Set waktu saat halaman dimuat
@@ -136,10 +138,11 @@
         form.addEventListener("submit", function(e) {
             e.preventDefault();
             
-            // 1. Reset tampilan
+            // 1. Reset tampilan: sembunyikan semua elemen hasil
             iqcImage.classList.add("hidden");
             errorMessage.classList.add("hidden");
             downloadSection.classList.add("hidden");
+            resultArea.classList.add("hidden"); // Sembunyikan result-area secara keseluruhan
             
             // 2. Ambil nilai input
             const text = textInput.value.trim(),
@@ -148,13 +151,12 @@
             
             // 3. V A L I D A S I
             if (!text) {
-                // Jika teks kosong, langsung tampilkan error dan hentikan eksekusi
                 return showError("Please enter quote text first."); 
             }
             
             // 4. Proses (hanya jika validasi lolos)
             generateButton.disabled = true;
-            generateButton.innerHTML = PROCESSING_ICON_HTML; // Menggunakan ikon processing
+            generateButton.innerHTML = PROCESSING_ICON_HTML; 
 
             const encodedText = encodeURIComponent(text);
             const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
@@ -163,11 +165,12 @@
             iqcImage.src = finalUrl;
             
             iqcImage.onload = function() {
-                // Berhasil
+                // Berhasil: tampilkan result-area dan elemen di dalamnya
                 generateButton.disabled = false;
-                generateButton.innerHTML = GENERATE_ICON_HTML; // Kembali ke ikon generate
+                generateButton.innerHTML = GENERATE_ICON_HTML; 
                 iqcImage.classList.remove("hidden");
                 downloadSection.classList.remove("hidden");
+                resultArea.classList.remove("hidden"); // Tampilkan result-area setelah berhasil
                 
                 // Konfigurasi tombol download
                 downloadButton.onclick = function() {
@@ -186,16 +189,16 @@
                         })
                         .catch(err => {
                             console.error("Download error:", err);
-                            // Jika fetch gagal, coba buka di tab baru
                             window.open(finalUrl, "_blank");
                         });
                 };
             };
             
             iqcImage.onerror = function() {
-                // Gagal
+                // Gagal: tampilkan error dan pastikan result-area tersembunyi
                 showError("Failed to load image from API. Please check the API URL or parameters.");
-                iqcImage.classList.add("hidden"); // Pastikan gambar yang gagal tidak ditampilkan
+                iqcImage.classList.add("hidden"); 
+                // resultArea.classList.add("hidden") sudah dipanggil di showError()
             };
         });
     </script>
