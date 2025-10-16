@@ -116,9 +116,14 @@ function setCurrentTime() {
 }
 
 function showError(message) {
-    // HANYA tampilkan error message, TIDAK tampilkan result area
+    // Tampilkan result area HANYA untuk error message
+    resultArea.classList.remove("hidden");
     errorMessage.querySelector("span").textContent = message;
     errorMessage.classList.remove("hidden");
+    
+    // Sembunyikan elemen hasil lainnya
+    iqcImage.classList.add("hidden");
+    downloadSection.classList.add("hidden");
     
     generateButton.disabled = false;
     generateButton.innerHTML = GENERATE_ICON_HTML;
@@ -148,8 +153,7 @@ textInput.addEventListener("input", function() {
 form.addEventListener("submit", function(e) {
     e.preventDefault();
     
-    // 1. Reset SEMUA: sembunyikan result area dan elemen di dalamnya
-    resultArea.classList.add("hidden");
+    // 1. Reset: sembunyikan SEMUA elemen di dalam result area
     hideError();
     iqcImage.classList.add("hidden");
     downloadSection.classList.add("hidden");
@@ -204,9 +208,8 @@ form.addEventListener("submit", function(e) {
     };
     
     iqcImage.onerror = function() {
-        // Gagal: tampilkan error (tetap sembunyikan result area)
+        // Gagal: tampilkan error
         showError("Failed to load image from API. Please check your quote text or try again later.");
-        resultArea.classList.add("hidden"); // Pastikan result area tetap tersembunyi
     };
 });
 </script>
