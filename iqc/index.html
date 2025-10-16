@@ -116,14 +116,9 @@ function setCurrentTime() {
 }
 
 function showError(message) {
-    // Tampilkan result-area hanya untuk error
-    resultArea.classList.remove("hidden");
+    // HANYA tampilkan error message, TIDAK tampilkan result area
     errorMessage.querySelector("span").textContent = message;
     errorMessage.classList.remove("hidden");
-    
-    // Sembunyikan elemen lain di result-area
-    iqcImage.classList.add("hidden");
-    downloadSection.classList.add("hidden");
     
     generateButton.disabled = false;
     generateButton.innerHTML = GENERATE_ICON_HTML;
@@ -134,6 +129,7 @@ function hideError() {
 }
 
 function showSuccess() {
+    // Tampilkan result area dengan hasil yang sukses
     resultArea.classList.remove("hidden");
     hideError();
     iqcImage.classList.remove("hidden");
@@ -152,11 +148,11 @@ textInput.addEventListener("input", function() {
 form.addEventListener("submit", function(e) {
     e.preventDefault();
     
-    // 1. Reset tampilan: sembunyikan semua elemen hasil
+    // 1. Reset SEMUA: sembunyikan result area dan elemen di dalamnya
+    resultArea.classList.add("hidden");
     hideError();
     iqcImage.classList.add("hidden");
     downloadSection.classList.add("hidden");
-    resultArea.classList.add("hidden"); // SEMBUNYIKAN result-area di awal
     
     // 2. Ambil nilai input
     const text = textInput.value.trim(),
@@ -180,10 +176,10 @@ form.addEventListener("submit", function(e) {
     iqcImage.src = finalUrl;
     
     iqcImage.onload = function() {
-        // Berhasil: tampilkan result-area dan elemen di dalamnya
+        // Berhasil: tampilkan result area dengan gambar
         generateButton.disabled = false;
         generateButton.innerHTML = GENERATE_ICON_HTML; 
-        showSuccess(); // Tampilkan result-area dengan hasil sukses
+        showSuccess();
         
         // Konfigurasi tombol download
         downloadButton.onclick = function() {
@@ -208,10 +204,9 @@ form.addEventListener("submit", function(e) {
     };
     
     iqcImage.onerror = function() {
-        // Gagal: tampilkan error
+        // Gagal: tampilkan error (tetap sembunyikan result area)
         showError("Failed to load image from API. Please check your quote text or try again later.");
-        iqcImage.classList.add("hidden");
-        downloadSection.classList.add("hidden");
+        resultArea.classList.add("hidden"); // Pastikan result area tetap tersembunyi
     };
 });
 </script>
