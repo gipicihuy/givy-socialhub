@@ -100,7 +100,7 @@
 
 // Konstanta untuk ikon
 const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
-const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar su...';
 
 function getCurrentTime() {
     const date = new Date(),
@@ -156,7 +156,7 @@ form.addEventListener("submit", function(e) {
     
     // 3. VALIDASI - Hentikan eksekusi jika tidak valid
     if (!text) {
-        showError("Please enter quote text first."); 
+        showError("Jangan kosong lah_-"); 
         return; // Hentikan eksekusi form di sini
     }
     
