@@ -214,6 +214,16 @@
         }
     });
 
+    // --- Auto-select link saat diklik/difokus ---
+    avatarUrlInput.addEventListener('click', () => {
+        avatarUrlInput.select();
+    });
+    // Agar bekerja juga saat di-tab atau difokus
+    avatarUrlInput.addEventListener('focus', () => {
+        avatarUrlInput.select();
+    });
+    // ----------------------------------------------------
+
     // --- LOGIC FORM SUBMIT (Menggunakan GET untuk GENERATE & Notifikasi) ---
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
@@ -231,7 +241,7 @@
         const name = nameInput.value.trim();
         const username = usernameInput.value.trim().replace('@', ''); 
         const comment = commentInput.value.trim();
-        const avatarUrl = avatarUrlInput.value.trim();
+        const avatarUrl = avatarUrlInput.value.trim(); // Ambil URL Avatar
         const verified = verifiedInput.checked ? 'true' : 'false';
 
         if (!name || !username || !comment || !avatarUrl) {
@@ -243,8 +253,8 @@
         const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
         // 2. Buat URL API VERCEL (Menggunakan Query String untuk GET)
-        // Menambahkan 'comment' ke query string
-        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}`;
+        // Menambahkan 'comment' dan 'avatarUrl' ke query string
+        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatarUrl=${encodeURIComponent(avatarUrl)}`;
 
         try {
             // Permintaan GET ke Vercel API
