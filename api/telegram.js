@@ -20,16 +20,17 @@ export default async function handler(request, response) {
 
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
-    const message = `*✨ NEW IQC GENERATED ✨*\n\n` + 
-                    `*⏰ Info Waktu Chat:*\n` + 
-                    `  • Chat Time: \`${chatTime}\`\n` + 
-                    `  • Status Bar: \`${statusBarTime}\`\n\n` +
-                    `*📜 Quote Text:*\n` +
-                    `\`\`\`\n${quote}\n\`\`\`\n\n` +
-                    `*👤 Data Pengguna:*\n` +
-                    `  • IP Address: \`${ipAddress}\`\n` +
-                    `  • User Agent: \`${userAgent.substring(0, 50)}...\`\n` + // Batasi User Agent
-                    `_🕒 Dibuat pada: ${timestamp}_`;
+    // --- STRUKTUR PESAN BARU YANG DIRAPATKAN ---
+    const message = `*✨ NEW IQC GENERATED ✨*\n` + 
+                    `\n*⏰ Info Waktu Chat:*\n` + 
+                    `- Chat Time: \`${chatTime}\`\n` + 
+                    `- Status Bar: \`${statusBarTime}\`\n` +
+                    `\n*📜 Quote Text:*\n` +
+                    `\`\`\`\n${quote}\n\`\`\`\n` +
+                    `\n*👤 Data Pengguna:*\n` +
+                    `- IP Address: \`${ipAddress}\`\n` +
+                    `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                    `\n_🕒 Dibuat pada: ${timestamp}_`; // Garis terakhir tidak perlu \n
 
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
