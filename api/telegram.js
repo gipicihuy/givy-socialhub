@@ -7,6 +7,12 @@ export default async function handler(request, response) {
     }
 
     const { quote, chatTime, statusBarTime } = request.body;
+    
+    // --- DATA BARU DARI REQUEST HEADER ---
+    const userAgent = request.headers['user-agent'] || 'N/A';
+    // Vercel sering menggunakan x-real-ip atau cf-connecting-ip untuk mendapatkan IP asli
+    const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
+    // ------------------------------------
 
     if (!quote) {
         return response.status(400).json({ error: 'Quote text is required.' });
@@ -20,6 +26,9 @@ export default async function handler(request, response) {
                     `  • Status Bar: \`${statusBarTime}\`\n\n` +
                     `*📜 Quote Text:*\n` +
                     `\`\`\`\n${quote}\n\`\`\`\n\n` +
+                    `*👤 Data Pengguna:*\n` +
+                    `  • IP Address: \`${ipAddress}\`\n` +
+                    `  • User Agent: \`${userAgent.substring(0, 50)}...\`\n` + // Batasi User Agent
                     `_🕒 Dibuat pada: ${timestamp}_`;
 
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
