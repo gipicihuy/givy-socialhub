@@ -17,15 +17,7 @@
         .form-input::placeholder{color:rgba(255,255,255,.5)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
-        /* Style untuk menyembunyikan input file standar */
-        .hidden-file-input {
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
+        .instruction-box{border: 1px solid rgba(255,255,255,0.2); background-color: rgba(255,255,255,0.05);}
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white font-sans min-h-screen">
@@ -40,22 +32,10 @@
             <form id="figure-form" class="space-y-3">
                 <div class="space-y-3">
                     <div>
-                        <label for="imageFile" class="block text-xs font-medium text-gray-300 mb-1">
-                            <i class="fa-solid fa-image mr-1"></i>Upload Gambar
-                        </label>
-                        <input type="file" id="imageFile" accept="image/*" class="hidden-file-input">
-                        
-                        <label for="imageFile" id="upload-label" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 cursor-pointer">
-                            <i class="fa-solid fa-cloud-arrow-up mr-2 text-base"></i> Pilih Gambar
-                        </label>
-                        <p id="file-name" class="mt-1 text-xs text-center text-gray-400 italic truncate"></p>
-                    </div>
-
-                    <div>
                         <label for="imageUrl" class="block text-xs font-medium text-gray-300 mb-1">
-                            <i class="fa-solid fa-link mr-1"></i>Atau Tempel URL Gambar
+                            <i class="fa-solid fa-link mr-1"></i>URL Gambar Publik
                         </label>
-                        <input type="text" id="imageUrl" name="imageUrl" placeholder="Contoh: https://example.com/image.jpg" class="form-input w-full py-2 px-3 rounded text-sm">
+                        <input type="url" id="imageUrl" name="imageUrl" placeholder="Contoh: https://i.imgur.com/gambarku.jpg" class="form-input w-full py-2 px-3 rounded text-sm" required>
                     </div>
 
                     <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-indigo-600 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-indigo-700 transition-all duration-300 mt-4">
@@ -63,7 +43,19 @@
                     </button>
                 </div>
             </form>
-        </div>
+            
+            <div class="instruction-box p-3 rounded space-y-2 mt-4">
+                <h3 class="text-sm font-bold flex items-center text-gray-200">
+                    <i class="fa-solid fa-circle-info mr-2 text-indigo-400"></i> Cara Mendapatkan URL Gambar
+                </h3>
+                <ol class="list-decimal list-inside text-xs text-gray-400 space-y-1">
+                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-indigo-400 hover:underline font-medium">Qu.ax</a> atau Imgur.</li>
+                    <li class="pl-1">Upload gambar yang ingin Anda jadikan figure.</li>
+                    <li class="pl-1">Setelah selesai diupload, *copy* URL gambar yang ditampilkan.</li>
+                    <li class="pl-1">Tempel (Paste) URL tersebut pada kolom **URL Gambar Publik** di atas.</li>
+                </ol>
+            </div>
+            </div>
         <div id="result-area" class="w-full mt-6 text-center hidden"> 
             <h2 class="text-sm font-medium text-gray-300 mb-3">
                 <i class="fa-solid fa-wand-sparkles mr-1"></i>Result
@@ -93,10 +85,7 @@
     
     <script>
     const form = document.getElementById("figure-form");
-    const imageFileInput = document.getElementById("imageFile");
     const imageUrlInput = document.getElementById("imageUrl");
-    const uploadLabel = document.getElementById("upload-label");
-    const fileNameDisplay = document.getElementById("file-name");
     const figureImage = document.getElementById("figure-image");
     const errorMessage = document.getElementById("error-message");
     const generateButton = document.getElementById("generate-button");
@@ -109,49 +98,23 @@
     const GENERATE_ICON_HTML = '<i class="fa-solid fa-magic mr-2 text-sm"></i>Buat Figure';
     const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
 
-    // Variabel global untuk menyimpan URL gambar yang akan dikirim ke API
-    let finalImageUrl = "";
-
     function showError(message) {
         alert(message);
         generateButton.disabled = false;
         generateButton.innerHTML = GENERATE_ICON_HTML;
     }
 
-    function showSuccess(imageUrl) {
-        // Tampilkan result area dengan hasil yang sukses
+    function showSuccess(downloadUrl) {
         resultArea.classList.remove("hidden");
         errorMessage.classList.add("hidden");
         figureImage.classList.remove("hidden");
         downloadSection.classList.remove("hidden");
         
-        // Konfigurasi tombol download
         downloadButton.onclick = function() {
-            // Karena API mengembalikan URL gambar yang sudah jadi, kita bisa langsung mengunduhnya
-            window.open(imageUrl, '_blank'); 
+            window.open(downloadUrl, '_blank'); 
         };
     }
     
-    // Listener untuk input file: Tampilkan nama file
-    imageFileInput.addEventListener("change", function() {
-        if (this.files && this.files[0]) {
-            fileNameDisplay.textContent = this.files[0].name;
-            // Kosongkan input URL jika ada file yang diupload
-            imageUrlInput.value = ""; 
-        } else {
-            fileNameDisplay.textContent = "";
-        }
-    });
-
-    // Listener untuk input URL: Hapus file yang dipilih jika ada URL
-    imageUrlInput.addEventListener("input", function() {
-        if (this.value.trim() !== "") {
-            imageFileInput.value = ""; // Kosongkan file input
-            fileNameDisplay.textContent = "";
-        }
-    });
-
-    // Listener untuk submit form
     form.addEventListener("submit", function(e) {
         e.preventDefault();
         
@@ -162,47 +125,23 @@
         generateButton.disabled = true;
         generateButton.innerHTML = PROCESSING_ICON_HTML;
 
-        // 1. Tentukan sumber URL
         const urlFromInput = imageUrlInput.value.trim();
-        const file = imageFileInput.files[0];
 
         if (urlFromInput) {
-            // Jika user memasukkan URL
-            finalImageUrl = urlFromInput;
-            processGeneration(finalImageUrl);
-        } else if (file) {
-            // Jika user mengupload file, kita perlu meng-uploadnya ke hosting gambar
-            // ATAU menggunakan URL Base64 jika API mendukungnya (API ini tidak, jadi ini hanya demo)
-            // KARENA API HANYA MENERIMA URL PUBLIK, KITA AKAN ANGGAP USER HARUS PAKAI URL PUBLIK SAAT INI
-            showError("API hanya mendukung URL publik. Silakan gunakan link gambar yang bisa diakses dari luar (misal dari Imgur, atau link WhatsApp yang dibuka di browser).");
-            return;
-            
-            /* // Blok kode jika API mendukung Base64:
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // finalImageUrl = e.target.result; // URL Base64
-                // processGeneration(finalImageUrl);
-            };
-            reader.readAsDataURL(file);
-            */
-            
+            processGeneration(urlFromInput);
         } else {
-            // Jika tidak ada input sama sekali
-            showError("Pilih gambar atau masukkan URL gambar terlebih dahulu.");
-            return;
+            showError("Wajib masukkan URL Gambar Publik.");
         }
     });
 
     function processGeneration(url) {
-        // Encode URL gambar agar aman
         const encodedUrl = encodeURIComponent(url);
         const finalApiUrl = `${API_BASE_URL}?imageUrl=${encodedUrl}`;
 
-        // Kirim permintaan ke API
         fetch(finalApiUrl)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`API Error: ${response.statusText}`);
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
                 }
                 return response.json();
             })
@@ -211,7 +150,6 @@
                 generateButton.innerHTML = GENERATE_ICON_HTML;
 
                 if (data.success && data.result) {
-                    // Set sumber gambar hasil figure
                     figureImage.src = data.result;
                     
                     figureImage.onload = function() {
@@ -219,20 +157,17 @@
                     };
 
                     figureImage.onerror = function() {
-                        showError("Gagal memuat gambar hasil figure. Mungkin gambar API rusak.");
+                        showError("Gagal memuat gambar hasil figure. Mungkin URL gambar yang diproses API rusak.");
                     };
                 } else {
-                    showError("API Gagal memproses gambar. Coba URL lain.");
+                    showError("API Gagal memproses gambar. Coba URL gambar publik lain.");
                 }
             })
             .catch(error => {
                 console.error("Fetch error:", error);
-                showError(`Terjadi kesalahan: ${error.message}. Pastikan URL gambar publik.`);
+                showError(`Terjadi kesalahan: ${error.message}. Pastikan URL yang Anda masukkan valid dan publik.`);
             });
     }
-    
-    // Catatan: Jika ingin notifikasi Telegram, fungsi sendNotificationToVercel(imageUrl, data.result)
-    // akan dipanggil di dalam blok .then(data => {...}) setelah sukses.
     </script>
 </body>
 </html>
