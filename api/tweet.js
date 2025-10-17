@@ -1,8 +1,8 @@
-// File: api/tweet.js
+// File: api/tweet.js (FINAL VERSION)
 
-// Pastikan Anda mendapatkan TELEGRAM_BOT_TOKEN dan CHAT_ID dari environment variables
+// Menggunakan TELEGRAM_CHAT_ID sesuai permintaan Anda
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const sendNotificationToTelegram = async (name, username, imageUrl) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
@@ -22,12 +22,11 @@ const sendNotificationToTelegram = async (name, username, imageUrl) => {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                chat_id: CHAT_ID,
+                chat_id: TELEGRAM_CHAT_ID, // Perbaikan CHAT_ID
                 text: message,
                 parse_mode: 'Markdown',
             }),
         });
-        // Console log hanya untuk debugging Vercel
         console.log('Telegram notification sent successfully.');
     } catch (error) {
         console.error('Error sending Telegram notification:', error);
@@ -43,27 +42,41 @@ export default async function handler(request, response) {
 
     const isDownload = download === 'true';
 
-    // Jika ini adalah permintaan download, kita tidak perlu kirim notifikasi lagi
+    // --- FIX: Proses Download Langsung (Direct Download) ---
     if (isDownload) {
-        // Karena ini adalah request GET sederhana, kita hanya perlu mengarahkan
-        // browser ke URL gambar dengan header Content-Disposition
-        response.setHeader('Content-Type', 'image/png'); // Asumsi output PNG
-        response.setHeader('Content-Disposition', 'attachment; filename="fake_tweet_by_givy.png"');
-        return response.redirect(302, imageUrl);
+        try {
+            // 1. Fetch konten gambar secara langsung
+            const imageResponse = await fetch(imageUrl);
+            if (!imageResponse.ok) {
+                throw new Error('Failed to fetch image from external API.');
+            }
+
+            // 2. Set Header untuk Direct Download
+            response.setHeader('Content-Type', 'image/png'); 
+            response.setHeader('Content-Disposition', 'attachment; filename="fake_tweet_by_givy.png"');
+            
+            // 3. Streaming konten gambar kembali ke klien
+            // Menggunakan response.send() atau pipeline stream untuk binary data
+            // Di lingkungan Vercel/Node, kita bisa menggunakan response.send(Buffer)
+            const buffer = await imageResponse.arrayBuffer();
+            return response.send(Buffer.from(buffer)); 
+            
+        } catch (error) {
+            console.error('Download error:', error);
+            return response.status(500).json({ status: 'error', message: 'Failed to process download.' });
+        }
     }
 
     // --- Proses Pembuatan (Generate) dan Notifikasi ---
-
+    
     // 1. Kirim Notifikasi ke Telegram
-    if (TELEGRAM_BOT_TOKEN && CHAT_ID) {
-        // Ambil data nama dan username untuk notifikasi
+    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
-        // Jalankan notifikasi tanpa menunggu hasilnya (fire-and-forget)
         sendNotificationToTelegram(tweetName, tweetUsername, imageUrl);
     }
 
-    // 2. Kirim URL Gambar kembali ke frontend
+    // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
     return response.status(200).json({ 
         status: 'ok', 
         imageUrl: imageUrl 
