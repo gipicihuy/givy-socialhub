@@ -1,16 +1,17 @@
-// File: api/tweet.js (FINAL VERSION: GET, Text Notif with IP)
+// File: api/tweet.js (FINAL VERSION: GET, Text Notif with Tweet Content)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID; // Menggunakan TELEGRAM_CHAT_ID
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-const sendNotificationToTelegram = async (name, username, imageUrl, ipAddress, userAgent) => {
+const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
-    // Structure pesan Telegram yang disempurnakan (mirip IQC)
+    // Structure pesan Telegram yang disempurnakan
     const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
+                    `- Tweet: \`${tweetContent.substring(0, 500)}\`\n` + // BARU: Menambahkan Tweet Content
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
                     `\n_🕒 Dibuat pada: ${timestamp}_\n\n` +
@@ -34,12 +35,12 @@ const sendNotificationToTelegram = async (name, username, imageUrl, ipAddress, u
 };
 
 export default async function handler(request, response) {
-    const { imageUrl, download, name, username } = request.query;
+    // BARU: Ambil 'comment' dari query
+    const { imageUrl, download, name, username, comment } = request.query; 
 
     // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
     const userAgent = request.headers['user-agent'] || 'N/A';
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
-    // Membersihkan IP jika ada multiple (X-Forwarded-For)
     const cleanIp = ipAddress.split(',')[0].trim(); 
     // --------------------------------------------------
 
@@ -62,7 +63,6 @@ export default async function handler(request, response) {
             response.setHeader('Content-Type', 'image/png'); 
             response.setHeader('Content-Disposition', `attachment; filename="fake_tweet_${username || 'result'}.png"`);
             
-            // Streaming konten gambar kembali ke klien
             const buffer = await imageResponse.arrayBuffer();
             return response.send(Buffer.from(buffer)); 
             
@@ -78,8 +78,10 @@ export default async function handler(request, response) {
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
-        // Menyertakan IP dan User Agent
-        sendNotificationToTelegram(tweetName, tweetUsername, imageUrl, cleanIp, userAgent);
+        const tweetContent = comment || 'N/A'; // Ambil konten Tweet
+        
+        // Memanggil fungsi notifikasi dengan konten Tweet
+        sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, imageUrl, cleanIp, userAgent);
     }
 
     // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
