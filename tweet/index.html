@@ -243,8 +243,8 @@
         const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
         // 2. Buat URL API VERCEL (Menggunakan Query String untuk GET)
-        // Kita mengirim URL gambar, name, dan username lewat query string
-        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}`;
+        // BARU: Menambahkan 'comment' ke query string
+        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}`;
 
         try {
             // Permintaan GET ke Vercel API
