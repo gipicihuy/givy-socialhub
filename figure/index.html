@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
+    <title>Givy To Figure Maker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        /* Gaya CSS internal yang sama dengan IQC Maker */
+        .pure-black-bg{background-color:#000}
+        .link-button{transition:all .3s ease}
+        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
+        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
+        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+        .form-input::placeholder{color:rgba(255,255,255,.5)}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        /* Style untuk menyembunyikan input file standar */
+        .hidden-file-input {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="pure-black-bg p-4 text-white font-sans min-h-screen">
+    <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
+        <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
+            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-xs text-gray-400 italic">Figure Generator</p>
+            <p class="mt-1 text-xs text-gray-300 max-w-xs">Convert any image into an aesthetic Figure Card</p>
+        </div>
+        <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
+            <form id="figure-form" class="space-y-3">
+                <div class="space-y-3">
+                    <div>
+                        <label for="imageFile" class="block text-xs font-medium text-gray-300 mb-1">
+                            <i class="fa-solid fa-image mr-1"></i>Upload Gambar
+                        </label>
+                        <input type="file" id="imageFile" accept="image/*" class="hidden-file-input">
+                        
+                        <label for="imageFile" id="upload-label" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-3 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                            <i class="fa-solid fa-cloud-arrow-up mr-2 text-base"></i> Pilih Gambar
+                        </label>
+                        <p id="file-name" class="mt-1 text-xs text-center text-gray-400 italic truncate"></p>
+                    </div>
+
+                    <div>
+                        <label for="imageUrl" class="block text-xs font-medium text-gray-300 mb-1">
+                            <i class="fa-solid fa-link mr-1"></i>Atau Tempel URL Gambar
+                        </label>
+                        <input type="text" id="imageUrl" name="imageUrl" placeholder="Contoh: https://example.com/image.jpg" class="form-input w-full py-2 px-3 rounded text-sm">
+                    </div>
+
+                    <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-indigo-600 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-indigo-700 transition-all duration-300 mt-4">
+                        <i class="fa-solid fa-magic mr-2 text-sm"></i>Buat Figure
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div id="result-area" class="w-full mt-6 text-center hidden"> 
+            <h2 class="text-sm font-medium text-gray-300 mb-3">
+                <i class="fa-solid fa-wand-sparkles mr-1"></i>Result
+            </h2>
+            
+            <div class="error hidden" id="error-message">
+                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <img id="figure-image" alt="Figure Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-xs">
+            </div>
+            
+            <div id="download-section" class="hidden mt-3">
+                <button id="download-button" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300">
+                    <i class="fa-solid fa-download mr-2"></i>Download
+                </button>
+            </div>
+        </div>
+        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
+            <p>Givy | Made with <span class="text-white">🤍</span></p>
+        </div>
+    </div>
+    
+    <script>
+    const form = document.getElementById("figure-form");
+    const imageFileInput = document.getElementById("imageFile");
+    const imageUrlInput = document.getElementById("imageUrl");
+    const uploadLabel = document.getElementById("upload-label");
+    const fileNameDisplay = document.getElementById("file-name");
+    const figureImage = document.getElementById("figure-image");
+    const errorMessage = document.getElementById("error-message");
+    const generateButton = document.getElementById("generate-button");
+    const downloadSection = document.getElementById("download-section");
+    const downloadButton = document.getElementById("download-button");
+    const resultArea = document.getElementById("result-area");
+
+    const API_BASE_URL = "https://api.nekolabs.my.id/tools/convert/tofigure";
+
+    const GENERATE_ICON_HTML = '<i class="fa-solid fa-magic mr-2 text-sm"></i>Buat Figure';
+    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
+
+    // Variabel global untuk menyimpan URL gambar yang akan dikirim ke API
+    let finalImageUrl = "";
+
+    function showError(message) {
+        alert(message);
+        generateButton.disabled = false;
+        generateButton.innerHTML = GENERATE_ICON_HTML;
+    }
+
+    function showSuccess(imageUrl) {
+        // Tampilkan result area dengan hasil yang sukses
+        resultArea.classList.remove("hidden");
+        errorMessage.classList.add("hidden");
+        figureImage.classList.remove("hidden");
+        downloadSection.classList.remove("hidden");
+        
+        // Konfigurasi tombol download
+        downloadButton.onclick = function() {
+            // Karena API mengembalikan URL gambar yang sudah jadi, kita bisa langsung mengunduhnya
+            window.open(imageUrl, '_blank'); 
+        };
+    }
+    
+    // Listener untuk input file: Tampilkan nama file
+    imageFileInput.addEventListener("change", function() {
+        if (this.files && this.files[0]) {
+            fileNameDisplay.textContent = this.files[0].name;
+            // Kosongkan input URL jika ada file yang diupload
+            imageUrlInput.value = ""; 
+        } else {
+            fileNameDisplay.textContent = "";
+        }
+    });
+
+    // Listener untuk input URL: Hapus file yang dipilih jika ada URL
+    imageUrlInput.addEventListener("input", function() {
+        if (this.value.trim() !== "") {
+            imageFileInput.value = ""; // Kosongkan file input
+            fileNameDisplay.textContent = "";
+        }
+    });
+
+    // Listener untuk submit form
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        resultArea.classList.add("hidden");
+        figureImage.classList.add("hidden");
+        downloadSection.classList.add("hidden");
+        
+        generateButton.disabled = true;
+        generateButton.innerHTML = PROCESSING_ICON_HTML;
+
+        // 1. Tentukan sumber URL
+        const urlFromInput = imageUrlInput.value.trim();
+        const file = imageFileInput.files[0];
+
+        if (urlFromInput) {
+            // Jika user memasukkan URL
+            finalImageUrl = urlFromInput;
+            processGeneration(finalImageUrl);
+        } else if (file) {
+            // Jika user mengupload file, kita perlu meng-uploadnya ke hosting gambar
+            // ATAU menggunakan URL Base64 jika API mendukungnya (API ini tidak, jadi ini hanya demo)
+            // KARENA API HANYA MENERIMA URL PUBLIK, KITA AKAN ANGGAP USER HARUS PAKAI URL PUBLIK SAAT INI
+            showError("API hanya mendukung URL publik. Silakan gunakan link gambar yang bisa diakses dari luar (misal dari Imgur, atau link WhatsApp yang dibuka di browser).");
+            return;
+            
+            /* // Blok kode jika API mendukung Base64:
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // finalImageUrl = e.target.result; // URL Base64
+                // processGeneration(finalImageUrl);
+            };
+            reader.readAsDataURL(file);
+            */
+            
+        } else {
+            // Jika tidak ada input sama sekali
+            showError("Pilih gambar atau masukkan URL gambar terlebih dahulu.");
+            return;
+        }
+    });
+
+    function processGeneration(url) {
+        // Encode URL gambar agar aman
+        const encodedUrl = encodeURIComponent(url);
+        const finalApiUrl = `${API_BASE_URL}?imageUrl=${encodedUrl}`;
+
+        // Kirim permintaan ke API
+        fetch(finalApiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                generateButton.disabled = false;
+                generateButton.innerHTML = GENERATE_ICON_HTML;
+
+                if (data.success && data.result) {
+                    // Set sumber gambar hasil figure
+                    figureImage.src = data.result;
+                    
+                    figureImage.onload = function() {
+                        showSuccess(data.result);
+                    };
+
+                    figureImage.onerror = function() {
+                        showError("Gagal memuat gambar hasil figure. Mungkin gambar API rusak.");
+                    };
+                } else {
+                    showError("API Gagal memproses gambar. Coba URL lain.");
+                }
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                showError(`Terjadi kesalahan: ${error.message}. Pastikan URL gambar publik.`);
+            });
+    }
+    
+    // Catatan: Jika ingin notifikasi Telegram, fungsi sendNotificationToVercel(imageUrl, data.result)
+    // akan dipanggil di dalam blok .then(data => {...}) setelah sukses.
+    </script>
+</body>
+</html>
