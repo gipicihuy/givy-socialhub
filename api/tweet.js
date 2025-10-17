@@ -1,40 +1,47 @@
-// File: api/tweet.js (FINAL VERSION)
+// File: api/tweet.js (FINAL TWEET API VERSION DENGAN IP)
 
 // Menggunakan TELEGRAM_CHAT_ID sesuai permintaan Anda
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-const sendNotificationToTelegram = async (name, username, imageUrl) => {
+const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
-    // Structure pesan Telegram (mirip dengan notifikasi IQC)
-    const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
+    // Caption untuk foto (data pengguna)
+    const caption = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
-                    `- IP Address: \`N/A (API)\`\n` + 
-                    `\n_🕒 Dibuat pada: ${timestamp}_\n\n` +
-                    `[Lihat Gambar Hasil](https://t.me/share/url?url=${encodeURIComponent(imageUrl)})`;
-
+                    `- IP Address: \`${ipAddress}\`\n` + 
+                    `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                    `\n_🕒 Dibuat pada: ${timestamp}_`;
+    
     try {
-        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
         await fetch(telegramApiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                chat_id: TELEGRAM_CHAT_ID, // Perbaikan CHAT_ID
-                text: message,
+                chat_id: TELEGRAM_CHAT_ID,
+                photo: imageUrl,
+                caption: caption,
                 parse_mode: 'Markdown',
             }),
         });
-        console.log('Telegram notification sent successfully.');
+        console.log('Telegram photo notification sent successfully.');
     } catch (error) {
-        console.error('Error sending Telegram notification:', error);
+        console.error('Error sending Telegram photo notification:', error);
     }
 };
 
 export default async function handler(request, response) {
     const { imageUrl, download, name, username } = request.query;
+
+    // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
+    const userAgent = request.headers['user-agent'] || 'N/A';
+    // Vercel sering menggunakan x-real-ip atau x-forwarded-for untuk mendapatkan IP asli
+    const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
+    // --------------------------------------------------
 
     if (!imageUrl) {
         return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
@@ -42,22 +49,17 @@ export default async function handler(request, response) {
 
     const isDownload = download === 'true';
 
-    // --- FIX: Proses Download Langsung (Direct Download) ---
+    // --- Proses Download Langsung (Direct Download) ---
     if (isDownload) {
         try {
-            // 1. Fetch konten gambar secara langsung
             const imageResponse = await fetch(imageUrl);
             if (!imageResponse.ok) {
                 throw new Error('Failed to fetch image from external API.');
             }
 
-            // 2. Set Header untuk Direct Download
             response.setHeader('Content-Type', 'image/png'); 
             response.setHeader('Content-Disposition', 'attachment; filename="fake_tweet_by_givy.png"');
             
-            // 3. Streaming konten gambar kembali ke klien
-            // Menggunakan response.send() atau pipeline stream untuk binary data
-            // Di lingkungan Vercel/Node, kita bisa menggunakan response.send(Buffer)
             const buffer = await imageResponse.arrayBuffer();
             return response.send(Buffer.from(buffer)); 
             
@@ -67,13 +69,15 @@ export default async function handler(request, response) {
         }
     }
 
-    // --- Proses Pembuatan (Generate) dan Notifikasi ---
+    // --- Proses Pembuatan (Generate) dan Notifikasi FOTO ---
     
-    // 1. Kirim Notifikasi ke Telegram
+    // 1. Kirim Notifikasi FOTO ke Telegram
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
-        sendNotificationToTelegram(tweetName, tweetUsername, imageUrl);
+        
+        // Menggunakan fungsi yang mengirim foto, menyertakan IP dan User Agent
+        sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, ipAddress.split(',')[0].trim(), userAgent);
     }
 
     // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
