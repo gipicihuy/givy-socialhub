@@ -29,6 +29,16 @@
             max-height: 90vh;
             object-fit: contain;
         }
+        /* Custom class untuk menonjolkan teks ekstensi file */
+        .file-ext {
+            font-weight: bold;
+            color: #fff; /* Warna putih */
+            background-color: rgba(255, 255, 255, 0.1); /* Latar belakang sedikit gelap */
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.7rem; /* sedikit lebih kecil dari teks normal */
+        }
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white font-sans min-h-screen">
@@ -48,13 +58,13 @@
                         <label for="name" class="block text-xs font-medium text-gray-300 mb-1">
                             <i class="fa-solid fa-user mr-1"></i>Name
                         </label>
-                        <input type="text" id="name" name="name" placeholder="Example: Agas" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                        <input type="text" id="name" name="name" placeholder="Example: Givy" class="form-input w-full py-2 px-3 rounded text-sm" required>
                     </div>
                     <div>
                         <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
                             <i class="fa-solid fa-at mr-1"></i>Username
                         </label>
-                        <input type="text" id="username" name="username" placeholder="Example: @juicee90" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                        <input type="text" id="username" name="username" placeholder="Example: @gipii_" class="form-input w-full py-2 px-3 rounded text-sm" required>
                     </div>
                 </div>
 
@@ -69,7 +79,7 @@
                     <label for="avatarUrl" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-solid fa-link mr-1"></i>Public Avatar URL
                     </label>
-                    <input type="url" id="avatarUrl" name="avatarUrl" placeholder="Paste Avatar URL from qu.ax" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                    <input type="url" id="avatarUrl" name="avatarUrl" placeholder="Paste Avatar URL from qu.ax" value="https://qu.ax/HSBLZ.jpg" class="form-input w-full py-2 px-3 rounded text-sm" required>
                 </div>
                 
                 <div class="flex items-center justify-between py-2">
@@ -91,7 +101,7 @@
                 <ol class="list-decimal list-inside text-xs text-gray-400 space-y-1">
                     <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-white/80 hover:underline font-medium"><span class="font-bold text-white">qu.ax</span></a>.</li>
                     <li class="pl-1">Upload gambar avatar yang ingin Anda gunakan.</li>
-                    <li class="pl-1">Setelah selesai diupload, <span class="font-bold text-white">copy URL gambar</span> (Pastikan link berakhir dengan `.jpg`, `.png`, dll.).</li>
+                    <li class="pl-1">Setelah selesai diupload, <span class="font-bold text-white">copy URL gambar</span> (Pastikan link berakhir dengan <span class="file-ext">.jpg</span>, <span class="file-ext">.png</span>, dll.).</li>
                     <li class="pl-1">Tempel (Paste) URL tersebut pada kolom <span class="font-bold text-white">Public Avatar URL</span> di atas.</li>
                 </ol>
             </div>
@@ -179,7 +189,7 @@
         };
     }
     
-    // --- LOGIC MODAL BARU ---
+    // --- LOGIC MODAL ---
     tweetImage.addEventListener('click', () => {
         modalImage.src = tweetImage.src;
         imageModal.classList.remove('hidden');
