@@ -1,14 +1,13 @@
-// File: api/tweet.js (FINAL VERSION: Telegram Block Code dengan Mode Markdown Lama)
+// File: api/tweet.js (FINAL VERSION: URL Avatar di Notifikasi, Tanpa Link Hasil)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl, ipAddress, userAgent) => {
+// BARU: sendNotificationToTelegram menerima avatarUrl
+const sendNotificationToTelegram = async (name, username, tweetContent, avatarUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
     // Menggunakan tiga backtick (\x60\x60\x60) untuk Code Block
-    // Catatan: \x60 adalah kode ASCII untuk backtick, digunakan agar string ini tidak mengganggu parsing JavaScript
-    // Tiga backtick akan diterjemahkan sebagai: ```
     const formattedTweetContent = "\x60\x60\x60\n" + tweetContent.substring(0, 500) + "\n\x60\x60\x60"; 
 
     // Structure pesan Telegram yang disempurnakan
@@ -16,10 +15,12 @@ const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
-                    `- Tweet:\n${formattedTweetContent}\n` + // Menggunakan Block Code (3 backtick)
+                    `- Tweet:\n${formattedTweetContent}\n` + 
+                    `- Avatar URL: ${avatarUrl}\n` + // BARU: Menambahkan URL Avatar
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
                     `\n_🕒 Dibuat pada: ${timestamp}_`; 
+                    // Link hasil gambar (imageUrl) Dihapus
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -29,7 +30,6 @@ const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl
             body: JSON.stringify({
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
-                // Menggunakan 'Markdown' (bukan MarkdownV2) seperti yang Anda sebutkan berhasil.
                 parse_mode: 'Markdown', 
             }),
         });
@@ -40,7 +40,8 @@ const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl
 };
 
 export default async function handler(request, response) {
-    const { imageUrl, download, name, username, comment } = request.query; 
+    // BARU: Ambil avatarUrl dari query
+    const { imageUrl, download, name, username, comment, avatarUrl } = request.query; 
 
     // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
     const userAgent = request.headers['user-agent'] || 'N/A';
@@ -83,8 +84,10 @@ export default async function handler(request, response) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
         const tweetContent = comment || 'N/A'; 
+        const urlAvatar = avatarUrl || 'N/A'; // Ambil avatarUrl
         
-        sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, imageUrl, cleanIp, userAgent);
+        // Memanggil fungsi notifikasi dengan avatarUrl
+        sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
     }
 
     // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
