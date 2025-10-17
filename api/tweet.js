@@ -1,13 +1,11 @@
-// File: api/tweet.js (FINAL TWEET API VERSION DENGAN IP)
+// File: api/tweet.js (FIXED LOGIC FLOW)
 
-// Menggunakan TELEGRAM_CHAT_ID sesuai permintaan Anda
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
-    // Caption untuk foto (data pengguna)
     const caption = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
@@ -37,11 +35,11 @@ const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddre
 export default async function handler(request, response) {
     const { imageUrl, download, name, username } = request.query;
 
-    // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
+    // --- PENGAMBILAN IP DAN USER AGENT ---
     const userAgent = request.headers['user-agent'] || 'N/A';
-    // Vercel sering menggunakan x-real-ip atau x-forwarded-for untuk mendapatkan IP asli
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
-    // --------------------------------------------------
+    const cleanIp = ipAddress.split(',')[0].trim();
+    // ------------------------------------
 
     if (!imageUrl) {
         return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
@@ -49,9 +47,14 @@ export default async function handler(request, response) {
 
     const isDownload = download === 'true';
 
-    // --- Proses Download Langsung (Direct Download) ---
+    // KARENA INI ADALAH ENDPOINT VERCEL YANG SAMA, KITA HARUS TAHU KENAPA DIPANGGIL:
+    
+    // =========================================================================
+    // 1. JIKA DIPANGGIL UNTUK DOWNLOAD (DARI TOMBOL DOWNLOAD)
+    // =========================================================================
     if (isDownload) {
         try {
+            // TIDAK ADA NOTIFIKASI DI SINI, HANYA DOWNLOAD
             const imageResponse = await fetch(imageUrl);
             if (!imageResponse.ok) {
                 throw new Error('Failed to fetch image from external API.');
@@ -69,18 +72,21 @@ export default async function handler(request, response) {
         }
     }
 
-    // --- Proses Pembuatan (Generate) dan Notifikasi FOTO ---
-    
-    // 1. Kirim Notifikasi FOTO ke Telegram
+    // =========================================================================
+    // 2. JIKA DIPANGGIL UNTUK GENERATE (DARI TOMBOL GENERATE)
+    //    Ini adalah alur yang mengirim notifikasi.
+    // =========================================================================
+
+    // 1. KIRIM NOTIFIKASI FOTO ke Telegram (Fire-and-forget untuk kecepatan)
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
         
-        // Menggunakan fungsi yang mengirim foto, menyertakan IP dan User Agent
-        sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, ipAddress.split(',')[0].trim(), userAgent);
+        // Memastikan notifikasi dikirim di sini.
+        sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, cleanIp, userAgent);
     }
 
-    // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
+    // 2. Kirim URL Gambar kembali ke frontend (respon utama)
     return response.status(200).json({ 
         status: 'ok', 
         imageUrl: imageUrl 
