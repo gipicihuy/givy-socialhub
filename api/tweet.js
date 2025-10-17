@@ -1,35 +1,38 @@
-// File: api/tweet.js (FINAL FIX: Menggunakan POST untuk GENERATE)
+// File: api/tweet.js (FINAL VERSION - TEXT NOTIFICATION ONLY)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddress, userAgent) => {
-    // ... (Fungsi ini sama seperti sebelumnya)
+const sendTextNotificationToTelegram = async (name, username, tweetContent, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
-    const caption = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
-                    `*👤 Data Pengguna:*\n` + 
+    // Caption untuk foto (data pengguna)
+    const message = `*✨ NEW FAKE TWEET GENERATED (Text Only) ✨*\n\n` + 
+                    `*📜 Tweet Content:*\n` +
+                    `\`\`\`\n${tweetContent.substring(0, 300)}...\n\`\`\`\n` + // Batasi panjang Tweet
+                    `\n*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                    `\n_🕒 Dibuat pada: ${timestamp}_`;
+                    `\n_🕒 Dibuat pada: ${timestamp}_\n\n` +
+                    `[Lihat Hasil Gambar Asli](${imageUrl})`; // Berikan link ke gambar jika diperlukan
     
+    // Perhatikan: Menggunakan sendMessage
     try {
-        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`;
+        const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         await fetch(telegramApiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 chat_id: TELEGRAM_CHAT_ID,
-                photo: imageUrl,
-                caption: caption,
+                text: message,
                 parse_mode: 'Markdown',
             }),
         });
-        console.log('Telegram photo notification sent successfully.');
+        console.log('Telegram text notification sent successfully.');
     } catch (error) {
-        console.error('Error sending Telegram photo notification:', error);
+        console.error('Error sending Telegram text notification:', error);
     }
 };
 
@@ -72,19 +75,26 @@ export default async function handler(request, response) {
     // 2. JIKA DIPANGGIL UNTUK GENERATE (METHOD POST)
     // =========================================================================
     if (request.method === 'POST') {
-        const { imageUrl, name, username } = request.body; // Ambil dari body
+        // Kita perlu mendapatkan konten Tweet untuk notifikasi
+        // Karena konten Tweet (comment) tidak dikirim di body dari index.html, 
+        // kita TIDAK BISA mendapatkan konten tweet, hanya name dan username.
+
+        // SOLUSI: KODE FRONTEND HARUS MENGIRIM KOMEN JUGA.
+        // Asumsikan kode frontend sudah mengirim 'comment' di body.
+        const { imageUrl, name, username, comment } = request.body; 
         
         if (!imageUrl) {
             return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
         }
         
-        // 1. KIRIM NOTIFIKASI FOTO ke Telegram
+        // 1. KIRIM NOTIFIKASI TEKS ke Telegram (Menggunakan data teks yang tersedia)
         if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
             const tweetName = name || 'N/A';
             const tweetUsername = username || 'N/A';
+            const tweetComment = comment || 'N/A';
             
             // Notifikasi berjalan di sini
-            sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, cleanIp, userAgent);
+            sendTextNotificationToTelegram(tweetName, tweetUsername, tweetComment, imageUrl, cleanIp, userAgent);
         }
 
         // 2. Kirim URL Gambar kembali ke frontend (respon utama)
