@@ -214,7 +214,7 @@
         }
     });
 
-    // --- LOGIC FORM SUBMIT (Menggunakan POST untuk GENERATE & Notifikasi) ---
+    // --- LOGIC FORM SUBMIT (Menggunakan GET untuk GENERATE & Notifikasi) ---
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
         
@@ -242,19 +242,14 @@
         // 1. Buat URL API Eksternal (URL gambar final)
         const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
+        // 2. Buat URL API VERCEL (Menggunakan Query String untuk GET)
+        // Kita mengirim URL gambar, name, dan username lewat query string
+        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}`;
+
         try {
-            // 2. Panggil API VERCEL (/api/tweet) dengan method POST
-            const response = await fetch(VERCEL_API_ENDPOINT, {
-                method: 'POST', 
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    imageUrl: externalApiUrl,
-                    name: name,
-                    username: username,
-                    comment: comment // <--- Mengirim konten tweet untuk notifikasi teks
-                })
+            // Permintaan GET ke Vercel API
+            const response = await fetch(vercelApiUrl, {
+                method: 'GET' 
             });
 
             if (!response.ok) {
@@ -283,7 +278,8 @@
     downloadButton.addEventListener('click', () => {
         if (generatedImageUrl) {
             // Panggil Vercel API dengan parameter download=true
-            window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true`;
+            const usernameForFile = usernameInput.value.trim().replace('@', '');
+            window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true&username=${encodeURIComponent(usernameForFile)}`;
         }
     });
     </script>
