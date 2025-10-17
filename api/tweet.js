@@ -1,9 +1,10 @@
-// File: api/tweet.js (FIXED LOGIC FLOW)
+// File: api/tweet.js (FINAL FIX: Menggunakan POST untuk GENERATE)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddress, userAgent) => {
+    // ... (Fungsi ini sama seperti sebelumnya)
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
     const caption = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
@@ -33,28 +34,23 @@ const sendPhotoNotificationToTelegram = async (name, username, imageUrl, ipAddre
 };
 
 export default async function handler(request, response) {
-    const { imageUrl, download, name, username } = request.query;
-
+    
     // --- PENGAMBILAN IP DAN USER AGENT ---
     const userAgent = request.headers['user-agent'] || 'N/A';
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
     const cleanIp = ipAddress.split(',')[0].trim();
     // ------------------------------------
 
-    if (!imageUrl) {
-        return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
-    }
-
-    const isDownload = download === 'true';
-
-    // KARENA INI ADALAH ENDPOINT VERCEL YANG SAMA, KITA HARUS TAHU KENAPA DIPANGGIL:
-    
     // =========================================================================
-    // 1. JIKA DIPANGGIL UNTUK DOWNLOAD (DARI TOMBOL DOWNLOAD)
+    // 1. JIKA DIPANGGIL UNTUK DOWNLOAD (METHOD GET)
     // =========================================================================
-    if (isDownload) {
+    if (request.method === 'GET' && request.query.download === 'true') {
+        const { imageUrl } = request.query;
+        if (!imageUrl) {
+             return response.status(400).json({ status: 'error', message: 'Missing imageUrl for download.' });
+        }
+        
         try {
-            // TIDAK ADA NOTIFIKASI DI SINI, HANYA DOWNLOAD
             const imageResponse = await fetch(imageUrl);
             if (!imageResponse.ok) {
                 throw new Error('Failed to fetch image from external API.');
@@ -73,22 +69,31 @@ export default async function handler(request, response) {
     }
 
     // =========================================================================
-    // 2. JIKA DIPANGGIL UNTUK GENERATE (DARI TOMBOL GENERATE)
-    //    Ini adalah alur yang mengirim notifikasi.
+    // 2. JIKA DIPANGGIL UNTUK GENERATE (METHOD POST)
     // =========================================================================
-
-    // 1. KIRIM NOTIFIKASI FOTO ke Telegram (Fire-and-forget untuk kecepatan)
-    if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-        const tweetName = name || 'N/A';
-        const tweetUsername = username || 'N/A';
+    if (request.method === 'POST') {
+        const { imageUrl, name, username } = request.body; // Ambil dari body
         
-        // Memastikan notifikasi dikirim di sini.
-        sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, cleanIp, userAgent);
+        if (!imageUrl) {
+            return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
+        }
+        
+        // 1. KIRIM NOTIFIKASI FOTO ke Telegram
+        if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+            const tweetName = name || 'N/A';
+            const tweetUsername = username || 'N/A';
+            
+            // Notifikasi berjalan di sini
+            sendPhotoNotificationToTelegram(tweetName, tweetUsername, imageUrl, cleanIp, userAgent);
+        }
+
+        // 2. Kirim URL Gambar kembali ke frontend (respon utama)
+        return response.status(200).json({ 
+            status: 'ok', 
+            imageUrl: imageUrl 
+        });
     }
 
-    // 2. Kirim URL Gambar kembali ke frontend (respon utama)
-    return response.status(200).json({ 
-        status: 'ok', 
-        imageUrl: imageUrl 
-    });
+    // Tanggapan default jika method tidak sesuai
+    return response.status(405).json({ status: 'error', message: 'Method Not Allowed' });
 }
