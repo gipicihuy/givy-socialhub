@@ -22,7 +22,7 @@
         /* Gaya untuk Modal */
         .modal {
             background-color: rgba(0, 0, 0, 0.9);
-            z-index: 50; /* Pastikan di atas semua elemen */
+            z-index: 50; 
         }
         .modal-content {
             max-width: 90vw;
@@ -69,7 +69,7 @@
                     <label for="avatarUrl" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-solid fa-link mr-1"></i>Public Avatar URL
                     </label>
-                    <input type="url" id="avatarUrl" name="avatarUrl" placeholder="Paste Avatar URL from Qu.ax" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                    <input type="url" id="avatarUrl" name="avatarUrl" placeholder="Paste Avatar URL from qu.ax" class="form-input w-full py-2 px-3 rounded text-sm" required>
                 </div>
                 
                 <div class="flex items-center justify-between py-2">
@@ -89,10 +89,10 @@
                     <i class="fa-solid fa-circle-info mr-2 text-gray-400"></i> Cara Mendapatkan URL Avatar
                 </h3>
                 <ol class="list-decimal list-inside text-xs text-gray-400 space-y-1">
-                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-white/80 hover:underline font-medium">Qu.ax</a> atau Imgur.</li>
+                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-white/80 hover:underline font-medium"><span class="font-bold text-white">qu.ax</span></a>.</li>
                     <li class="pl-1">Upload gambar avatar yang ingin Anda gunakan.</li>
-                    <li class="pl-1">Setelah selesai diupload, <strong class="text-white/90">copy URL gambar</strong> (Pastikan link berakhir dengan `.jpg`, `.png`, dll.).</li>
-                    <li class="pl-1">Tempel (Paste) URL tersebut pada kolom <strong class="text-white/90">Avatar URL Publik</strong> di atas.</li>
+                    <li class="pl-1">Setelah selesai diupload, <span class="font-bold text-white">copy URL gambar</span> (Pastikan link berakhir dengan `.jpg`, `.png`, dll.).</li>
+                    <li class="pl-1">Tempel (Paste) URL tersebut pada kolom <span class="font-bold text-white">Public Avatar URL</span> di atas.</li>
                 </ol>
             </div>
             </div>
@@ -172,7 +172,7 @@
         errorMessage.classList.add("hidden");
         tweetImage.classList.remove("hidden");
         downloadSection.classList.remove("hidden");
-        clickToZoom.classList.remove("hidden"); // Tampilkan petunjuk klik
+        clickToZoom.classList.remove("hidden"); 
         
         downloadButton.onclick = function() {
             window.open(downloadUrl, '_blank'); 
@@ -180,18 +180,15 @@
     }
     
     // --- LOGIC MODAL BARU ---
-    // 1. Klik pada gambar kecil akan membuka modal
     tweetImage.addEventListener('click', () => {
         modalImage.src = tweetImage.src;
         imageModal.classList.remove('hidden');
     });
 
-    // 2. Tombol close modal
     closeModalButton.addEventListener('click', () => {
         imageModal.classList.add('hidden');
     });
 
-    // 3. Klik di luar gambar juga menutup modal
     imageModal.addEventListener('click', (e) => {
         if (e.target.id === 'image-modal') {
             imageModal.classList.add('hidden');
