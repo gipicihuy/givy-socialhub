@@ -166,13 +166,16 @@
     const modalImage = document.getElementById("modal-image");
     const closeModalButton = document.getElementById("close-modal");
 
-    // GANTI URL API INI KE ENDPOINT VERCEL BARU
+    // Endpoint Vercel yang menangani generation, notifikasi, dan download
     const VERCEL_API_ENDPOINT = "/api/tweet";
+    // Endpoint API eksternal yang membuat gambar
+    const EXTERNAL_API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
+
 
     const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
     const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
-    // Variabel untuk menyimpan URL gambar yang dihasilkan oleh Vercel
+    // Variabel untuk menyimpan URL gambar yang dihasilkan
     let generatedImageUrl = '';
 
     function showError(message) {
@@ -211,7 +214,7 @@
         }
     });
 
-    // --- LOGIC FORM SUBMIT ---
+    // --- LOGIC FORM SUBMIT (Menggunakan POST untuk GENERATE & Notifikasi) ---
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
         
@@ -236,24 +239,31 @@
             return;
         }
 
-        // 1. Buat URL API Eksternal
-        const externalApiUrl = `https://api.deline.my.id/maker/faketweet?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
+        // 1. Buat URL API Eksternal (URL gambar final)
+        const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
         try {
-            // 2. Panggil API VERCEL BARU (/api/tweet)
-            const response = await fetch(`${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}`, {
-                method: 'GET'
+            // 2. Panggil API VERCEL (/api/tweet) dengan method POST
+            const response = await fetch(VERCEL_API_ENDPOINT, {
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ // Data dikirim melalui body
+                    imageUrl: externalApiUrl,
+                    name: name,
+                    username: username
+                })
             });
 
             if (!response.ok) {
-                // Tangani kesalahan jaringan atau server
                 throw new Error(`Server error: ${response.statusText}`);
             }
 
             const data = await response.json();
             
             if (data.status === 'ok' && data.imageUrl) {
-                // 3. Tampilkan hasil jika sukses
+                // 3. Tampilkan hasil jika sukses (Notifikasi sudah terkirim di backend)
                 showSuccess(data.imageUrl);
             } else {
                 throw new Error(data.message || 'Unknown API error.');
@@ -268,10 +278,10 @@
         }
     });
     
-    // --- LOGIC DOWNLOAD ---
-    // Tombol Download akan mengarahkan ke endpoint Vercel yang sama dengan download=true
+    // --- LOGIC DOWNLOAD (Menggunakan GET untuk Download Langsung) ---
     downloadButton.addEventListener('click', () => {
         if (generatedImageUrl) {
+            // Panggil Vercel API dengan parameter download=true
             window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true`;
         }
     });
