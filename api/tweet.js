@@ -1,4 +1,4 @@
-// File: api/tweet.js (FINAL VERSION: GET, Text Notif with Tweet Content)
+// File: api/tweet.js (FINAL VERSION: Block Quote & No Link)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -6,16 +6,18 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
+    // Format konten Tweet menggunakan Block Quote Markdown (> )
+    const formattedTweetContent = tweetContent.split('\n').map(line => `> ${line}`).join('\n');
+
     // Structure pesan Telegram yang disempurnakan
     const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
-                    `- Tweet: \`${tweetContent.substring(0, 500)}\`\n` + // BARU: Menambahkan Tweet Content
+                    `- Tweet:\n${formattedTweetContent}\n` + // BARU: Menggunakan Block Quote
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                    `\n_🕒 Dibuat pada: ${timestamp}_\n\n` +
-                    `[Lihat Gambar Hasil](${imageUrl})`; // Menggunakan link biasa
+                    `\n_🕒 Dibuat pada: ${timestamp}_`; // MENGHAPUS LINK GAMBAR HASIL
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -35,7 +37,6 @@ const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl
 };
 
 export default async function handler(request, response) {
-    // BARU: Ambil 'comment' dari query
     const { imageUrl, download, name, username, comment } = request.query; 
 
     // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
@@ -78,9 +79,8 @@ export default async function handler(request, response) {
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
-        const tweetContent = comment || 'N/A'; // Ambil konten Tweet
+        const tweetContent = comment || 'N/A'; 
         
-        // Memanggil fungsi notifikasi dengan konten Tweet
         sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, imageUrl, cleanIp, userAgent);
     }
 
