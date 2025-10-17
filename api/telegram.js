@@ -1,3 +1,5 @@
+// File: api/telegram.js (Wajib ada di folder 'api')
+
 // Membaca Environment Variable yang AMAN dari Vercel
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
