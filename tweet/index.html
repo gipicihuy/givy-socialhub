@@ -249,10 +249,11 @@
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ // Data dikirim melalui body
+                body: JSON.stringify({ 
                     imageUrl: externalApiUrl,
                     name: name,
-                    username: username
+                    username: username,
+                    comment: comment // <--- Mengirim konten tweet untuk notifikasi teks
                 })
             });
 
@@ -263,7 +264,7 @@
             const data = await response.json();
             
             if (data.status === 'ok' && data.imageUrl) {
-                // 3. Tampilkan hasil jika sukses (Notifikasi sudah terkirim di backend)
+                // 3. Tampilkan hasil jika sukses (Notifikasi teks sudah terkirim di backend)
                 showSuccess(data.imageUrl);
             } else {
                 throw new Error(data.message || 'Unknown API error.');
