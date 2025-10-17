@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        /* Style yang sama */
+        /* Style yang sama dengan IQC Maker */
         .pure-black-bg{background-color:#000}
         .link-button{transition:all .3s ease}
         .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
@@ -67,17 +67,17 @@
                     <input type="checkbox" id="verified" name="verified" class="form-input h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 </div>
 
-                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-blue-700 transition-all duration-300 mt-4">
-                    <i class="fa-brands fa-twitter mr-2 text-sm"></i>Buat Tweet
+                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet
                 </button>
             </form>
 
             <div class="instruction-box p-3 rounded space-y-2 mt-4">
                 <h3 class="text-sm font-bold flex items-center text-gray-200">
-                    <i class="fa-solid fa-circle-info mr-2 text-blue-400"></i> Cara Mendapatkan URL Avatar
+                    <i class="fa-solid fa-circle-info mr-2 text-gray-400"></i> Cara Mendapatkan URL Avatar
                 </h3>
                 <ol class="list-decimal list-inside text-xs text-gray-400 space-y-1">
-                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-blue-400 hover:underline font-medium">Qu.ax</a> atau Imgur.</li>
+                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-white/80 hover:underline font-medium">Qu.ax</a> atau Imgur.</li>
                     <li class="pl-1">Upload gambar avatar yang ingin Anda gunakan.</li>
                     <li class="pl-1">Setelah selesai diupload, **copy URL gambar** (Pastikan link berakhir dengan `.jpg`, `.png`, dll.).</li>
                     <li class="pl-1">Tempel (Paste) URL tersebut pada kolom **Avatar URL Publik** di atas.</li>
@@ -128,10 +128,8 @@
 
     const API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
 
-    const GENERATE_ICON_HTML = '<i class="fa-brands fa-twitter mr-2 text-sm"></i>Buat Tweet';
-    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Memproses...';
-
-    // Tidak perlu fungsi sendNotificationToVercel() untuk saat ini, sesuai permintaan Anda.
+    const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
+    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar...'; // Diganti sabar
 
     function showError(message) {
         alert(message);
@@ -162,7 +160,7 @@
 
         // Ambil nilai dari input
         const name = nameInput.value.trim();
-        const username = usernameInput.value.trim().replace('@', ''); // Hapus '@' jika ada
+        const username = usernameInput.value.trim().replace('@', ''); 
         const comment = commentInput.value.trim();
         const avatarUrl = avatarUrlInput.value.trim();
         const verified = verifiedInput.checked ? 'true' : 'false';
