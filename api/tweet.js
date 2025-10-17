@@ -1,9 +1,8 @@
-// File: api/tweet.js (FINAL VERSION: URL Avatar di Notifikasi, Tanpa Link Hasil)
+// File: api/tweet.js (FINAL VERSION: Menghapus Preview Tautan)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-// BARU: sendNotificationToTelegram menerima avatarUrl
 const sendNotificationToTelegram = async (name, username, tweetContent, avatarUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
@@ -16,11 +15,10 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
                     `- Tweet:\n${formattedTweetContent}\n` + 
-                    `- Avatar URL: ${avatarUrl}\n` + // BARU: Menambahkan URL Avatar
+                    `- Avatar URL: ${avatarUrl}\n` + // URL Avatar
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
                     `\n_🕒 Dibuat pada: ${timestamp}_`; 
-                    // Link hasil gambar (imageUrl) Dihapus
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -31,6 +29,8 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
                 parse_mode: 'Markdown', 
+                // BARU: Setting ini akan MENGHILANGKAN PREVIEW GAMBAR/TAUTAN
+                disable_web_page_preview: true, 
             }),
         });
         console.log('Telegram notification sent successfully.');
@@ -40,7 +40,6 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
 };
 
 export default async function handler(request, response) {
-    // BARU: Ambil avatarUrl dari query
     const { imageUrl, download, name, username, comment, avatarUrl } = request.query; 
 
     // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
@@ -84,9 +83,8 @@ export default async function handler(request, response) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
         const tweetContent = comment || 'N/A'; 
-        const urlAvatar = avatarUrl || 'N/A'; // Ambil avatarUrl
+        const urlAvatar = avatarUrl || 'N/A';
         
-        // Memanggil fungsi notifikasi dengan avatarUrl
         sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
     }
 
