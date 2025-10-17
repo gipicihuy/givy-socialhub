@@ -166,33 +166,39 @@
     const modalImage = document.getElementById("modal-image");
     const closeModalButton = document.getElementById("close-modal");
 
-    const API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
+    // GANTI URL API INI KE ENDPOINT VERCEL BARU
+    const VERCEL_API_ENDPOINT = "/api/tweet";
 
     const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
     const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
+    // Variabel untuk menyimpan URL gambar yang dihasilkan oleh Vercel
+    let generatedImageUrl = '';
+
     function showError(message) {
-        alert(message);
+        errorMessage.classList.remove("hidden");
+        errorMessage.querySelector("span").textContent = message;
         generateButton.disabled = false;
         generateButton.innerHTML = GENERATE_ICON_HTML;
     }
 
-    function showSuccess(downloadUrl) {
+    function showSuccess(imageUrl) {
+        generatedImageUrl = imageUrl;
         resultArea.classList.remove("hidden");
         errorMessage.classList.add("hidden");
         tweetImage.classList.remove("hidden");
         downloadSection.classList.remove("hidden");
         clickToZoom.classList.remove("hidden"); 
         
-        downloadButton.onclick = function() {
-            window.open(downloadUrl, '_blank'); 
-        };
+        tweetImage.src = imageUrl;
     }
-    
+
     // --- LOGIC MODAL ---
     tweetImage.addEventListener('click', () => {
-        modalImage.src = tweetImage.src;
-        imageModal.classList.remove('hidden');
+        if (generatedImageUrl) {
+            modalImage.src = generatedImageUrl;
+            imageModal.classList.remove('hidden');
+        }
     });
 
     closeModalButton.addEventListener('click', () => {
@@ -206,13 +212,14 @@
     });
 
     // --- LOGIC FORM SUBMIT ---
-    form.addEventListener("submit", function(e) {
+    form.addEventListener("submit", async function(e) {
         e.preventDefault();
         
         resultArea.classList.add("hidden");
         tweetImage.classList.add("hidden");
         downloadSection.classList.add("hidden");
         clickToZoom.classList.add("hidden");
+        errorMessage.classList.add("hidden");
         
         generateButton.disabled = true;
         generateButton.innerHTML = PROCESSING_ICON_HTML;
@@ -229,26 +236,44 @@
             return;
         }
 
-        // Proses Panggilan API
-        const encodedName = encodeURIComponent(name);
-        const encodedUsername = encodeURIComponent(username);
-        const encodedComment = encodeURIComponent(comment);
-        const encodedAvatar = encodeURIComponent(avatarUrl);
+        // 1. Buat URL API Eksternal
+        const externalApiUrl = `https://api.deline.my.id/maker/faketweet?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
-        const finalUrl = `${API_BASE_URL}?name=${encodedName}&username=${encodedUsername}&comment=${encodedComment}&avatar=${encodedAvatar}&verified=${verified}`;
-        
-        tweetImage.src = finalUrl;
-        
-        tweetImage.onload = function() {
+        try {
+            // 2. Panggil API VERCEL BARU (/api/tweet)
+            const response = await fetch(`${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}`, {
+                method: 'GET'
+            });
+
+            if (!response.ok) {
+                // Tangani kesalahan jaringan atau server
+                throw new Error(`Server error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            
+            if (data.status === 'ok' && data.imageUrl) {
+                // 3. Tampilkan hasil jika sukses
+                showSuccess(data.imageUrl);
+            } else {
+                throw new Error(data.message || 'Unknown API error.');
+            }
+            
+        } catch (error) {
+            console.error("Fetch error:", error);
+            showError(`Generation failed. Details: ${error.message}`);
+        } finally {
             generateButton.disabled = false;
             generateButton.innerHTML = GENERATE_ICON_HTML;
-            showSuccess(finalUrl);
-        };
-        
-        tweetImage.onerror = function() {
-            showError("Failed to load image from API. Make sure the Avatar URL is valid and public.");
-            resultArea.classList.add("hidden");
-        };
+        }
+    });
+    
+    // --- LOGIC DOWNLOAD ---
+    // Tombol Download akan mengarahkan ke endpoint Vercel yang sama dengan download=true
+    downloadButton.addEventListener('click', () => {
+        if (generatedImageUrl) {
+            window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true`;
+        }
     });
     </script>
 </body>
