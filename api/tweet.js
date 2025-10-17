@@ -1,4 +1,4 @@
-// File: api/tweet.js (FINAL VERSION: Block Quote & No Link)
+// File: api/tweet.js (FINAL VERSION: Telegram Block Code Format)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -6,18 +6,18 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
-    // Format konten Tweet menggunakan Block Quote Markdown (> )
-    const formattedTweetContent = tweetContent.split('\n').map(line => `> ${line}`).join('\n');
+    // Menggunakan tiga backtick (\`\`\`) untuk membuat Code Block Multi-baris di Telegram
+    const formattedTweetContent = "```\n" + tweetContent.substring(0, 500) + "\n```"; 
 
     // Structure pesan Telegram yang disempurnakan
     const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
-                    `- Tweet:\n${formattedTweetContent}\n` + // BARU: Menggunakan Block Quote
+                    `- Tweet:\n${formattedTweetContent}\n` + // Menggunakan Block Code (3 backtick)
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                    `\n_🕒 Dibuat pada: ${timestamp}_`; // MENGHAPUS LINK GAMBAR HASIL
+                    `\n_🕒 Dibuat pada: ${timestamp}_`; // Tidak ada link
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -27,7 +27,8 @@ const sendNotificationToTelegram = async (name, username, tweetContent, imageUrl
             body: JSON.stringify({
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
-                parse_mode: 'Markdown',
+                // Kita gunakan MarkdownV2 agar 3 backtick bekerja maksimal
+                parse_mode: 'MarkdownV2', 
             }),
         });
         console.log('Telegram notification sent successfully.');
