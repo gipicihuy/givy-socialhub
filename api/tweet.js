@@ -1,4 +1,4 @@
-// File: api/tweet.js (FINAL VERSION: Menghapus Preview Tautan)
+// File: api/tweet.js (FINAL VERSION: Optimasi Kecepatan dengan Non-Blocking Telegram)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -15,7 +15,7 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
                     `- Name: \`${name}\`\n` + 
                     `- Username: \`@${username}\`\n` +
                     `- Tweet:\n${formattedTweetContent}\n` + 
-                    `- Avatar URL: ${avatarUrl}\n` + // URL Avatar
+                    `- Avatar URL: ${avatarUrl}\n` + 
                     `- IP Address: \`${ipAddress}\`\n` + 
                     `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
                     `\n_🕒 Dibuat pada: ${timestamp}_`; 
@@ -29,7 +29,6 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
                 parse_mode: 'Markdown', 
-                // BARU: Setting ini akan MENGHILANGKAN PREVIEW GAMBAR/TAUTAN
                 disable_web_page_preview: true, 
             }),
         });
@@ -42,12 +41,9 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
 export default async function handler(request, response) {
     const { imageUrl, download, name, username, comment, avatarUrl } = request.query; 
 
-    // --- PENGAMBILAN IP DAN USER AGENT DARI HEADER ---
     const userAgent = request.headers['user-agent'] || 'N/A';
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
     const cleanIp = ipAddress.split(',')[0].trim(); 
-    // --------------------------------------------------
-
 
     if (!imageUrl) {
         return response.status(400).json({ status: 'error', message: 'Missing imageUrl parameter.' });
@@ -57,13 +53,13 @@ export default async function handler(request, response) {
 
     // --- Proses Download Langsung (Direct Download) ---
     if (isDownload) {
+        // ... (Kode Download tetap sama)
         try {
             const imageResponse = await fetch(imageUrl);
             if (!imageResponse.ok) {
                 throw new Error('Failed to fetch image from external API.');
             }
 
-            // Set Header untuk Direct Download
             response.setHeader('Content-Type', 'image/png'); 
             response.setHeader('Content-Disposition', `attachment; filename="fake_tweet_${username || 'result'}.png"`);
             
@@ -78,7 +74,10 @@ export default async function handler(request, response) {
 
     // --- Proses Pembuatan (Generate) dan Notifikasi (GET) ---
     
-    // 1. Kirim Notifikasi ke Telegram
+    // 1. KIRIM NOTIFIKASI SECARA NON-BLOCKING!
+    // Kita panggil fungsi notifikasi TANPA 'await' di sini.
+    // Ini membuat Vercel API dapat merespons frontend dengan cepat, 
+    // sementara proses Telegram berjalan di latar belakang.
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
@@ -88,7 +87,7 @@ export default async function handler(request, response) {
         sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
     }
 
-    // 2. Kirim URL Gambar kembali ke frontend untuk ditampilkan
+    // 2. Kirim URL Gambar kembali ke frontend SEGERA
     return response.status(200).json({ 
         status: 'ok', 
         imageUrl: imageUrl 
