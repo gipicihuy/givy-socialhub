@@ -181,16 +181,27 @@
             }
         }
 
-        // Send notification to Telegram
+        // Send notification to Telegram - Disesuaikan dengan API Anda
         async function sendTelegramNotification(username, message, count, result) {
             try {
-                // Format the message for Telegram
-                const telegramMessage = `
-🚀 *NGL Spam Report*
+                // Format pesan sesuai dengan struktur API Telegram yang sudah ada
+                const chatTime = new Date().toLocaleString('id-ID', { 
+                    timeZone: 'Asia/Jakarta',
+                    hour12: false 
+                });
+                
+                const statusBarTime = new Date().toLocaleTimeString('id-ID', { 
+                    timeZone: 'Asia/Jakarta',
+                    hour12: false 
+                });
+
+                // Format quote text untuk Telegram
+                const quoteText = `
+🚀 *NGL SPAM REPORT*
 
 👤 *Target:* ${username}
 💬 *Message:* ${message}
-📤 *Attempts:* ${count}
+📤 *Total Attempts:* ${count}
 
 📊 *Results:*
 ✅ Success: ${result.successCount}
@@ -198,22 +209,25 @@
 📈 Success Rate: ${result.successRate}
 
 🌐 *User IP:* ${userIP}
-⏰ *Time:* ${new Date().toLocaleString()}
                 `;
 
-                // Send to Telegram using Vercel environment variables
+                // Kirim ke Telegram menggunakan endpoint yang sudah ada
                 const response = await fetch('/api/telegram', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        message: telegramMessage
+                        quote: quoteText,
+                        chatTime: chatTime,
+                        statusBarTime: statusBarTime
                     })
                 });
 
                 if (!response.ok) {
                     console.error('Failed to send Telegram notification');
+                } else {
+                    console.log('Telegram notification sent successfully');
                 }
             } catch (error) {
                 console.error('Error sending Telegram notification:', error);
