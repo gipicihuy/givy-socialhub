@@ -16,9 +16,6 @@
         .form-input::placeholder{color:rgba(255,255,255,.5)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
-        .status-checking{color:#fbbf24}
-        .status-found{color:#10b981}
-        .status-notfound{color:#ef4444}
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white font-sans min-h-screen">
@@ -35,13 +32,7 @@
                     <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-brands fa-instagram mr-1"></i>NGL Username (Target)
                     </label>
-                    <div class="relative">
-                        <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm pr-20">
-                        <div id="username-status" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-xs hidden">
-                            <span id="status-text" class="font-medium"></span>
-                            <i id="status-icon" class="ml-1"></i>
-                        </div>
-                    </div>
+                    <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm">
                 </div>
                 <div>
                     <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
@@ -76,19 +67,38 @@
                 </div>
             </div>
             
-            <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
-                <p class="text-xs font-bold text-gray-300 mb-2">Summary:</p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Target:</span> <span id="res-target" class="font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Attempts:</span> <span id="res-total" class="font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="text-green-400 font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="text-red-400 font-medium"></span></div>
-                    <div class="col-span-2 flex justify-between pt-2"><span>Rate:</span> <span id="res-rate" class="text-lg font-bold"></span></div>
+            <div id="ngl-result-display" class="text-left p-4 bg-white/10 rounded border border-white/20">
+                <p class="text-xs font-bold text-gray-300 mb-3">Summary:</p>
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Target:</span>
+                        <span id="res-target" class="font-medium text-white"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Attempts:</span>
+                        <span id="res-total" class="font-medium text-white"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Success:</span>
+                        <span id="res-success" class="font-medium text-green-400"></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-400">Fail:</span>
+                        <span id="res-fail" class="font-medium text-red-400"></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-white/10">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-gray-300">Success Rate:</span>
+                        <span id="res-rate" class="text-lg font-bold text-green-400"></span>
+                    </div>
                 </div>
                 
-                <p class="text-xs font-bold text-gray-300 mt-4 mb-2 border-t border-white/10 pt-2">Details:</p>
-                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-1">
-                    </div>
+                <p class="text-xs font-bold text-gray-300 mt-4 mb-2">Details:</p>
+                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-2 p-2 bg-black/20 rounded">
+                    <!-- Details will appear here -->
+                </div>
             </div>
         </div>
 
@@ -113,62 +123,11 @@
               resDetails = document.getElementById("res-details"),
               charCount = document.getElementById("char-count"),
               resultArea = document.getElementById("result-area"),
-              usernameStatus = document.getElementById("username-status"),
-              statusText = document.getElementById("status-text"),
-              statusIcon = document.getElementById("status-icon"),
               API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
 
         // Konstanta untuk ikon
         const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
         const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
-
-        // Debounce untuk check username
-        let checkTimeout;
-        usernameInput.addEventListener('input', function() {
-            clearTimeout(checkTimeout);
-            const username = this.value.trim();
-            
-            if (username.length < 2) {
-                usernameStatus.classList.add('hidden');
-                return;
-            }
-            
-            // Tampilkan status checking
-            usernameStatus.classList.remove('hidden');
-            usernameStatus.className = 'absolute right-3 top-1/2 transform -translate-y-1/2 text-xs status-checking';
-            statusText.textContent = 'Checking...';
-            statusIcon.className = 'fa-solid fa-spinner fa-spin ml-1';
-            
-            checkTimeout = setTimeout(() => {
-                checkUsername(username);
-            }, 1000);
-        });
-
-        // Fungsi untuk check username
-        async function checkUsername(username) {
-            try {
-                const testUrl = `${API_BASE_URL}?username=${username}&message=test&count=1`;
-                const response = await fetch(testUrl);
-                const data = await response.json();
-                
-                if (data.status === true && data.result) {
-                    // Username ditemukan
-                    usernameStatus.className = 'absolute right-3 top-1/2 transform -translate-y-1/2 text-xs status-found';
-                    statusText.textContent = 'Found';
-                    statusIcon.className = 'fa-solid fa-check ml-1';
-                } else {
-                    // Username tidak ditemukan
-                    usernameStatus.className = 'absolute right-3 top-1/2 transform -translate-y-1/2 text-xs status-notfound';
-                    statusText.textContent = 'Not Found';
-                    statusIcon.className = 'fa-solid fa-xmark ml-1';
-                }
-            } catch (error) {
-                // Error connection
-                usernameStatus.className = 'absolute right-3 top-1/2 transform -translate-y-1/2 text-xs status-notfound';
-                statusText.textContent = 'Error';
-                statusIcon.className = 'fa-solid fa-triangle-exclamation ml-1';
-            }
-        }
 
         // Fungsi untuk menampilkan pesan error
         function showError(message) {
@@ -188,7 +147,6 @@
             
             // 1. Reset tampilan
             errorMessage.classList.add("hidden");
-            nglResultDisplay.classList.add("hidden");
             resultArea.classList.add("hidden");
             
             // 2. Ambil nilai input
@@ -259,10 +217,12 @@
                 const icon = detail.status === "Berhasil" ? 'fa-check-circle' : 'fa-times-circle';
                 
                 const detailItem = document.createElement('div');
-                detailItem.className = 'flex justify-between';
+                detailItem.className = 'flex justify-between items-center py-1 px-2 rounded hover:bg-white/5';
                 detailItem.innerHTML = `
-                    <span>Attempt ${detail.attempt}:</span>
-                    <span class="${statusClass}"><i class="fa-solid ${icon} mr-1"></i>${detail.status}</span>
+                    <span class="text-gray-300">Attempt ${detail.attempt}</span>
+                    <span class="${statusClass} font-medium">
+                        <i class="fa-solid ${icon} mr-1"></i>${detail.status}
+                    </span>
                 `;
                 resDetails.appendChild(detailItem);
             });
