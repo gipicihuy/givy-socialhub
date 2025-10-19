@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
+    <title>Givy NGL Spam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-z3gLPD7yknf1y5GQsVd7x8Cj32TqfR1MhR2z9qJ7X8O5T+w35l7GvB2T6F5QW+N" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        /* Gaya CSS internal yang sama dengan IQC Maker */
+        .pure-black-bg{background-color:#000}
+        .link-button{transition:all .3s ease}
+        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
+        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
+        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+        .form-input::placeholder{color:rgba(255,255,255,.5)}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+
+        /* Gaya Khusus untuk tampilan hasil NGL */
+        .status-success { color: #10b981; } /* Hijau (Emerald) */
+        .status-fail { color: #ef4444; } /* Merah (Red) */
+    </style>
+</head>
+<body class="pure-black-bg p-4 text-white font-sans min-h-screen">
+    <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
+        <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
+            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-xs text-gray-400 italic">NGL Spam Sender</p>
+            <p class="mt-1 text-xs text-gray-300 max-w-xs">Send Anonymous Messages Repeatedly</p>
+        </div>
+        <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
+            <form id="ngl-form" class="space-y-3">
+                <div>
+                    <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-brands fa-instagram mr-1"></i>NGL Username (Target)
+                    </label>
+                    <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm">
+                </div>
+                <div>
+                    <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-envelope-open-text mr-1"></i>Anonymous Message
+                    </label>
+                    <textarea id="message" name="message" rows="3" placeholder="Tulis pesan anonim di sini..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
+                    <div class="text-right text-xs text-gray-500 mt-1">
+                        <span id="char-count">0</span>/100 characters
+                    </div>
+                </div>
+                <div>
+                    <label for="count" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-arrow-up-9-1 mr-1"></i>Total Messages (Max 25)
+                    </label>
+                    <input type="number" id="count" name="count" min="1" max="25" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
+                </div>
+                <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-red-600/80 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-red-700 transition-all duration-300 mt-4">
+                    <i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam
+                </button>
+            </form>
+        </div>
+
+        <div id="result-area" class="w-full mt-6 text-center animate-entry" style="animation-delay:.5s">
+            <h2 class="text-sm font-medium text-gray-300 mb-3">
+                <i class="fa-solid fa-list-check mr-1"></i>Spam Result
+            </h2>
+            
+            <div class="error hidden" id="error-message">
+                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span></span>
+                </div>
+            </div>
+
+            <div class="loading hidden" id="loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin text-xl text-gray-400"></i>
+                <p class="text-xs text-gray-400 mt-2">Sending messages... Please wait.</p>
+            </div>
+            
+            <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
+                <p class="text-xs font-bold text-gray-300 mb-2">Summary:</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Target:</span> <span id="res-target" class="font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Attempts:</span> <span id="res-total" class="font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="font-success font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="font-fail font-medium"></span></div>
+                    <div class="col-span-2 flex justify-between pt-2"><span>Rate:</span> <span id="res-rate" class="text-lg font-bold"></span></div>
+                </div>
+                
+                <p class="text-xs font-bold text-gray-300 mt-4 mb-2 border-t border-white/10 pt-2">Details:</p>
+                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-1">
+                    </div>
+            </div>
+        </div>
+
+        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
+            <p>Givy | Made with <span class="text-white">🤍</span></p>
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById("ngl-form"),
+              usernameInput = document.getElementById("username"),
+              messageInput = document.getElementById("message"),
+              countInput = document.getElementById("count"),
+              sendButton = document.getElementById("send-button"),
+              errorMessage = document.getElementById("error-message"),
+              loadingSpinner = document.getElementById("loading-spinner"),
+              nglResultDisplay = document.getElementById("ngl-result-display"),
+              resTarget = document.getElementById("res-target"),
+              resTotal = document.getElementById("res-total"),
+              resSuccess = document.getElementById("res-success"),
+              resFail = document.getElementById("res-fail"),
+              resRate = document.getElementById("res-rate"),
+              resDetails = document.getElementById("res-details"),
+              charCount = document.getElementById("char-count"),
+              API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
+
+        // Fungsi untuk menampilkan pesan error
+        function showError(message) {
+            errorMessage.querySelector("span").textContent = message;
+            errorMessage.classList.remove("hidden");
+            loadingSpinner.classList.add("hidden");
+            sendButton.disabled = false;
+            sendButton.innerHTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+        }
+
+        // Listener untuk hitungan karakter
+        messageInput.addEventListener("input", function() {
+            charCount.textContent = this.value.length;
+        });
+        
+        // Listener untuk submit form
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            // 1. Reset tampilan
+            errorMessage.classList.add("hidden");
+            nglResultDisplay.classList.add("hidden");
+            loadingSpinner.classList.add("hidden");
+            
+            // 2. Ambil nilai input
+            const username = usernameInput.value.trim();
+            const message = messageInput.value.trim();
+            const count = parseInt(countInput.value.trim());
+
+            // 3. V A L I D A S I
+            if (!username) {
+                return showError("Please enter the NGL username.");
+            }
+            if (!message) {
+                return showError("Please enter the message to spam.");
+            }
+            if (count < 1 || count > 25 || isNaN(count)) {
+                return showError("Total messages must be between 1 and 25.");
+            }
+
+            // 4. Proses (jika validasi lolos)
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
+            loadingSpinner.classList.remove("hidden");
+
+            const encodedMessage = encodeURIComponent(message);
+            const finalUrl = `${API_BASE_URL}?username=${username}&message=${encodedMessage}&count=${count}`;
+            
+            try {
+                const response = await fetch(finalUrl);
+                const data = await response.json();
+
+                // Cek status dari API response
+                if (data.status === true && data.result) {
+                    displayResult(data.result);
+                } else {
+                    // API mengembalikan error atau status: false
+                    showError(data.message || "Spamming failed. API returned an error.");
+                }
+
+            } catch (error) {
+                console.error("Fetch error:", error);
+                showError("Network error. Could not reach the API server.");
+            } finally {
+                // Sembunyikan loading dan kembalikan tombol
+                loadingSpinner.classList.add("hidden");
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+            }
+        });
+
+        // Fungsi untuk menampilkan hasil JSON
+        function displayResult(result) {
+            resTarget.textContent = result.target;
+            resTotal.textContent = result.totalAttempt;
+            resSuccess.textContent = result.successCount;
+            resFail.textContent = result.failCount;
+            resRate.textContent = result.successRate;
+
+            // Atur warna rate
+            if (parseFloat(result.successRate) > 50) {
+                resRate.classList.add("status-success");
+                resRate.classList.remove("status-fail");
+            } else {
+                resRate.classList.add("status-fail");
+                resRate.classList.remove("status-success");
+            }
+
+            // Tampilkan detail attempts
+            resDetails.innerHTML = '';
+            result.details.forEach(detail => {
+                const statusClass = detail.status === "Berhasil" ? 'status-success' : 'status-fail';
+                const icon = detail.status === "Berhasil" ? 'fa-check-circle' : 'fa-times-circle';
+                
+                const detailItem = document.createElement('div');
+                detailItem.className = 'flex justify-between';
+                detailItem.innerHTML = `
+                    <span>Attempt ${detail.attempt}:</span>
+                    <span class="${statusClass}"><i class="fa-solid ${icon} mr-1"></i>${detail.status}</span>
+                `;
+                resDetails.appendChild(detailItem);
+            });
+
+            nglResultDisplay.classList.remove("hidden");
+        }
+    </script>
+</body>
+</html>
