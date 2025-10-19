@@ -158,6 +158,7 @@
             alert(message);
             sendButton.disabled = false;
             sendButton.innerHTML = SEND_ICON_HTML;
+            updateSubmitButton();
         }
 
         function showUsernameStatus(status, message) {
@@ -184,12 +185,6 @@
                 case 'invalid':
                     statusText.classList.add('text-red-400');
                     statusIcon.className = 'fas fa-times-circle text-red-400';
-                    isUsernameValid = false;
-                    updateSubmitButton();
-                    break;
-                case 'error':
-                    statusText.classList.add('text-orange-400');
-                    statusIcon.className = 'fas fa-exclamation-triangle text-orange-400';
                     isUsernameValid = false;
                     updateSubmitButton();
                     break;
@@ -273,7 +268,7 @@
                 
             } catch (error) {
                 console.error('Error checking username:', error);
-                showUsernameStatus('error', 'Check failed');
+                showUsernameStatus('invalid', 'Not Found');
             }
         }
 
@@ -288,26 +283,8 @@
                     showUsernameStatus('invalid', 'Not Found');
                 }
             } catch (error) {
-                simulateUsernameCheck(username);
-            }
-        }
-
-        function simulateUsernameCheck(username) {
-            const invalidPatterns = [
-                /[^a-zA-Z0-9_.-]/,
-                /^[0-9]/,
-                /\.\./,
-                /_{2,}/,
-                /-$/,
-                /^[-_.]|[-_.]$/
-            ];
-            
-            const hasInvalidPattern = invalidPatterns.some(pattern => pattern.test(username));
-            
-            if (hasInvalidPattern || username.length < 3) {
+                // Langsung anggap Not Found kalo semua gagal
                 showUsernameStatus('invalid', 'Not Found');
-            } else {
-                showUsernameStatus('valid', 'Found');
             }
         }
 
@@ -345,15 +322,13 @@
                 }
             }
             
+            // HANYA 2 STATUS: Found atau Not Found
             if (finalUrl.includes('ngl.link') && finalUrl.includes(username)) {
                 if (foundIndicators >= 2) {
                     showUsernameStatus('valid', 'Found');
-                } else if (foundErrors >= 2) {
-                    showUsernameStatus('invalid', 'Not Found');
                 } else {
-                    showUsernameStatus('error', 'Unclear');
-                isUsernameValid = false;
-                    updateSubmitButton();
+                    // Semua kasus lain langsung dianggap Not Found
+                    showUsernameStatus('invalid', 'Not Found');
                 }
             } else {
                 showUsernameStatus('invalid', 'Not Found');
@@ -379,21 +354,23 @@
 
         messageInput.addEventListener("input", function() {
             charCount.textContent = this.value.length;
-            updateSubmitButton(); // Update button status ketika message berubah
+            updateSubmitButton();
         });
         
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
             
-            // Validasi tambahan sebelum submit
+            // Validasi dengan pesan kocak
             if (!isUsernameValid) {
-                alert("Please enter a valid NGL username before sending messages.");
+                alert("kirim usernamenya yang bener lah woi");
+                usernameInput.focus();
                 return;
             }
             
             const message = messageInput.value.trim();
             if (!message) {
-                alert("Please enter a message to send.");
+                alert("Pesan nya mana? Mau kirim angin?");
+                messageInput.focus();
                 return;
             }
             
@@ -405,7 +382,9 @@
             const count = parseInt(countInput.value.trim());
 
             if (count < 1 || count > 25 || isNaN(count)) {
-                return showError("Total messages must be between 1 and 25.");
+                alert("Mau kirim berapa pesan? 1-25 aja ya!");
+                countInput.focus();
+                return;
             }
 
             sendButton.disabled = true;
@@ -422,16 +401,16 @@
                 if (data.status === true && data.result) {
                     displayResult(data.result);
                 } else {
-                    showError(data.message || "Spamming failed. API returned an error.");
+                    showError(data.message || "Yah gagal nih, coba lagi deh!");
                 }
 
             } catch (error) {
                 console.error("Fetch error:", error);
-                showError("Network error. Could not reach the API server.");
+                showError("Internet lu lemot banget dah, coba lagi nanti!");
             } finally {
                 sendButton.disabled = false;
                 sendButton.innerHTML = SEND_ICON_HTML;
-                updateSubmitButton(); // Kembalikan status button setelah selesai
+                updateSubmitButton();
             }
         });
 
