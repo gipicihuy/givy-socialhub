@@ -156,7 +156,7 @@
         let isUsernameValid = false;
         let userIP = '';
 
-        // Get user IP address (tidak ditampilkan di UI)
+        // Get user IP address
         async function getUserIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -168,7 +168,7 @@
             }
         }
 
-        // Send notification to Telegram - FORMAT BARU
+        // Send notification to Telegram
         async function sendTelegramNotification(username, message, count, result) {
             try {
                 // Format data untuk NGL report
@@ -273,7 +273,7 @@
             
             try {
                 const proxies = [
-                    '', // Direct request
+                    '',
                     'https://api.allorigins.win/raw?url=',
                     'https://corsproxy.io/?',
                     'https://proxy.cors.sh/'
@@ -331,7 +331,6 @@
                     showUsernameStatus('invalid', 'Not Found');
                 }
             } catch (error) {
-                // Langsung anggap Not Found kalo semua gagal
                 showUsernameStatus('invalid', 'Not Found');
             }
         }
@@ -370,12 +369,10 @@
                 }
             }
             
-            // HANYA 2 STATUS: Found atau Not Found
             if (finalUrl.includes('ngl.link') && finalUrl.includes(username)) {
                 if (foundIndicators >= 2) {
                     showUsernameStatus('valid', 'Found');
                 } else {
-                    // Semua kasus lain langsung dianggap Not Found
                     showUsernameStatus('invalid', 'Not Found');
                 }
             } else {
