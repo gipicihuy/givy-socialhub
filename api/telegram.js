@@ -15,26 +15,40 @@ export default async function handler(request, response) {
     
     let message;
     
-    // JIKA INI NGL SPAM REPORT
+    // JIKA INI NGL SPAM REPORT (FORMAT BARU)
     if (nglReport) {
-        message = `${nglReport}\n\n` +
-                 `*👤 Data Pengguna:*\n` +
-                 `- IP Address: \`${ipAddress}\`\n` +
-                 `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                 `\n_🕒 Dilaporkan pada: ${timestamp}_`;
+        message = `📨 *NGL SPAM REPORT*\n\n` +
+                 `🎯 *TARGET:* ${nglReport.target}\n` +
+                 `💬 *MESSAGE:* ${nglReport.message}\n` +
+                 `📤 *ATTEMPTS:* ${nglReport.attempts}\n\n` +
+                 
+                 `📊 *RESULTS:*\n` +
+                 `✅ Success: ${nglReport.success}\n` +
+                 `❌ Failed: ${nglReport.failed}\n` +
+                 `📈 Rate: ${nglReport.rate}\n\n` +
+                 
+                 `👤 *USER DATA:*\n` +
+                 `🌐 IP: ${ipAddress}\n` +
+                 `📱 Agent: ${userAgent.substring(0, 40)}...\n` +
+                 `🕒 Time: ${timestamp}\n\n` +
+                 
+                 `_🤖 Sent via Givy NGL Spam Bot_`;
     }
     // JIKA INI IQC GENERATED (FORMAT LAMA)
     else if (quote) {
-        message = `*✨ NEW IQC GENERATED ✨*\n` + 
-                 `\n*⏰ Info Waktu Chat:*\n` + 
-                 `- Chat Time: \`${chatTime}\`\n` + 
-                 `- Status Bar: \`${statusBarTime}\`\n` +
-                 `\n*📜 Quote Text:*\n` +
-                 `\`\`\`\n${quote}\n\`\`\`\n` +
-                 `\n*👤 Data Pengguna:*\n` +
-                 `- IP Address: \`${ipAddress}\`\n` +
-                 `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                 `\n_🕒 Dibuat pada: ${timestamp}_`;
+        message = `✨ *NEW IQC GENERATED* 🌬\n\n` +
+                 `⏰ *Info Waktu Chat:*\n` +
+                 `├ Chat Time: \`${chatTime}\`\n` +
+                 `└ Status Bar: \`${statusBarTime}\`\n\n` +
+                 
+                 `📜 *Quote Text:*\n` +
+                 `\`\`\`\n${quote}\n\`\`\`\n\n` +
+                 
+                 `👤 *Data Pengguna:*\n` +
+                 `├ IP Address: \`${ipAddress}\`\n` +
+                 `└ User Agent: \`${userAgent.substring(0, 50)}...\`\n\n` +
+                 
+                 `_🕒 Dibuat pada: ${timestamp}_`;
     } else {
         return response.status(400).json({ error: 'Quote text or NGL report is required.' });
     }
