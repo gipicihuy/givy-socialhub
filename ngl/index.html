@@ -67,11 +67,6 @@
                     <span></span>
                 </div>
             </div>
-
-            <div class="loading hidden" id="loading-spinner">
-                <i class="fa-solid fa-spinner fa-spin text-xl text-gray-400"></i>
-                <p class="text-xs text-gray-400 mt-2">Sending messages... Please wait.</p>
-            </div>
             
             <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
                 <!-- Ringkasan Hasil dengan Icon -->
@@ -135,7 +130,6 @@
               countInput = document.getElementById("count"),
               sendButton = document.getElementById("send-button"),
               errorMessage = document.getElementById("error-message"),
-              loadingSpinner = document.getElementById("loading-spinner"),
               nglResultDisplay = document.getElementById("ngl-result-display"),
               resTarget = document.getElementById("res-target"),
               resTotal = document.getElementById("res-total"),
@@ -171,7 +165,6 @@
             // 1. Reset tampilan
             errorMessage.classList.add("hidden");
             nglResultDisplay.classList.add("hidden");
-            loadingSpinner.classList.add("hidden");
             resultArea.classList.add("hidden");
             
             // 2. Ambil nilai input
@@ -193,7 +186,6 @@
             // 4. Proses (jika validasi lolos)
             sendButton.disabled = true;
             sendButton.innerHTML = PROCESSING_ICON_HTML;
-            loadingSpinner.classList.remove("hidden");
             resultArea.classList.remove("hidden");
 
             const encodedMessage = encodeURIComponent(message);
@@ -215,8 +207,7 @@
                 console.error("Fetch error:", error);
                 showError("Network error. Could not reach the API server.");
             } finally {
-                // Sembunyikan loading dan kembalikan tombol
-                loadingSpinner.classList.add("hidden");
+                // Kembalikan tombol ke keadaan semula
                 sendButton.disabled = false;
                 sendButton.innerHTML = SEND_ICON_HTML;
             }
