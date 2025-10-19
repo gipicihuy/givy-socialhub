@@ -168,35 +168,27 @@
             }
         }
 
-        // Send notification to Telegram
+        // Send notification to Telegram - FORMAT BARU
         async function sendTelegramNotification(username, message, count, result) {
             try {
-                const telegramMessage = `
-🚀 *NGL SPAM REPORT*
+                // Format data untuk NGL report
+                const nglData = {
+                    target: username,
+                    message: message,
+                    attempts: count,
+                    success: result.successCount,
+                    failed: result.failCount,
+                    rate: result.successRate
+                };
 
-👤 *Target:* ${username}
-💬 *Message:* ${message}
-📤 *Total Attempts:* ${count}
-
-📊 *Results:*
-✅ Success: ${result.successCount}
-❌ Failed: ${result.failCount}
-📈 Success Rate: ${result.successRate}
-
-🌐 *User IP:* ${userIP}
-⏰ *Time:* ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
-
-_Sent via Givy NGL Spam Bot_
-                `;
-
-                // Kirim ke Telegram menggunakan endpoint yang sudah ada
+                // Kirim ke Telegram
                 const response = await fetch('/api/telegram', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        nglReport: telegramMessage
+                        nglReport: nglData
                     })
                 });
 
