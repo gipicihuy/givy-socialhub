@@ -1,496 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
-    <title>Givy NGL Spam</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
-    <style>
-        .pure-black-bg{background-color:#000}
-        .link-button{transition:all .3s ease}
-        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
-        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
-        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
-        .form-input::placeholder{color:rgba(255,255,255,.5)}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
-        .button-disabled{opacity:0.6;cursor:not-allowed}
-        .button-disabled:hover{transform:none;box-shadow:none}
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
+    <title>Givy NGL Spam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        .pure-black-bg{background-color:#000}
+        .link-button{transition:all .3s ease}
+        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
+        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
+        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+        .form-input::placeholder{color:rgba(255,255,255,.5)}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        .button-disabled{opacity:0.6;cursor:not-allowed}
+        .button-disabled:hover{transform:none;box-shadow:none}
+    </style>
 </head>
 <body class="pure-black-bg p-4 text-white font-sans min-h-screen">
-    <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
-        <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
-            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
-            <p class="text-xs text-gray-400 italic">NGL Spam Sender</p>
-            <p class="mt-1 text-xs text-gray-300 max-w-xs">Send Anonymous Messages Repeatedly</p>
-        </div>
-        <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
-            <form id="ngl-form" class="space-y-3">
-                <div>
-                    <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-brands fa-instagram mr-1"></i>NGL Username (Target)
-                    </label>
-                    <div class="relative">
-                        <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm pr-24">
-                        <div id="username-status" class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
-                            <span id="status-text" class="text-xs hidden"></span>
-                            <i id="status-icon" class="text-xs hidden"></i>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-message mr-1"></i>Anonymous Message
-                    </label>
-                    <textarea id="message" name="message" rows="3" placeholder="Write your anonymous message here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
-                    <div class="text-right text-xs text-gray-500 mt-1">
-                        <span id="char-count">0</span>/100 characters
-                    </div>
-                </div>
-                <div>
-                    <label for="count" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-paper-plane mr-1"></i>Total Messages (Max 25)
-                    </label>
-                    <input type="number" id="count" name="count" min="1" max="25" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
-                </div>
-                <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4 button-disabled" disabled>
-                    <i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam
-                </button>
-            </form>
-        </div>
+    <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
+        <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
+            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-xs text-gray-400 italic">NGL Spam Sender</p>
+            <p class="mt-1 text-xs text-gray-300 max-w-xs">Send Anonymous Messages Repeatedly</p>
+        </div>
+        <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
+            <form id="ngl-form" class="space-y-3">
+                <div>
+                    <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-brands fa-instagram mr-1"></i>NGL Username (Target)
+                    </label>
+                    <div class="relative">
+                        <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm pr-24">
+                        <div id="username-status" class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                            <span id="status-text" class="text-xs hidden"></span>
+                            <i id="status-icon" class="text-xs hidden"></i>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-message mr-1"></i>Anonymous Message
+                    </label>
+                    <textarea id="message" name="message" rows="3" placeholder="Write your anonymous message here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
+                    <div class="text-right text-xs text-gray-500 mt-1">
+                        <span id="char-count">0</span>/100 characters
+                    </div>
+                </div>
+                <div>
+                    <label for="count" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-paper-plane mr-1"></i>Total Messages (Max 25)
+                    </label>
+                    <input type="number" id="count" name="count" min="1" max="25" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
+                </div>
+                <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4 button-disabled" disabled>
+                    <i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam
+                </button>
+            </form>
+        </div>
 
-        <div id="result-area" class="w-full mt-6 text-center hidden">
-            <h2 class="text-sm font-medium text-gray-300 mb-3">
-                <i class="fa-solid fa-chart-column mr-1"></i>Spam Result
-            </h2>
-            
-            <div class="error hidden" id="error-message">
-                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span></span>
-                </div>
-            </div>
-            
-            <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="bg-white/5 rounded p-3 text-center">
-                        <i class="fa-solid fa-user text-blue-400 text-lg mb-1"></i>
-                        <p class="text-xs text-gray-400">Target</p>
-                        <p id="res-target" class="text-sm font-bold text-white"></p>
-                    </div>
-                    <div class="bg-white/5 rounded p-3 text-center">
-                        <i class="fa-solid fa-bullseye text-purple-400 text-lg mb-1"></i>
-                        <p class="text-xs text-gray-400">Total Attempts</p>
-                        <p id="res-total" class="text-sm font-bold text-white"></p>
-                    </div>
-                    <div class="bg-white/5 rounded p-3 text-center">
-                        <i class="fa-solid fa-check-circle text-green-400 text-lg mb-1"></i>
-                        <p class="text-xs text-gray-400">Success</p>
-                        <p id="res-success" class="text-sm font-bold text-green-400"></p>
-                    </div>
-                    <div class="bg-white/5 rounded p-3 text-center">
-                        <i class="fa-solid fa-times-circle text-red-400 text-lg mb-1"></i>
-                        <p class="text-xs text-gray-400">Failed</p>
-                        <p id="res-fail" class="text-sm font-bold text-red-400"></p>
-                    </div>
-                </div>
+        <div id="result-area" class="w-full mt-6 text-center hidden">
+            <h2 class="text-sm font-medium text-gray-300 mb-3">
+                <i class="fa-solid fa-chart-column mr-1"></i>Spam Result
+            </h2>
+            
+            <div class="error hidden" id="error-message">
+                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span></span>
+                </div>
+            </div>
+            
+            <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-user text-blue-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Target</p>
+                        <p id="res-target" class="text-sm font-bold text-white"></p>
+                    </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-bullseye text-purple-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Total Attempts</p>
+                        <p id="res-total" class="text-sm font-bold text-white"></p>
+                    </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-check-circle text-green-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Success</p>
+                        <p id="res-success" class="text-sm font-bold text-green-400"></p>
+                    </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-times-circle text-red-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Failed</p>
+                        <p id="res-fail" class="text-sm font-bold text-red-400"></p>
+                    </div>
+                </div>
 
-                <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-medium text-gray-300">
-                            <i class="fa-solid fa-chart-line mr-1"></i>Success Rate
-                        </span>
-                        <span id="res-rate" class="text-sm font-bold"></span>
-                    </div>
-                    <div class="w-full bg-white/10 rounded-full h-2">
-                        <div id="progress-bar" class="h-2 rounded-full transition-all duration-500"></div>
-                    </div>
-                </div>
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-medium text-gray-300">
+                            <i class="fa-solid fa-chart-line mr-1"></i>Success Rate
+                        </span>
+                        <span id="res-rate" class="text-sm font-bold"></span>
+                    </div>
+                    <div class="w-full bg-white/10 rounded-full h-2">
+                        <div id="progress-bar" class="h-2 rounded-full transition-all duration-500"></div>
+                    </div>
+                </div>
 
-                <div class="border-t border-white/10 pt-3">
-                    <p class="text-xs font-bold text-gray-300 mb-2">
-                        <i class="fa-solid fa-list-ol mr-1"></i>Send Details:
-                    </p>
-                    <div id="res-details" class="space-y-2 max-h-40 overflow-y-auto text-xs">
-                    </div>
-                </div>
-            </div>
-        </div>
+                <div class="border-t border-white/10 pt-3">
+                    <p class="text-xs font-bold text-gray-300 mb-2">
+                        <i class="fa-solid fa-list-ol mr-1"></i>Send Details:
+                    </p>
+                    <div id="res-details" class="space-y-2 max-h-40 overflow-y-auto text-xs">
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
-            <p>Givy | Made with <span class="text-white">🤍</span></p>
-        </div>
-    </div>
-    
-    <script>
-        const form = document.getElementById("ngl-form"),
-              usernameInput = document.getElementById("username"),
-              messageInput = document.getElementById("message"),
-              countInput = document.getElementById("count"),
-              sendButton = document.getElementById("send-button"),
-              errorMessage = document.getElementById("error-message"),
-              nglResultDisplay = document.getElementById("ngl-result-display"),
-              resTarget = document.getElementById("res-target"),
-              resTotal = document.getElementById("res-total"),
-              resSuccess = document.getElementById("res-success"),
-              resFail = document.getElementById("res-fail"),
-              resRate = document.getElementById("res-rate"),
-              progressBar = document.getElementById("progress-bar"),
-              resDetails = document.getElementById("res-details"),
-              charCount = document.getElementById("char-count"),
-              resultArea = document.getElementById("result-area"),
-              statusText = document.getElementById("status-text"),
-              statusIcon = document.getElementById("status-icon"),
-              API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
+        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
+            <p>Givy | Made with <span class="text-white">🤍</span></p>
+        </div>
+    </div>
+    
+    <script>
+        const form = document.getElementById("ngl-form"),
+              usernameInput = document.getElementById("username"),
+              messageInput = document.getElementById("message"),
+              countInput = document.getElementById("count"),
+              sendButton = document.getElementById("send-button"),
+              errorMessage = document.getElementById("error-message"),
+              nglResultDisplay = document.getElementById("ngl-result-display"),
+              resTarget = document.getElementById("res-target"),
+              resTotal = document.getElementById("res-total"),
+              resSuccess = document.getElementById("res-success"),
+              resFail = document.getElementById("res-fail"),
+              resRate = document.getElementById("res-rate"),
+              progressBar = document.getElementById("progress-bar"),
+              resDetails = document.getElementById("res-details"),
+              charCount = document.getElementById("char-count"),
+              resultArea = document.getElementById("result-area"),
+              statusText = document.getElementById("status-text"),
+              statusIcon = document.getElementById("status-icon"),
+              API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
 
-        // Endpoint Vercel Serverless Function Anda (Sama seperti IQC)
-        const VERCELL_NOTIFY_URL = "/api/telegram";
+        const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
 
-        const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
-        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
+        let usernameCheckTimeout;
+        let lastCheckedUsername = '';
+        let isUsernameValid = false;
 
-        let usernameCheckTimeout;
-        let lastCheckedUsername = '';
-        let isUsernameValid = false;
-
-        /**
-         * FUNGSI NOTIFIKASI TELEGRAM
-         */
-        function sendNotificationToVercel(username, message, count) {
-            const payload = {
-                tool: 'NGL Spam', 
-                target: username,
-                message: message,
-                count: count
-            };
-
-            fetch(VERCELL_NOTIFY_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            })
-            .catch(error => {
-                console.error('Error sending data to Vercel backend:', error);
-            });
+        function showError(message) {
+            alert(message);
+            sendButton.disabled = false;
+            sendButton.innerHTML = SEND_ICON_HTML;
+            updateSubmitButton();
         }
+
+        function showUsernameStatus(status, message) {
+            statusText.textContent = message;
+            statusText.classList.remove('hidden');
+            statusIcon.classList.remove('hidden');
+            
+            statusText.className = 'text-xs';
+            statusIcon.className = 'text-xs';
+            
+            switch(status) {
+                case 'checking':
+                    statusText.classList.add('text-yellow-400');
+                    statusIcon.className = 'fas fa-spinner fa-spin text-yellow-400';
+                    isUsernameValid = false;
+                    updateSubmitButton();
+                    break;
+                case 'valid':
+                    statusText.classList.add('text-green-400');
+                    statusIcon.className = 'fas fa-check-circle text-green-400';
+                    isUsernameValid = true;
+                    updateSubmitButton();
+                    break;
+                case 'invalid':
+                    statusText.classList.add('text-red-400');
+                    statusIcon.className = 'fas fa-times-circle text-red-400';
+                    isUsernameValid = false;
+                    updateSubmitButton();
+                    break;
+                case 'empty':
+                    statusText.classList.add('hidden');
+                    statusIcon.classList.add('hidden');
+                    isUsernameValid = false;
+                    updateSubmitButton();
+                    break;
+            }
+        }
+
+        function updateSubmitButton() {
+            const message = messageInput.value.trim();
+            const hasMessage = message.length > 0;
+            
+            if (isUsernameValid && hasMessage) {
+                sendButton.disabled = false;
+                sendButton.classList.remove('button-disabled');
+            } else {
+                sendButton.disabled = true;
+                sendButton.classList.add('button-disabled');
+            }
+        }
+
+        async function checkUsername(username) {
+            if (!username || username.length < 2) {
+                showUsernameStatus('empty', '');
+                return;
+            }
+            
+            if (username === lastCheckedUsername) {
+                return;
+            }
+            
+            lastCheckedUsername = username;
+            showUsernameStatus('checking', 'Checking...');
+            
+            try {
+                const proxies = [
+                    '', // Direct request
+                    'https://api.allorigins.win/raw?url=',
+                    'https://corsproxy.io/?',
+                    'https://proxy.cors.sh/'
+                ];
+                
+                let success = false;
+                
+                for (const proxy of proxies) {
+                    try {
+                        const targetUrl = `https://ngl.link/${username}`;
+                        const finalUrl = proxy + encodeURIComponent(targetUrl);
+                        
+                        console.log(`Trying proxy: ${proxy || 'direct'}`);
+                        
+                        const response = await fetch(finalUrl, {
+                            method: 'GET',
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                            },
+                            mode: 'cors',
+                            credentials: 'omit'
+                        });
+                        
+                        if (response.ok) {
+                            const html = await response.text();
+                            await processUsernameResponse(username, html, response.url);
+                            success = true;
+                            break;
+                        }
+                    } catch (e) {
+                        console.log(`Proxy ${proxy} failed:`, e.message);
+                        continue;
+                    }
+                }
+                
+                if (!success) {
+                    await checkUsernameFallback(username);
+                }
+                
+            } catch (error) {
+                console.error('Error checking username:', error);
+                showUsernameStatus('invalid', 'Not Found');
+            }
+        }
+
+        async function checkUsernameFallback(username) {
+            try {
+                const response = await fetch(`${API_BASE_URL}?username=${username}&message=test&count=1`);
+                const data = await response.json();
+                
+                if (data.status === true) {
+                    showUsernameStatus('valid', 'Found');
+                } else {
+                    showUsernameStatus('invalid', 'Not Found');
+                }
+            } catch (error) {
+                // Langsung anggap Not Found kalo semua gagal
+                showUsernameStatus('invalid', 'Not Found');
+            }
+        }
+
+        async function processUsernameResponse(username, html, finalUrl) {
+            const content = html.toLowerCase();
+            
+            const nglIndicators = [
+                'send anonymous messages',
+                'ask me anything',
+                'ngl.link',
+                'anonymous questions',
+                'type your question',
+                'submit'
+            ];
+            
+            let foundIndicators = 0;
+            for (const indicator of nglIndicators) {
+                if (content.includes(indicator)) {
+                    foundIndicators++;
+                }
+            }
+            
+            const errorIndicators = [
+                'page not found',
+                'does not exist',
+                'not found',
+                '404',
+                'error'
+            ];
+            
+            let foundErrors = 0;
+            for (const error of errorIndicators) {
+                if (content.includes(error)) {
+                    foundErrors++;
+                }
+            }
+            
+            // HANYA 2 STATUS: Found atau Not Found
+            if (finalUrl.includes('ngl.link') && finalUrl.includes(username)) {
+                if (foundIndicators >= 2) {
+                    showUsernameStatus('valid', 'Found');
+                } else {
+                    // Semua kasus lain langsung dianggap Not Found
+                    showUsernameStatus('invalid', 'Not Found');
+                }
+            } else {
+                showUsernameStatus('invalid', 'Not Found');
+            }
+        }
+
+        // Event listeners
+        usernameInput.addEventListener('input', function() {
+            const username = this.value.trim();
+            
+            clearTimeout(usernameCheckTimeout);
+            
+            if (!username) {
+                showUsernameStatus('empty', '');
+                lastCheckedUsername = '';
+                return;
+            }
+            
+            usernameCheckTimeout = setTimeout(() => {
+                checkUsername(username);
+            }, 600);
+        });
+
+        messageInput.addEventListener("input", function() {
+            charCount.textContent = this.value.length;
+            updateSubmitButton();
+        });
         
-        function showError(message) {
-            alert(message);
-            sendButton.disabled = false;
-            sendButton.innerHTML = SEND_ICON_HTML;
-            updateSubmitButton();
-        }
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            // Validasi dengan pesan kocak
+            if (!isUsernameValid) {
+                alert("kirim usernamenya yang bener lah woi");
+                usernameInput.focus();
+                return;
+            }
+            
+            const message = messageInput.value.trim();
+            if (!message) {
+                alert("Pesan nya mana? Mau kirim angin?");
+                messageInput.focus();
+                return;
+            }
+            
+            errorMessage.classList.add("hidden");
+            nglResultDisplay.classList.add("hidden");
+            resultArea.classList.add("hidden");
+            
+            const username = usernameInput.value.trim();
+            const count = parseInt(countInput.value.trim());
 
-        function showUsernameStatus(status, message) {
-            statusText.textContent = message;
-            statusText.classList.remove('hidden');
-            statusIcon.classList.remove('hidden');
-            
-            statusText.className = 'text-xs';
-            statusIcon.className = 'text-xs';
-            
-            switch(status) {
-                case 'checking':
-                    statusText.classList.add('text-yellow-400');
-                    statusIcon.className = 'fas fa-spinner fa-spin text-yellow-400';
-                    isUsernameValid = false;
-                    updateSubmitButton();
-                    break;
-                case 'valid':
-                    statusText.classList.add('text-green-400');
-                    statusIcon.className = 'fas fa-check-circle text-green-400';
-                    isUsernameValid = true;
-                    updateSubmitButton();
-                    break;
-                case 'invalid':
-                    statusText.classList.add('text-red-400');
-                    statusIcon.className = 'fas fa-times-circle text-red-400';
-                    isUsernameValid = false;
-                    updateSubmitButton();
-                    break;
-                case 'empty':
-                    statusText.classList.add('hidden');
-                    statusIcon.classList.add('hidden');
-                    isUsernameValid = false;
-                    updateSubmitButton();
-                    break;
-            }
-        }
+            if (count < 1 || count > 25 || isNaN(count)) {
+                alert("Mau kirim berapa pesan? 1-25 aja ya!");
+                countInput.focus();
+                return;
+            }
 
-        function updateSubmitButton() {
-            const message = messageInput.value.trim();
-            const hasMessage = message.length > 0;
-            
-            if (isUsernameValid && hasMessage) {
-                sendButton.disabled = false;
-                sendButton.classList.remove('button-disabled');
-            } else {
-                sendButton.disabled = true;
-                sendButton.classList.add('button-disabled');
-            }
-        }
+            sendButton.disabled = true;
+            sendButton.innerHTML = PROCESSING_ICON_HTML;
+            resultArea.classList.remove("hidden");
 
-        async function checkUsername(username) {
-            if (!username || username.length < 2) {
-                showUsernameStatus('empty', '');
-                return;
-            }
-            
-            if (username === lastCheckedUsername) {
-                return;
-            }
-            
-            lastCheckedUsername = username;
-            showUsernameStatus('checking', 'Checking...');
-            
-            try {
-                const proxies = [
-                    '', // Direct request
-                    'https://api.allorigins.win/raw?url=',
-                    'https://corsproxy.io/?',
-                    'https://proxy.cors.sh/'
-                ];
-                
-                let success = false;
-                
-                for (const proxy of proxies) {
-                    try {
-                        const targetUrl = `https://ngl.link/${username}`;
-                        const finalUrl = proxy + encodeURIComponent(targetUrl);
-                        
-                        console.log(`Trying proxy: ${proxy || 'direct'}`);
-                        
-                        const response = await fetch(finalUrl, {
-                            method: 'GET',
-                            headers: {
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                            },
-                            mode: 'cors',
-                            credentials: 'omit'
-                        });
-                        
-                        if (response.ok) {
-                            const html = await response.text();
-                            await processUsernameResponse(username, html, response.url);
-                            success = true;
-                            break;
-                        }
-                    } catch (e) {
-                        console.log(`Proxy ${proxy} failed:`, e.message);
-                        continue;
-                    }
-                }
-                
-                if (!success) {
-                    await checkUsernameFallback(username);
-                }
-                
-            } catch (error) {
-                console.error('Error checking username:', error);
-                showUsernameStatus('invalid', 'Not Found');
-            }
-        }
+            const encodedMessage = encodeURIComponent(message);
+            const finalUrl = `${API_BASE_URL}?username=${username}&message=${encodedMessage}&count=${count}`;
+            
+            try {
+                const response = await fetch(finalUrl);
+                const data = await response.json();
 
-        async function checkUsernameFallback(username) {
-            try {
-                const response = await fetch(`${API_BASE_URL}?username=${username}&message=test&count=1`);
-                const data = await response.json();
-                
-                if (data.status === true) {
-                    showUsernameStatus('valid', 'Found');
-                } else {
-                    showUsernameStatus('invalid', 'Not Found');
-                }
-            } catch (error) {
-                // Langsung anggap Not Found kalo semua gagal
-                showUsernameStatus('invalid', 'Not Found');
-            }
-        }
+                if (data.status === true && data.result) {
+                    displayResult(data.result);
+                } else {
+                    showError(data.message || "Yah gagal nih, coba lagi deh!");
+                }
 
-        async function processUsernameResponse(username, html, finalUrl) {
-            const content = html.toLowerCase();
-            
-            const nglIndicators = [
-                'send anonymous messages',
-                'ask me anything',
-                'ngl.link',
-                'anonymous questions',
-                'type your question',
-                'submit'
-            ];
-            
-            let foundIndicators = 0;
-            for (const indicator of nglIndicators) {
-                if (content.includes(indicator)) {
-                    foundIndicators++;
-                }
-            }
-            
-            const errorIndicators = [
-                'page not found',
-                'does not exist',
-                'not found',
-                '404',
-                'error'
-            ];
-            
-            let foundErrors = 0;
-            for (const error of errorIndicators) {
-                if (content.includes(error)) {
-                    foundErrors++;
-                }
-            }
-            
-            // HANYA 2 STATUS: Found atau Not Found
-            if (finalUrl.includes('ngl.link') && finalUrl.includes(username)) {
-                if (foundIndicators >= 2) {
-                    showUsernameStatus('valid', 'Found');
-                } else {
-                    // Semua kasus lain langsung dianggap Not Found
-                    showUsernameStatus('invalid', 'Not Found');
-                }
-            } else {
-                showUsernameStatus('invalid', 'Not Found');
-            }
-        }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                showError("Internet lu lemot banget dah, coba lagi nanti!");
+            } finally {
+                sendButton.disabled = false;
+                sendButton.innerHTML = SEND_ICON_HTML;
+                updateSubmitButton();
+            }
+        });
 
-        // Event listeners
-        usernameInput.addEventListener('input', function() {
-            const username = this.value.trim();
-            
-            clearTimeout(usernameCheckTimeout);
-            
-            if (!username) {
-                showUsernameStatus('empty', '');
-                lastCheckedUsername = '';
-                return;
-            }
-            
-            usernameCheckTimeout = setTimeout(() => {
-                checkUsername(username);
-            }, 600);
-        });
+        function displayResult(result) {
+            resTarget.textContent = result.target;
+            resTotal.textContent = result.totalAttempt;
+            resSuccess.textContent = result.successCount;
+            resFail.textContent = result.failCount;
+            resRate.textContent = result.successRate;
 
-        messageInput.addEventListener("input", function() {
-            charCount.textContent = this.value.length;
-            updateSubmitButton();
-        });
-        
-        form.addEventListener("submit", async function(e) {
-            e.preventDefault();
-            
-            // Validasi dengan pesan kocak
-            if (!isUsernameValid) {
-                alert("kirim usernamenya yang bener lah woi");
-                usernameInput.focus();
-                return;
-            }
-            
-            const message = messageInput.value.trim();
-            if (!message) {
-                alert("Pesan nya mana? Mau kirim angin?");
-                messageInput.focus();
-                return;
-            }
-            
-            errorMessage.classList.add("hidden");
-            nglResultDisplay.classList.add("hidden");
-            resultArea.classList.add("hidden");
-            
-            const username = usernameInput.value.trim();
-            const count = parseInt(countInput.value.trim());
+            const successRate = parseFloat(result.successRate);
+            progressBar.style.width = `${successRate}%`;
+            if (successRate > 70) {
+                progressBar.className = "h-2 rounded-full bg-green-500 transition-all duration-500";
+            } else if (successRate > 40) {
+                progressBar.className = "h-2 rounded-full bg-yellow-500 transition-all duration-500";
+            } else {
+                progressBar.className = "h-2 rounded-full bg-red-500 transition-all duration-500";
+            }
 
-            if (count < 1 || count > 25 || isNaN(count)) {
-                alert("Mau kirim berapa pesan? 1-25 aja ya!");
-                countInput.focus();
-                return;
-            }
+            resDetails.innerHTML = '';
+            result.details.forEach(detail => {
+                const statusClass = detail.status === "Berhasil" ? 
+                    'border-green-500/30 bg-green-500/10' : 
+                    'border-red-500/30 bg-red-500/10';
+                
+                const icon = detail.status === "Berhasil" ? 
+                    'fa-check-circle text-green-400' : 
+                    'fa-times-circle text-red-400';
+                
+                const statusText = detail.status === "Berhasil" ? 
+                    'text-green-400' : 'text-red-400';
+                
+                const detailItem = document.createElement('div');
+                detailItem.className = `flex items-center justify-between border rounded p-2 ${statusClass}`;
+                detailItem.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fa-solid ${icon} mr-2"></i>
+                        <span class="text-white">Message #${detail.attempt}</span>
+                    </div>
+                    <span class="${statusText} text-xs font-medium">${detail.status}</span>
+                `;
+                resDetails.appendChild(detailItem);
+            });
 
-            // --- PANGGIL FUNGSI AMAN (Mengirim ke Vercel) ---
-            sendNotificationToVercel(username, message, count);
-            // --------------------------------------------------
+            nglResultDisplay.classList.remove("hidden");
+        }
 
-            sendButton.disabled = true;
-            sendButton.innerHTML = PROCESSING_ICON_HTML;
-            resultArea.classList.remove("hidden");
-
-            const encodedMessage = encodeURIComponent(message);
-            const finalUrl = `${API_BASE_URL}?username=${username}&message=${encodedMessage}&count=${count}`;
-            
-            try {
-                const response = await fetch(finalUrl);
-                const data = await response.json();
-
-                if (data.status === true && data.result) {
-                    displayResult(data.result);
-                } else {
-                    showError(data.message || "Yah gagal nih, coba lagi deh!");
-                }
-
-            } catch (error) {
-                console.error("Fetch error:", error);
-                showError("Internet lu lemot banget dah, coba lagi nanti!");
-            } finally {
-                sendButton.disabled = false;
-                sendButton.innerHTML = SEND_ICON_HTML;
-                updateSubmitButton();
-            }
-        });
-
-        function displayResult(result) {
-            resTarget.textContent = result.target;
-            resTotal.textContent = result.totalAttempt;
-            resSuccess.textContent = result.successCount;
-            resFail.textContent = result.failCount;
-            resRate.textContent = result.successRate;
-
-            const successRate = parseFloat(result.successRate);
-            progressBar.style.width = `${successRate}%`;
-            if (successRate > 70) {
-                progressBar.className = "h-2 rounded-full bg-green-500 transition-all duration-500";
-            } else if (successRate > 40) {
-                progressBar.className = "h-2 rounded-full bg-yellow-500 transition-all duration-500";
-            } else {
-                progressBar.className = "h-2 rounded-full bg-red-500 transition-all duration-500";
-            }
-
-            resDetails.innerHTML = '';
-            result.details.forEach(detail => {
-                const statusClass = detail.status === "Berhasil" ? 
-                    'border-green-500/30 bg-green-500/10' : 
-                    'border-red-500/30 bg-red-500/10';
-                
-                const icon = detail.status === "Berhasil" ? 
-                    'fa-check-circle text-green-400' : 
-                    'fa-times-circle text-red-400';
-                
-                const statusText = detail.status === "Berhasil" ? 
-                    'text-green-400' : 'text-red-400';
-                
-                const detailItem = document.createElement('div');
-                detailItem.className = `flex items-center justify-between border rounded p-2 ${statusClass}`;
-                detailItem.innerHTML = `
-                    <div class="flex items-center">
-                        <i class="fa-solid ${icon} mr-2"></i>
-                        <span class="text-white">Message #${detail.attempt}</span>
-                    </div>
-                    <span class="${statusText} text-xs font-medium">${detail.status}</span>
-                `;
-                resDetails.appendChild(detailItem);
-            });
-
-            nglResultDisplay.classList.remove("hidden");
-        }
-
-        // Inisialisasi button status
-        updateSubmitButton();
-    </script>
+        // Inisialisasi button status
+        updateSubmitButton();
+    </script>
 </body>
 </html>
