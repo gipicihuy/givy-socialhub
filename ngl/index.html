@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-z3gLPD7yknf1y5GQsVd7x8Cj32TqfR1MhR2z9qJ7X8O5T+w35l7GvB2T6F5QW+N" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        /* Gaya CSS internal yang sama dengan IQC Maker */
+        /* Gaya CSS internal yang sama persis dengan IQC Maker */
         .pure-black-bg{background-color:#000}
         .link-button{transition:all .3s ease}
         .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
@@ -17,10 +17,6 @@
         .form-input::placeholder{color:rgba(255,255,255,.5)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
-
-        /* Gaya Khusus untuk tampilan hasil NGL */
-        .status-success { color: #10b981; } /* Hijau (Emerald) */
-        .status-fail { color: #ef4444; } /* Merah (Red) */
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white font-sans min-h-screen">
@@ -43,7 +39,7 @@
                     <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-solid fa-envelope-open-text mr-1"></i>Anonymous Message
                     </label>
-                    <textarea id="message" name="message" rows="3" placeholder="Tulis pesan anonim di sini..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
+                    <textarea id="message" name="message" rows="3" placeholder="Write your anonymous message here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
                     <div class="text-right text-xs text-gray-500 mt-1">
                         <span id="char-count">0</span>/100 characters
                     </div>
@@ -54,13 +50,13 @@
                     </label>
                     <input type="number" id="count" name="count" min="1" max="25" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
                 </div>
-                <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-red-600/80 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-red-700 transition-all duration-300 mt-4">
+                <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4">
                     <i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam
                 </button>
             </form>
         </div>
 
-        <div id="result-area" class="w-full mt-6 text-center animate-entry" style="animation-delay:.5s">
+        <div id="result-area" class="w-full mt-6 text-center hidden">
             <h2 class="text-sm font-medium text-gray-300 mb-3">
                 <i class="fa-solid fa-list-check mr-1"></i>Spam Result
             </h2>
@@ -82,8 +78,8 @@
                 <div class="grid grid-cols-2 gap-2 text-xs">
                     <div class="flex justify-between border-b border-white/10 pb-1"><span>Target:</span> <span id="res-target" class="font-medium"></span></div>
                     <div class="flex justify-between border-b border-white/10 pb-1"><span>Attempts:</span> <span id="res-total" class="font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="font-success font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="font-fail font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="text-green-400 font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="text-red-400 font-medium"></span></div>
                     <div class="col-span-2 flex justify-between pt-2"><span>Rate:</span> <span id="res-rate" class="text-lg font-bold"></span></div>
                 </div>
                 
@@ -114,15 +110,18 @@
               resRate = document.getElementById("res-rate"),
               resDetails = document.getElementById("res-details"),
               charCount = document.getElementById("char-count"),
+              resultArea = document.getElementById("result-area"),
               API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
+
+        // Konstanta untuk ikon
+        const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
 
         // Fungsi untuk menampilkan pesan error
         function showError(message) {
-            errorMessage.querySelector("span").textContent = message;
-            errorMessage.classList.remove("hidden");
-            loadingSpinner.classList.add("hidden");
+            alert(message);
             sendButton.disabled = false;
-            sendButton.innerHTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+            sendButton.innerHTML = SEND_ICON_HTML;
         }
 
         // Listener untuk hitungan karakter
@@ -138,6 +137,7 @@
             errorMessage.classList.add("hidden");
             nglResultDisplay.classList.add("hidden");
             loadingSpinner.classList.add("hidden");
+            resultArea.classList.add("hidden");
             
             // 2. Ambil nilai input
             const username = usernameInput.value.trim();
@@ -157,8 +157,9 @@
 
             // 4. Proses (jika validasi lolos)
             sendButton.disabled = true;
-            sendButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
+            sendButton.innerHTML = PROCESSING_ICON_HTML;
             loadingSpinner.classList.remove("hidden");
+            resultArea.classList.remove("hidden");
 
             const encodedMessage = encodeURIComponent(message);
             const finalUrl = `${API_BASE_URL}?username=${username}&message=${encodedMessage}&count=${count}`;
@@ -182,7 +183,7 @@
                 // Sembunyikan loading dan kembalikan tombol
                 loadingSpinner.classList.add("hidden");
                 sendButton.disabled = false;
-                sendButton.innerHTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
+                sendButton.innerHTML = SEND_ICON_HTML;
             }
         });
 
@@ -196,17 +197,15 @@
 
             // Atur warna rate
             if (parseFloat(result.successRate) > 50) {
-                resRate.classList.add("status-success");
-                resRate.classList.remove("status-fail");
+                resRate.className = "text-lg font-bold text-green-400";
             } else {
-                resRate.classList.add("status-fail");
-                resRate.classList.remove("status-success");
+                resRate.className = "text-lg font-bold text-red-400";
             }
 
             // Tampilkan detail attempts
             resDetails.innerHTML = '';
             result.details.forEach(detail => {
-                const statusClass = detail.status === "Berhasil" ? 'status-success' : 'status-fail';
+                const statusClass = detail.status === "Berhasil" ? 'text-green-400' : 'text-red-400';
                 const icon = detail.status === "Berhasil" ? 'fa-check-circle' : 'fa-times-circle';
                 
                 const detailItem = document.createElement('div');
