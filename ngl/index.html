@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-envelope-open-text mr-1"></i>Anonymous Message
+                        <i class="fa-solid fa-message mr-1"></i>Anonymous Message
                     </label>
                     <textarea id="message" name="message" rows="3" placeholder="Write your anonymous message here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="100"></textarea>
                     <div class="text-right text-xs text-gray-500 mt-1">
@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <label for="count" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-arrow-up-9-1 mr-1"></i>Total Messages (Max 25)
+                        <i class="fa-solid fa-paper-plane mr-1"></i>Total Messages (Max 25)
                     </label>
                     <input type="number" id="count" name="count" min="1" max="25" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
                 </div>
@@ -58,7 +58,7 @@
 
         <div id="result-area" class="w-full mt-6 text-center hidden">
             <h2 class="text-sm font-medium text-gray-300 mb-3">
-                <i class="fa-solid fa-list-check mr-1"></i>Spam Result
+                <i class="fa-solid fa-chart-column mr-1"></i>Spam Result
             </h2>
             
             <div class="error hidden" id="error-message">
@@ -74,18 +74,52 @@
             </div>
             
             <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
-                <p class="text-xs font-bold text-gray-300 mb-2">Summary:</p>
-                <div class="grid grid-cols-2 gap-2 text-xs">
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Target:</span> <span id="res-target" class="font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Attempts:</span> <span id="res-total" class="font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="text-green-400 font-medium"></span></div>
-                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="text-red-400 font-medium"></span></div>
-                    <div class="col-span-2 flex justify-between pt-2"><span>Rate:</span> <span id="res-rate" class="text-lg font-bold"></span></div>
-                </div>
-                
-                <p class="text-xs font-bold text-gray-300 mt-4 mb-2 border-t border-white/10 pt-2">Details:</p>
-                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-1">
+                <!-- Ringkasan Hasil dengan Icon -->
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-user text-blue-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Target</p>
+                        <p id="res-target" class="text-sm font-bold text-white"></p>
                     </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-bullseye text-purple-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Total Attempts</p>
+                        <p id="res-total" class="text-sm font-bold text-white"></p>
+                    </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-check-circle text-green-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Success</p>
+                        <p id="res-success" class="text-sm font-bold text-green-400"></p>
+                    </div>
+                    <div class="bg-white/5 rounded p-3 text-center">
+                        <i class="fa-solid fa-times-circle text-red-400 text-lg mb-1"></i>
+                        <p class="text-xs text-gray-400">Failed</p>
+                        <p id="res-fail" class="text-sm font-bold text-red-400"></p>
+                    </div>
+                </div>
+
+                <!-- Success Rate dengan Progress Bar -->
+                <div class="mb-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-medium text-gray-300">
+                            <i class="fa-solid fa-chart-line mr-1"></i>Success Rate
+                        </span>
+                        <span id="res-rate" class="text-sm font-bold"></span>
+                    </div>
+                    <div class="w-full bg-white/10 rounded-full h-2">
+                        <div id="progress-bar" class="h-2 rounded-full transition-all duration-500"></div>
+                    </div>
+                </div>
+
+                <!-- Detail Attempts -->
+                <div class="border-t border-white/10 pt-3">
+                    <p class="text-xs font-bold text-gray-300 mb-2">
+                        <i class="fa-solid fa-list-ol mr-1"></i>Send Details:
+                    </p>
+                    <div id="res-details" class="space-y-2 max-h-40 overflow-y-auto text-xs">
+                        <!-- Detail attempts akan diisi oleh JavaScript -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -108,6 +142,7 @@
               resSuccess = document.getElementById("res-success"),
               resFail = document.getElementById("res-fail"),
               resRate = document.getElementById("res-rate"),
+              progressBar = document.getElementById("progress-bar"),
               resDetails = document.getElementById("res-details"),
               charCount = document.getElementById("char-count"),
               resultArea = document.getElementById("result-area"),
@@ -195,24 +230,39 @@
             resFail.textContent = result.failCount;
             resRate.textContent = result.successRate;
 
-            // Atur warna rate
-            if (parseFloat(result.successRate) > 50) {
-                resRate.className = "text-lg font-bold text-green-400";
+            // Progress bar berdasarkan success rate
+            const successRate = parseFloat(result.successRate);
+            progressBar.style.width = `${successRate}%`;
+            if (successRate > 70) {
+                progressBar.className = "h-2 rounded-full bg-green-500 transition-all duration-500";
+            } else if (successRate > 40) {
+                progressBar.className = "h-2 rounded-full bg-yellow-500 transition-all duration-500";
             } else {
-                resRate.className = "text-lg font-bold text-red-400";
+                progressBar.className = "h-2 rounded-full bg-red-500 transition-all duration-500";
             }
 
-            // Tampilkan detail attempts
+            // Tampilkan detail attempts dengan design yang lebih baik
             resDetails.innerHTML = '';
             result.details.forEach(detail => {
-                const statusClass = detail.status === "Berhasil" ? 'text-green-400' : 'text-red-400';
-                const icon = detail.status === "Berhasil" ? 'fa-check-circle' : 'fa-times-circle';
+                const statusClass = detail.status === "Berhasil" ? 
+                    'border-green-500/30 bg-green-500/10' : 
+                    'border-red-500/30 bg-red-500/10';
+                
+                const icon = detail.status === "Berhasil" ? 
+                    'fa-check-circle text-green-400' : 
+                    'fa-times-circle text-red-400';
+                
+                const statusText = detail.status === "Berhasil" ? 
+                    'text-green-400' : 'text-red-400';
                 
                 const detailItem = document.createElement('div');
-                detailItem.className = 'flex justify-between';
+                detailItem.className = `flex items-center justify-between border rounded p-2 ${statusClass}`;
                 detailItem.innerHTML = `
-                    <span>Attempt ${detail.attempt}:</span>
-                    <span class="${statusClass}"><i class="fa-solid ${icon} mr-1"></i>${detail.status}</span>
+                    <div class="flex items-center">
+                        <i class="fa-solid ${icon} mr-2"></i>
+                        <span class="text-white">Message #${detail.attempt}</span>
+                    </div>
+                    <span class="${statusText} text-xs font-medium">${detail.status}</span>
                 `;
                 resDetails.appendChild(detailItem);
             });
