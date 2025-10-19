@@ -6,8 +6,9 @@
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
     <title>Givy NGL Spam</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
+        /* Gaya CSS internal yang sama persis dengan IQC Maker */
         .pure-black-bg{background-color:#000}
         .link-button{transition:all .3s ease}
         .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
@@ -66,39 +67,25 @@
                     <span></span>
                 </div>
             </div>
-            
-            <div id="ngl-result-display" class="text-left p-4 bg-white/10 rounded border border-white/20">
-                <p class="text-xs font-bold text-gray-300 mb-3">Summary:</p>
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Target:</span>
-                        <span id="res-target" class="font-medium text-white"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Attempts:</span>
-                        <span id="res-total" class="font-medium text-white"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Success:</span>
-                        <span id="res-success" class="font-medium text-green-400"></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">Fail:</span>
-                        <span id="res-fail" class="font-medium text-red-400"></span>
-                    </div>
-                </div>
 
-                <div class="mt-4 pt-3 border-t border-white/10">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-bold text-gray-300">Success Rate:</span>
-                        <span id="res-rate" class="text-lg font-bold text-green-400"></span>
-                    </div>
+            <div class="loading hidden" id="loading-spinner">
+                <i class="fa-solid fa-spinner fa-spin text-xl text-gray-400"></i>
+                <p class="text-xs text-gray-400 mt-2">Sending messages... Please wait.</p>
+            </div>
+            
+            <div id="ngl-result-display" class="hidden text-left p-4 bg-white/10 rounded border border-white/20">
+                <p class="text-xs font-bold text-gray-300 mb-2">Summary:</p>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Target:</span> <span id="res-target" class="font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Attempts:</span> <span id="res-total" class="font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Success:</span> <span id="res-success" class="text-green-400 font-medium"></span></div>
+                    <div class="flex justify-between border-b border-white/10 pb-1"><span>Fail:</span> <span id="res-fail" class="text-red-400 font-medium"></span></div>
+                    <div class="col-span-2 flex justify-between pt-2"><span>Rate:</span> <span id="res-rate" class="text-lg font-bold"></span></div>
                 </div>
                 
-                <p class="text-xs font-bold text-gray-300 mt-4 mb-2">Details:</p>
-                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-2 p-2 bg-black/20 rounded">
-                    <!-- Details will appear here -->
-                </div>
+                <p class="text-xs font-bold text-gray-300 mt-4 mb-2 border-t border-white/10 pt-2">Details:</p>
+                <div id="res-details" class="max-h-40 overflow-y-auto text-xs space-y-1">
+                    </div>
             </div>
         </div>
 
@@ -114,6 +101,7 @@
               countInput = document.getElementById("count"),
               sendButton = document.getElementById("send-button"),
               errorMessage = document.getElementById("error-message"),
+              loadingSpinner = document.getElementById("loading-spinner"),
               nglResultDisplay = document.getElementById("ngl-result-display"),
               resTarget = document.getElementById("res-target"),
               resTotal = document.getElementById("res-total"),
@@ -147,6 +135,8 @@
             
             // 1. Reset tampilan
             errorMessage.classList.add("hidden");
+            nglResultDisplay.classList.add("hidden");
+            loadingSpinner.classList.add("hidden");
             resultArea.classList.add("hidden");
             
             // 2. Ambil nilai input
@@ -168,6 +158,7 @@
             // 4. Proses (jika validasi lolos)
             sendButton.disabled = true;
             sendButton.innerHTML = PROCESSING_ICON_HTML;
+            loadingSpinner.classList.remove("hidden");
             resultArea.classList.remove("hidden");
 
             const encodedMessage = encodeURIComponent(message);
@@ -189,7 +180,8 @@
                 console.error("Fetch error:", error);
                 showError("Network error. Could not reach the API server.");
             } finally {
-                // Kembalikan tombol
+                // Sembunyikan loading dan kembalikan tombol
+                loadingSpinner.classList.add("hidden");
                 sendButton.disabled = false;
                 sendButton.innerHTML = SEND_ICON_HTML;
             }
@@ -217,12 +209,10 @@
                 const icon = detail.status === "Berhasil" ? 'fa-check-circle' : 'fa-times-circle';
                 
                 const detailItem = document.createElement('div');
-                detailItem.className = 'flex justify-between items-center py-1 px-2 rounded hover:bg-white/5';
+                detailItem.className = 'flex justify-between';
                 detailItem.innerHTML = `
-                    <span class="text-gray-300">Attempt ${detail.attempt}</span>
-                    <span class="${statusClass} font-medium">
-                        <i class="fa-solid ${icon} mr-1"></i>${detail.status}
-                    </span>
+                    <span>Attempt ${detail.attempt}:</span>
+                    <span class="${statusClass}"><i class="fa-solid ${icon} mr-1"></i>${detail.status}</span>
                 `;
                 resDetails.appendChild(detailItem);
             });
