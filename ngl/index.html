@@ -33,7 +33,13 @@
                     <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-brands fa-instagram mr-1"></i>NGL Username (Target)
                     </label>
-                    <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm">
+                    <div class="relative">
+                        <input type="text" id="username" name="username" placeholder="e.g., dnxu" class="form-input w-full py-2 px-3 rounded text-sm pr-24">
+                        <div id="username-status" class="absolute right-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-1">
+                            <span id="status-text" class="text-xs hidden"></span>
+                            <i id="status-icon" class="text-xs hidden"></i>
+                        </div>
+                    </div>
                 </div>
                 <div>
                     <label for="message" class="block text-xs font-medium text-gray-300 mb-1">
@@ -140,11 +146,17 @@
               resDetails = document.getElementById("res-details"),
               charCount = document.getElementById("char-count"),
               resultArea = document.getElementById("result-area"),
+              statusText = document.getElementById("status-text"),
+              statusIcon = document.getElementById("status-icon"),
               API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
 
         // Konstanta untuk ikon
         const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
         const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
+
+        // Variabel untuk debounce
+        let usernameCheckTimeout;
+        let lastCheckedUsername = '';
 
         // Fungsi untuk menampilkan pesan error
         function showError(message) {
@@ -152,6 +164,154 @@
             sendButton.disabled = false;
             sendButton.innerHTML = SEND_ICON_HTML;
         }
+
+        // Fungsi untuk menampilkan status username
+        function showUsernameStatus(status, message) {
+            statusText.textContent = message;
+            statusText.classList.remove('hidden');
+            statusIcon.classList.remove('hidden');
+            
+            // Reset semua kelas
+            statusText.className = 'text-xs';
+            statusIcon.className = 'text-xs';
+            
+            switch(status) {
+                case 'checking':
+                    statusText.classList.add('text-yellow-400');
+                    statusIcon.className = 'fas fa-spinner fa-spin text-yellow-400';
+                    break;
+                case 'valid':
+                    statusText.classList.add('text-green-400');
+                    statusIcon.className = 'fas fa-check-circle text-green-400';
+                    break;
+                case 'invalid':
+                    statusText.classList.add('text-red-400');
+                    statusIcon.className = 'fas fa-times-circle text-red-400';
+                    break;
+                case 'error':
+                    statusText.classList.add('text-orange-400');
+                    statusIcon.className = 'fas fa-exclamation-triangle text-orange-400';
+                    break;
+                case 'empty':
+                    statusText.classList.add('hidden');
+                    statusIcon.classList.add('hidden');
+                    break;
+            }
+        }
+
+        // Fungsi untuk memeriksa username NGL
+        async function checkUsername(username) {
+            if (!username || username.length < 2) {
+                showUsernameStatus('empty', '');
+                return;
+            }
+            
+            // Cegah request duplikat untuk username yang sama
+            if (username === lastCheckedUsername) {
+                return;
+            }
+            
+            lastCheckedUsername = username;
+            showUsernameStatus('checking', 'Checking...');
+            
+            try {
+                // Gunakan proxy CORS untuk menghindari masalah CORS
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+                const targetUrl = `https://ngl.link/${username}`;
+                
+                const response = await fetch(proxyUrl + targetUrl, {
+                    method: 'GET',
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                    }
+                });
+                
+                const html = await response.text();
+                const finalUrl = response.url;
+                
+                // Cek jika redirect ke halaman lain (biasanya berarti username tidak ada)
+                if (!finalUrl.includes(`ngl.link/${username}`)) {
+                    showUsernameStatus('invalid', 'Not found');
+                    return;
+                }
+                
+                // Pattern matching untuk konten NGL yang spesifik
+                const content = html.toLowerCase();
+                
+                // Keyword yang biasanya ada di profile NGL valid
+                const nglIndicators = [
+                    'send anonymous messages',
+                    'ask me anything',
+                    'ngl.link',
+                    'anonymous questions',
+                    'type your question',
+                    'submit'
+                ];
+                
+                let foundIndicators = 0;
+                for (const indicator of nglIndicators) {
+                    if (content.includes(indicator)) {
+                        foundIndicators++;
+                    }
+                }
+                
+                // Keyword yang biasanya ada di halaman error/not found
+                const errorIndicators = [
+                    'page not found',
+                    'does not exist',
+                    'not found',
+                    '404',
+                    'error'
+                ];
+                
+                let foundErrors = 0;
+                for (const error of errorIndicators) {
+                    if (content.includes(error)) {
+                        foundErrors++;
+                    }
+                }
+                
+                // Logic decision berdasarkan Python script
+                if (response.status === 404) {
+                    showUsernameStatus('invalid', 'Not found');
+                } else if (response.status === 200) {
+                    if (foundIndicators >= 2) {  // Minimal 2 indicator NGL
+                        showUsernameStatus('valid', 'Valid profile');
+                    } else if (foundErrors >= 2) {
+                        showUsernameStatus('invalid', 'Invalid');
+                    } else {
+                        showUsernameStatus('error', 'Unclear');
+                    }
+                } else {
+                    showUsernameStatus('error', `HTTP ${response.status}`);
+                }
+                
+            } catch (error) {
+                console.error('Error checking username:', error);
+                showUsernameStatus('error', 'Check failed');
+            }
+        }
+
+        // Listener untuk input username dengan debounce
+        usernameInput.addEventListener('input', function() {
+            const username = this.value.trim();
+            
+            // Clear timeout sebelumnya
+            clearTimeout(usernameCheckTimeout);
+            
+            // Reset status jika kosong
+            if (!username) {
+                showUsernameStatus('empty', '');
+                lastCheckedUsername = '';
+                return;
+            }
+            
+            // Set timeout baru untuk debounce (500ms)
+            usernameCheckTimeout = setTimeout(() => {
+                checkUsername(username);
+            }, 500);
+        });
 
         // Listener untuk hitungan karakter
         messageInput.addEventListener("input", function() {
