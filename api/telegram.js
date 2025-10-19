@@ -6,31 +6,38 @@ export default async function handler(request, response) {
         return response.status(405).json({ error: 'Method Not Allowed' });
     }
 
-    const { quote, chatTime, statusBarTime } = request.body;
+    const { quote, chatTime, statusBarTime, nglReport } = request.body;
     
-    // --- DATA BARU DARI REQUEST HEADER ---
     const userAgent = request.headers['user-agent'] || 'N/A';
-    // Vercel sering menggunakan x-real-ip atau cf-connecting-ip untuk mendapatkan IP asli
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
-    // ------------------------------------
-
-    if (!quote) {
-        return response.status(400).json({ error: 'Quote text is required.' });
-    }
 
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
     
-    // --- STRUKTUR PESAN BARU YANG DIRAPATKAN ---
-    const message = `*✨ NEW IQC GENERATED ✨*\n` + 
-                    `\n*⏰ Info Waktu Chat:*\n` + 
-                    `- Chat Time: \`${chatTime}\`\n` + 
-                    `- Status Bar: \`${statusBarTime}\`\n` +
-                    `\n*📜 Quote Text:*\n` +
-                    `\`\`\`\n${quote}\n\`\`\`\n` +
-                    `\n*👤 Data Pengguna:*\n` +
-                    `- IP Address: \`${ipAddress}\`\n` +
-                    `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                    `\n_🕒 Dibuat pada: ${timestamp}_`; // Garis terakhir tidak perlu \n
+    let message;
+    
+    // JIKA INI NGL SPAM REPORT
+    if (nglReport) {
+        message = `${nglReport}\n\n` +
+                 `*👤 Data Pengguna:*\n` +
+                 `- IP Address: \`${ipAddress}\`\n` +
+                 `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                 `\n_🕒 Dilaporkan pada: ${timestamp}_`;
+    }
+    // JIKA INI IQC GENERATED (FORMAT LAMA)
+    else if (quote) {
+        message = `*✨ NEW IQC GENERATED ✨*\n` + 
+                 `\n*⏰ Info Waktu Chat:*\n` + 
+                 `- Chat Time: \`${chatTime}\`\n` + 
+                 `- Status Bar: \`${statusBarTime}\`\n` +
+                 `\n*📜 Quote Text:*\n` +
+                 `\`\`\`\n${quote}\n\`\`\`\n` +
+                 `\n*👤 Data Pengguna:*\n` +
+                 `- IP Address: \`${ipAddress}\`\n` +
+                 `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                 `\n_🕒 Dibuat pada: ${timestamp}_`;
+    } else {
+        return response.status(400).json({ error: 'Quote text or NGL report is required.' });
+    }
 
     const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
