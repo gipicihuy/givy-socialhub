@@ -1,4 +1,4 @@
-// File: api/tweet.js (FINAL VERSION: Optimasi Kecepatan dengan Non-Blocking Telegram)
+// File: api/tweet.js (FIXED VERSION: Reliable Telegram Notification)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
@@ -6,10 +6,8 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 const sendNotificationToTelegram = async (name, username, tweetContent, avatarUrl, ipAddress, userAgent) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
-    // Menggunakan tiga backtick (\x60\x60\x60) untuk Code Block
     const formattedTweetContent = "\x60\x60\x60\n" + tweetContent.substring(0, 500) + "\n\x60\x60\x60"; 
 
-    // Structure pesan Telegram yang disempurnakan
     const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
                     `*👤 Data Pengguna:*\n` + 
                     `- Name: \`${name}\`\n` + 
@@ -22,7 +20,7 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        await fetch(telegramApiUrl, {
+        const res = await fetch(telegramApiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -32,9 +30,17 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
                 disable_web_page_preview: true, 
             }),
         });
-        console.log('Telegram notification sent successfully.');
+
+        if (res.ok) {
+            console.log('✅ Telegram notification sent successfully.');
+            return true;
+        } else {
+            console.error('❌ Telegram API error:', await res.text());
+            return false;
+        }
     } catch (error) {
-        console.error('Error sending Telegram notification:', error);
+        console.error('❌ Error sending Telegram notification:', error);
+        return false;
     }
 };
 
@@ -53,7 +59,6 @@ export default async function handler(request, response) {
 
     // --- Proses Download Langsung (Direct Download) ---
     if (isDownload) {
-        // ... (Kode Download tetap sama)
         try {
             const imageResponse = await fetch(imageUrl);
             if (!imageResponse.ok) {
@@ -74,20 +79,18 @@ export default async function handler(request, response) {
 
     // --- Proses Pembuatan (Generate) dan Notifikasi (GET) ---
     
-    // 1. KIRIM NOTIFIKASI SECARA NON-BLOCKING!
-    // Kita panggil fungsi notifikasi TANPA 'await' di sini.
-    // Ini membuat Vercel API dapat merespons frontend dengan cepat, 
-    // sementara proses Telegram berjalan di latar belakang.
+    // ✅ PENTING: GUNAKAN AWAIT untuk memastikan notifikasi terkirim SEBELUM merespons
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
         const tweetContent = comment || 'N/A'; 
         const urlAvatar = avatarUrl || 'N/A';
         
-        sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
+        // Tunggu sampai Telegram notification berhasil dikirim
+        await sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
     }
 
-    // 2. Kirim URL Gambar kembali ke frontend SEGERA
+    // Setelah notifikasi berhasil, baru kirim respons ke frontend
     return response.status(200).json({ 
         status: 'ok', 
         imageUrl: imageUrl 
