@@ -270,24 +270,36 @@
         avatarPreview.src = previewUrl;
 
         try {
-            const buffer = await file.arrayBuffer();
-            const response = await fetch(UPLOAD_ENDPOINT, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/octet-stream',
-                },
-                body: buffer
-            });
+            // Convert to base64
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result;
+                
+                const response = await fetch(UPLOAD_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ base64 })
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (data.success && data.url) {
-                uploadedAvatarUrl = data.url;
-                uploadStatus.textContent = '✅ Uploaded';
-                console.log('Avatar URL:', uploadedAvatarUrl);
-            } else {
-                throw new Error(data.error || 'Upload failed');
-            }
+                if (data.success && data.url) {
+                    uploadedAvatarUrl = data.url;
+                    uploadStatus.textContent = '✅ Uploaded';
+                    console.log('Avatar URL:', uploadedAvatarUrl);
+                } else {
+                    throw new Error(data.error || 'Upload failed');
+                }
+            };
+            
+            reader.onerror = () => {
+                throw new Error('Failed to read file');
+            };
+            
+            reader.readAsDataURL(file);
+            
         } catch (error) {
             console.error('Upload error:', error);
             uploadStatus.textContent = '❌ Failed';
