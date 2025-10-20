@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
+        /* Style yang sama dengan IQC Maker */
         .pure-black-bg{background-color:#000}
         .link-button{transition:all .3s ease}
         .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
@@ -16,6 +17,9 @@
         .form-input::placeholder{color:rgba(255,255,255,.5)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        .instruction-box{border: 1px solid rgba(255,255,255,0.2); background-color: rgba(255,255,255,0.05);}
+        
+        /* Gaya untuk Modal */
         .modal {
             background-color: rgba(0, 0, 0, 0.9);
             z-index: 50; 
@@ -25,28 +29,15 @@
             max-height: 90vh;
             object-fit: contain;
         }
-        .avatar-preview {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-        }
-        .upload-zone {
-            border: 2px dashed rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .upload-zone:hover {
-            border-color: rgba(255, 255, 255, 0.6);
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-        .upload-zone.dragover {
-            border-color: rgba(255, 255, 255, 0.8);
-            background-color: rgba(255, 255, 255, 0.1);
+        /* Custom class untuk menonjolkan teks ekstensi file */
+        .file-ext {
+            font-weight: bold;
+            color: #fff; /* Warna putih */
+            background-color: rgba(255, 255, 255, 0.1); /* Latar belakang sedikit gelap */
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.7rem; /* sedikit lebih kecil dari teks normal */
         }
     </style>
 </head>
@@ -84,40 +75,16 @@
                     <textarea id="comment" name="comment" rows="3" placeholder="Write the tweet content here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" required></textarea>
                 </div>
 
-                <!-- Avatar Upload -->
                 <div>
-                    <label class="block text-xs font-medium text-gray-300 mb-2">
-                        <i class="fa-solid fa-image mr-1"></i>Avatar Upload
+                    <label for="avatarUrl" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-link mr-1"></i>Public Avatar URL
                     </label>
-                    
-                    <!-- Upload Zone -->
-                    <div id="upload-zone" class="upload-zone">
-                        <input type="file" id="avatar-file" accept="image/*" style="display:none">
-                        <div id="upload-text">
-                            <i class="fa-solid fa-cloud-arrow-up text-2xl mb-2 block"></i>
-                            <p class="text-xs text-gray-300">Click or drag image here</p>
-                            <p class="text-xs text-gray-500 mt-1">Max 5MB (JPG, PNG, WebP, GIF)</p>
-                        </div>
-                    </div>
-
-                    <!-- Avatar Preview -->
-                    <div id="avatar-preview-container" class="hidden flex items-center justify-between bg-white/5 p-3 rounded border border-white/10 mt-2">
-                        <div class="flex items-center gap-2 flex-1">
-                            <img id="avatar-preview" class="avatar-preview" src="" alt="Avatar preview">
-                            <div class="flex-1 min-w-0">
-                                <p id="file-name" class="text-xs font-medium text-white truncate">filename.jpg</p>
-                                <p id="upload-status" class="text-xs text-gray-400">✅ Ready</p>
-                            </div>
-                        </div>
-                        <button type="button" id="remove-avatar" class="ml-2 text-red-400 hover:text-red-300 text-sm flex-shrink-0">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </div>
+                    <input type="url" id="avatarUrl" name="avatarUrl" placeholder="Paste Avatar URL from qu.ax" value="https://qu.ax/HSBLZ.jpg" class="form-input w-full py-2 px-3 rounded text-sm" required>
                 </div>
                 
                 <div class="flex items-center justify-between py-2">
                     <label for="verified" class="block text-xs font-medium text-gray-300">
-                        <i class="fa-solid fa-circle-check mr-1 text-blue-400"></i> Verified Account
+                        <i class="fa-solid fa-circle-check mr-1 text-blue-400"></i> Verified Account (Blue Check)
                     </label>
                     <input type="checkbox" id="verified" name="verified" class="form-input h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 </div>
@@ -126,6 +93,18 @@
                     <i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet
                 </button>
             </form>
+
+            <div class="instruction-box p-3 rounded space-y-2 mt-4">
+                <h3 class="text-sm font-bold flex items-center text-gray-200">
+                    <i class="fa-solid fa-circle-info mr-2 text-gray-400"></i> Cara Mendapatkan URL Avatar
+                </h3>
+                <ol class="list-decimal list-inside text-xs text-gray-400 space-y-1">
+                    <li class="pl-1">Buka situs <a href="https://qu.ax/" target="_blank" class="text-blue-400 hover:underline font-medium">https://qu.ax/</a></li>
+                    <li class="pl-1">Upload gambar avatar yang ingin Anda gunakan.</li>
+                    <li class="pl-1">Setelah selesai diupload, <span class="font-bold text-white">copy URL gambar</span> (Pastikan link berakhir dengan <span class="file-ext">.jpg</span>, <span class="file-ext">.png</span>, dll.).</li>
+                    <li class="pl-1">Tempel (Paste) URL tersebut pada kolom <span class="font-bold text-white">Public Avatar URL</span> di atas.</li>
+                </ol>
+            </div>
             </div>
         
         <div id="result-area" class="w-full mt-6 text-center hidden"> 
@@ -171,6 +150,7 @@
     const nameInput = document.getElementById("name");
     const usernameInput = document.getElementById("username");
     const commentInput = document.getElementById("comment");
+    const avatarUrlInput = document.getElementById("avatarUrl");
     const verifiedInput = document.getElementById("verified");
 
     const tweetImage = document.getElementById("tweet-image");
@@ -181,30 +161,22 @@
     const resultArea = document.getElementById("result-area");
     const clickToZoom = document.getElementById("click-to-zoom");
 
-    // Upload related
-    const uploadZone = document.getElementById("upload-zone");
-    const avatarFile = document.getElementById("avatar-file");
-    const avatarPreviewContainer = document.getElementById("avatar-preview-container");
-    const avatarPreview = document.getElementById("avatar-preview");
-    const fileName = document.getElementById("file-name");
-    const uploadStatus = document.getElementById("upload-status");
-    const removeAvatarBtn = document.getElementById("remove-avatar");
-    const uploadText = document.getElementById("upload-text");
-
     // Modal elements
     const imageModal = document.getElementById("image-modal");
     const modalImage = document.getElementById("modal-image");
     const closeModalButton = document.getElementById("close-modal");
 
+    // Endpoint Vercel yang menangani generation, notifikasi, dan download
     const VERCEL_API_ENDPOINT = "/api/tweet";
+    // Endpoint API eksternal yang membuat gambar
     const EXTERNAL_API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
-    const UPLOAD_ENDPOINT = "/api/upload";
+
 
     const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
     const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
+    // Variabel untuk menyimpan URL gambar yang dihasilkan
     let generatedImageUrl = '';
-    let uploadedAvatarUrl = '';
 
     function showError(message) {
         errorMessage.classList.remove("hidden");
@@ -220,104 +192,11 @@
         tweetImage.classList.remove("hidden");
         downloadSection.classList.remove("hidden");
         clickToZoom.classList.remove("hidden"); 
+        
         tweetImage.src = imageUrl;
     }
 
-    // Upload handling
-    uploadZone.addEventListener('click', () => avatarFile.click());
-
-    avatarFile.addEventListener('change', (e) => {
-        const file = e.target.files?.[0];
-        if (file) uploadFile(file);
-    });
-
-    uploadZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadZone.classList.add('dragover');
-    });
-
-    uploadZone.addEventListener('dragleave', () => {
-        uploadZone.classList.remove('dragover');
-    });
-
-    uploadZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        uploadZone.classList.remove('dragover');
-        const file = e.dataTransfer?.files?.[0];
-        if (file && file.type.startsWith('image/')) {
-            avatarFile.files = e.dataTransfer.files;
-            uploadFile(file);
-        }
-    });
-
-    async function uploadFile(file) {
-        if (!file.type.startsWith('image/')) {
-            alert('Hanya file gambar yang diterima!');
-            return;
-        }
-
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Ukuran file maksimal 5MB!');
-            return;
-        }
-
-        uploadText.style.display = 'none';
-        avatarPreviewContainer.classList.remove('hidden');
-        fileName.textContent = file.name;
-        uploadStatus.textContent = '⏳ Uploading...';
-
-        const previewUrl = URL.createObjectURL(file);
-        avatarPreview.src = previewUrl;
-
-        try {
-            // Convert to base64
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const base64 = e.target.result;
-                
-                const response = await fetch(UPLOAD_ENDPOINT, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ base64 })
-                });
-
-                const data = await response.json();
-
-                if (data.success && data.url) {
-                    uploadedAvatarUrl = data.url;
-                    uploadStatus.textContent = '✅ Uploaded';
-                    console.log('Avatar URL:', uploadedAvatarUrl);
-                } else {
-                    throw new Error(data.error || 'Upload failed');
-                }
-            };
-            
-            reader.onerror = () => {
-                throw new Error('Failed to read file');
-            };
-            
-            reader.readAsDataURL(file);
-            
-        } catch (error) {
-            console.error('Upload error:', error);
-            uploadStatus.textContent = '❌ Failed';
-            uploadStatus.classList.add('text-red-400');
-            alert('Upload gagal: ' + error.message);
-            uploadedAvatarUrl = '';
-        }
-    }
-
-    removeAvatarBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        uploadedAvatarUrl = '';
-        avatarPreviewContainer.classList.add('hidden');
-        uploadText.style.display = 'block';
-        avatarFile.value = '';
-    });
-
-    // Modal
+    // --- LOGIC MODAL ---
     tweetImage.addEventListener('click', () => {
         if (generatedImageUrl) {
             modalImage.src = generatedImageUrl;
@@ -335,6 +214,17 @@
         }
     });
 
+    // --- Auto-select link saat diklik/difokus ---
+    avatarUrlInput.addEventListener('click', () => {
+        avatarUrlInput.select();
+    });
+    // Agar bekerja juga saat di-tab atau difokus
+    avatarUrlInput.addEventListener('focus', () => {
+        avatarUrlInput.select();
+    });
+    // ----------------------------------------------------
+
+    // --- LOGIC FORM SUBMIT (Menggunakan GET untuk GENERATE & Notifikasi) ---
     form.addEventListener("submit", async function(e) {
         e.preventDefault();
         
@@ -347,22 +237,27 @@
         generateButton.disabled = true;
         generateButton.innerHTML = PROCESSING_ICON_HTML;
 
+        // Ambil nilai dari input
         const name = nameInput.value.trim();
-        const username = usernameInput.value.trim().replace('@', '');
+        const username = usernameInput.value.trim().replace('@', ''); 
         const comment = commentInput.value.trim();
-        const avatarUrl = uploadedAvatarUrl;
+        const avatarUrl = avatarUrlInput.value.trim(); // Ambil URL Avatar
         const verified = verifiedInput.checked ? 'true' : 'false';
 
         if (!name || !username || !comment || !avatarUrl) {
-            showError("Isi semua field termasuk upload avatar!");
+            showError("All fields must be filled!");
             return;
         }
 
+        // 1. Buat URL API Eksternal (URL gambar final)
         const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(avatarUrl)}&verified=${verified}`;
         
+        // 2. Buat URL API VERCEL (Menggunakan Query String untuk GET)
+        // Menambahkan 'comment' dan 'avatarUrl' ke query string
         const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatarUrl=${encodeURIComponent(avatarUrl)}`;
 
         try {
+            // Permintaan GET ke Vercel API
             const response = await fetch(vercelApiUrl, {
                 method: 'GET' 
             });
@@ -374,6 +269,7 @@
             const data = await response.json();
             
             if (data.status === 'ok' && data.imageUrl) {
+                // 3. Tampilkan hasil jika sukses (Notifikasi teks sudah terkirim di backend)
                 showSuccess(data.imageUrl);
             } else {
                 throw new Error(data.message || 'Unknown API error.');
@@ -381,15 +277,17 @@
             
         } catch (error) {
             console.error("Fetch error:", error);
-            showError(`Generation failed: ${error.message}`);
+            showError(`Generation failed. Details: ${error.message}`);
         } finally {
             generateButton.disabled = false;
             generateButton.innerHTML = GENERATE_ICON_HTML;
         }
     });
     
+    // --- LOGIC DOWNLOAD (Menggunakan GET untuk Download Langsung) ---
     downloadButton.addEventListener('click', () => {
         if (generatedImageUrl) {
+            // Panggil Vercel API dengan parameter download=true
             const usernameForFile = usernameInput.value.trim().replace('@', '');
             window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true&username=${encodeURIComponent(usernameForFile)}`;
         }
