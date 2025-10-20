@@ -2,13 +2,11 @@
   "name": "givy-socialhub",
   "version": "1.0.0",
   "description": "Fake Tweet Maker API",
+  "type": "module",
   "dependencies": {
     "node-fetch": "^2.6.7",
     "@vercel/multiparty": "^1.0.0",
     "formdata-node": "^4.3.2" 
-    // Tambahkan dependency lain jika ada (misal: dotenv)
-  },
-  "scripts": {
-    "start": "node index.html" // Biasanya tidak relevan untuk Vercel Static/Serverless
+    //
   }
 }
