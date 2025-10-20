@@ -69,19 +69,14 @@
                     <div class="flex items-center space-x-3">
                         <div class="flex-1">
                             <input type="file" id="avatarUpload" accept="image/*" class="hidden">
-                            <button type="button" id="uploadButton" class="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm font-medium transition-all duration-300 w-full">
+                            <button type="button" id="uploadButton" class="link-button flex items-center justify-center bg-white/10 hover:bg-white/20 text-white py-2 px-3 rounded text-sm font-medium transition-all duration-300 w-full border border-white/20">
                                 <i class="fa-solid fa-image mr-2"></i>Choose Avatar
                             </button>
                         </div>
                         
                         <div id="avatarPreview" class="hidden">
-                            <img id="previewImage" class="w-12 h-12 rounded-full object-cover border-2 border-green-400">
+                            <img id="previewImage" class="w-12 h-12 rounded-full object-cover border-2 border-white/30">
                         </div>
-                    </div>
-                    
-                    <div id="uploadStatus" class="flex items-center text-xs text-gray-400 mt-2 hidden">
-                        <i class="fa-solid fa-spinner fa-spin mr-2"></i>
-                        <span>Processing...</span>
                     </div>
                 </div>
                 
@@ -92,7 +87,7 @@
                     <input type="checkbox" id="verified" name="verified" class="form-input h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 </div>
 
-                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4">
+                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4 border border-white/20">
                     <i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet
                 </button>
             </form>
@@ -116,7 +111,7 @@
             </div>
             
             <div id="download-section" class="hidden mt-3">
-                <button id="download-button" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300">
+                <button id="download-button" class="link-button inline-flex items-center justify-center bg-white/10 hover:bg-white/20 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300 border border-white/20">
                     <i class="fa-solid fa-download mr-2"></i>Download
                 </button>
             </div>
@@ -159,7 +154,6 @@
     // Upload elements
     const avatarUpload = document.getElementById("avatarUpload");
     const uploadButton = document.getElementById("uploadButton");
-    const uploadStatus = document.getElementById("uploadStatus");
     const avatarPreview = document.getElementById("avatarPreview");
     const previewImage = document.getElementById("previewImage");
 
@@ -240,8 +234,8 @@
 
     async function uploadFile(file) {
         try {
-            uploadStatus.classList.remove('hidden');
             uploadButton.disabled = true;
+            const originalHTML = uploadButton.innerHTML;
             uploadButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
             const base64 = await fileToBase64(file);
@@ -264,6 +258,7 @@
                 URL.revokeObjectURL(previewImage.src);
                 
                 showMessage('Avatar ready!', 'success');
+                uploadButton.innerHTML = originalHTML;
             } else {
                 throw new Error(data.error || 'Upload failed');
             }
@@ -272,10 +267,9 @@
             console.error('Upload error:', error);
             showMessage(`Failed to process image`, 'error');
             avatarPreview.classList.add('hidden');
-        } finally {
-            uploadStatus.classList.add('hidden');
-            uploadButton.disabled = false;
             uploadButton.innerHTML = '<i class="fa-solid fa-image mr-2"></i>Choose Avatar';
+        } finally {
+            uploadButton.disabled = false;
             avatarUpload.value = '';
         }
     }
