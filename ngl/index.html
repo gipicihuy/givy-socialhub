@@ -3,32 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'></svg>">
+    <link rel="icon" type="image/png" href="https://qu.ax/aqgyC.jpg">
     <title>Givy NGL Spam</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        body { font-family: 'Cousine', monospace; }
-        .pure-black-bg { background-color: #000; }
-        .link-button { transition: all .3s ease; }
-        .link-button:hover { transform: scale(1.02); box-shadow: 0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06); }
-        .form-input { background-color: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #fff; transition: all .3s ease; }
-        .form-input:focus { background-color: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); box-shadow: 0 0 0 2px rgba(255,255,255,.1); }
-        .form-input::placeholder { color: rgba(255,255,255,.5); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-entry { opacity: 0; animation: fadeIn .8s ease-out forwards; }
-        .button-disabled { opacity: 0.6; cursor: not-allowed; }
-        .button-disabled:hover { transform: none; box-shadow: none; }
+        /* MENGATUR SEMUA FONT MENJADI COUSINE */
+        body {
+            font-family: 'Cousine', monospace;
+        }
+        .pure-black-bg{background-color:#000}
+        .link-button{transition:all .3s ease}
+        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
+        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
+        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
+        .form-input::placeholder{color:rgba(255,255,255,.5)}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        .button-disabled{opacity:0.6;cursor:not-allowed}
+        .button-disabled:hover{transform:none;box-shadow:none}
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white min-h-screen">
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
         <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
-            <img id="profile-image" src="" alt="Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <h1 id="profile-name" class="text-xl font-bold tracking-wider uppercase mb-0 text-white"></h1>
-            <p id="profile-tagline" class="text-xs text-gray-400 italic"></p>
-            <p id="profile-desc" class="mt-1 text-xs text-gray-300 max-w-xs"></p>
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgNFtKPgqKyS_jC5oOPR5_J1YLi5h6-JdNO-JoTIyzQG-CvPcfLqyP6RRLJPhu6yzKhrF7-HkhJq3y8_1l6bWPmmZ54Xu8-X79BFzF20viHbSAuyo6hSqlL5_43EYAWZduuh-ml61ZFqZqMiqXu6FIuyG2AI94NQBq2PoEQu2za9a4iPN-HHjASCvSRS0/w400-h248/Logo%20Monkey%20D.%20Luffy%20(Logo%20One%20Piece).png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
+            <p class="text-xs text-gray-400 italic">NGL Spam Sender</p>
+            <p class="mt-1 text-xs text-gray-300 max-w-xs">Send Anonymous Messages Repeatedly</p>
         </div>
         
         <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
@@ -129,42 +132,27 @@
         </div>
     </div>
     
-    <script type="module">
-        import { CONFIG } from '../config.js';
+    <script>
+        const form = document.getElementById("ngl-form"),
+            usernameInput = document.getElementById("username"),
+            messageInput = document.getElementById("message"),
+            countInput = document.getElementById("count"),
+            sendButton = document.getElementById("send-button"),
+            errorMessage = document.getElementById("error-message"),
+            nglResultDisplay = document.getElementById("ngl-result-display"),
+            resTarget = document.getElementById("res-target"),
+            resTotal = document.getElementById("res-total"),
+            resSuccess = document.getElementById("res-success"),
+            resFail = document.getElementById("res-fail"),
+            resRate = document.getElementById("res-rate"),
+            progressBar = document.getElementById("progress-bar"),
+            resDetails = document.getElementById("res-details"),
+            charCount = document.getElementById("char-count"),
+            resultArea = document.getElementById("result-area"),
+            statusText = document.getElementById("status-text"),
+            statusIcon = document.getElementById("status-icon"),
+            API_BASE_URL = "https://api.eberardos.my.id/tools/ngl";
 
-        const form = document.getElementById("ngl-form");
-        const usernameInput = document.getElementById("username");
-        const messageInput = document.getElementById("message");
-        const countInput = document.getElementById("count");
-        const sendButton = document.getElementById("send-button");
-        const errorMessage = document.getElementById("error-message");
-        const nglResultDisplay = document.getElementById("ngl-result-display");
-        const resTarget = document.getElementById("res-target");
-        const resTotal = document.getElementById("res-total");
-        const resSuccess = document.getElementById("res-success");
-        const resFail = document.getElementById("res-fail");
-        const resRate = document.getElementById("res-rate");
-        const progressBar = document.getElementById("progress-bar");
-        const resDetails = document.getElementById("res-details");
-        const charCount = document.getElementById("char-count");
-        const resultArea = document.getElementById("result-area");
-        const statusText = document.getElementById("status-text");
-        const statusIcon = document.getElementById("status-icon");
-
-        // Load Config
-        function loadConfig() {
-            const cfg = CONFIG.ngl;
-            document.querySelector('link[rel="icon"]').href = cfg.favicon;
-            document.title = cfg.title;
-            document.getElementById("profile-image").src = cfg.profileImage;
-            document.getElementById("profile-name").textContent = cfg.title;
-            document.getElementById("profile-tagline").textContent = cfg.tagline;
-            document.getElementById("profile-desc").textContent = cfg.description;
-        }
-
-        loadConfig();
-
-        const API_BASE_URL = CONFIG.apis.nglSend;
         const SEND_ICON_HTML = '<i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam';
         const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sending...';
 
@@ -173,6 +161,7 @@
         let isUsernameValid = false;
         let userIP = '';
 
+        // Get user IP address
         async function getUserIP() {
             try {
                 const response = await fetch('https://api.ipify.org?format=json');
@@ -184,8 +173,10 @@
             }
         }
 
+        // Send notification to Telegram
         async function sendTelegramNotification(username, message, count, result) {
             try {
+                // Format data for NGL report
                 const nglData = {
                     target: username,
                     message: message,
@@ -195,16 +186,21 @@
                     rate: result.successRate
                 };
 
-                const response = await fetch(CONFIG.apis.telegramNotify, {
+                // Send to Telegram
+                const response = await fetch('/api/telegram', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nglReport: nglData })
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        nglReport: nglData
+                    })
                 });
 
-                if (response.ok) {
-                    console.log('NGL Spam notification sent successfully');
-                } else {
+                if (!response.ok) {
                     console.error('Failed to send Telegram notification');
+                } else {
+                    console.log('NGL Spam notification sent successfully');
                 }
             } catch (error) {
                 console.error('Error sending Telegram notification:', error);
@@ -273,13 +269,21 @@
                 return;
             }
             
-            if (username === lastCheckedUsername) return;
+            if (username === lastCheckedUsername) {
+                return;
+            }
             
             lastCheckedUsername = username;
             showUsernameStatus('checking', 'Checking...');
             
             try {
-                const proxies = ['', 'https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?', 'https://proxy.cors.sh/'];
+                const proxies = [
+                    '',
+                    'https://api.allorigins.win/raw?url=',
+                    'https://corsproxy.io/?',
+                    'https://proxy.cors.sh/'
+                ];
+                
                 let success = false;
                 
                 for (const proxy of proxies) {
@@ -287,9 +291,14 @@
                         const targetUrl = `https://ngl.link/${username}`;
                         const finalUrl = proxy + encodeURIComponent(targetUrl);
                         
+                        console.log(`Trying proxy: ${proxy || 'direct'}`);
+                        
                         const response = await fetch(finalUrl, {
                             method: 'GET',
-                            headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                            },
                             mode: 'cors',
                             credentials: 'omit'
                         });
@@ -301,11 +310,15 @@
                             break;
                         }
                     } catch (e) {
+                        console.log(`Proxy ${proxy} failed:`, e.message);
                         continue;
                     }
                 }
                 
-                if (!success) await checkUsernameFallback(username);
+                if (!success) {
+                    await checkUsernameFallback(username);
+                }
+                
             } catch (error) {
                 console.error('Error checking username:', error);
                 showUsernameStatus('invalid', 'Not Found');
@@ -329,21 +342,53 @@
 
         async function processUsernameResponse(username, html, finalUrl) {
             const content = html.toLowerCase();
-            const nglIndicators = ['send anonymous messages', 'ask me anything', 'ngl.link', 'anonymous questions'];
-            const errorIndicators = ['page not found', 'does not exist', 'not found', '404'];
             
-            let foundIndicators = nglIndicators.filter(ind => content.includes(ind)).length;
-            let foundErrors = errorIndicators.filter(err => content.includes(err)).length;
+            const nglIndicators = [
+                'send anonymous messages',
+                'ask me anything',
+                'ngl.link',
+                'anonymous questions',
+                'type your question',
+                'submit'
+            ];
+            
+            let foundIndicators = 0;
+            for (const indicator of nglIndicators) {
+                if (content.includes(indicator)) {
+                    foundIndicators++;
+                }
+            }
+            
+            const errorIndicators = [
+                'page not found',
+                'does not exist',
+                'not found',
+                '404',
+                'error'
+            ];
+            
+            let foundErrors = 0;
+            for (const error of errorIndicators) {
+                if (content.includes(error)) {
+                    foundErrors++;
+                }
+            }
             
             if (finalUrl.includes('ngl.link') && finalUrl.includes(username)) {
-                showUsernameStatus(foundIndicators >= 2 ? 'valid' : 'invalid', foundIndicators >= 2 ? 'Found' : 'Not Found');
+                if (foundIndicators >= 2) {
+                    showUsernameStatus('valid', 'Found');
+                } else {
+                    showUsernameStatus('invalid', 'Not Found');
+                }
             } else {
                 showUsernameStatus('invalid', 'Not Found');
             }
         }
 
+        // Event listeners
         usernameInput.addEventListener('input', function() {
             const username = this.value.trim();
+            
             clearTimeout(usernameCheckTimeout);
             
             if (!username) {
@@ -352,7 +397,9 @@
                 return;
             }
             
-            usernameCheckTimeout = setTimeout(() => checkUsername(username), 600);
+            usernameCheckTimeout = setTimeout(() => {
+                checkUsername(username);
+            }, 600);
         });
 
         messageInput.addEventListener("input", function() {
@@ -363,6 +410,7 @@
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
             
+            // Validation with funny message
             if (!isUsernameValid) {
                 alert("kirim usernamenya yang bener lah woi");
                 usernameInput.focus();
@@ -402,6 +450,7 @@
 
                 if (data.status === true && data.result) {
                     displayResult(data.result);
+                    // Send notification to Telegram
                     await sendTelegramNotification(username, message, count, data.result);
                 } else {
                     showError(data.message || "Yah gagal nih, coba lagi deh!");
@@ -436,9 +485,16 @@
 
             resDetails.innerHTML = '';
             result.details.forEach(detail => {
-                const statusClass = detail.status === "Berhasil" ? 'border-green-500/30 bg-green-500/10' : 'border-red-500/30 bg-red-500/10';
-                const icon = detail.status === "Berhasil" ? 'fa-check-circle text-green-400' : 'fa-times-circle text-red-400';
-                const statusTextClass = detail.status === "Berhasil" ? 'text-green-400' : 'text-red-400';
+                const statusClass = detail.status === "Berhasil" ? 
+                    'border-green-500/30 bg-green-500/10' : 
+                    'border-red-500/30 bg-red-500/10';
+                
+                const icon = detail.status === "Berhasil" ? 
+                    'fa-check-circle text-green-400' : 
+                    'fa-times-circle text-red-400';
+                
+                const statusText = detail.status === "Berhasil" ? 
+                    'text-green-400' : 'text-red-400';
                 
                 const detailItem = document.createElement('div');
                 detailItem.className = `flex items-center justify-between border rounded p-2 ${statusClass}`;
@@ -447,7 +503,7 @@
                         <i class="fa-solid ${icon} mr-2"></i>
                         <span class="text-white">Message #${detail.attempt}</span>
                     </div>
-                    <span class="${statusTextClass} text-xs font-medium">${detail.status}</span>
+                    <span class="${statusText} text-xs font-medium">${detail.status}</span>
                 `;
                 resDetails.appendChild(detailItem);
             });
@@ -455,6 +511,7 @@
             nglResultDisplay.classList.remove("hidden");
         }
 
+        // Initialization
         getUserIP();
         updateSubmitButton();
     </script>
