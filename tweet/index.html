@@ -3,44 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://qu.ax/aqgyC.jpg">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'></svg>">
     <title>Givy Tweet</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512=DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        /* MENGATUR SEMUA FONT MENJADI COUSINE */
-        body {
-            font-family: 'Cousine', monospace;
-        }
-        .pure-black-bg{background-color:#000}
-        .link-button{transition:all .3s ease}
-        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
-        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
-        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
-        .form-input::placeholder{color:rgba(255,255,255,.5)}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
-        .modal {
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 50; 
-        }
-        .modal-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            object-fit: contain;
-        }
+        body { font-family: 'Cousine', monospace; }
+        .pure-black-bg { background-color: #000; }
+        .link-button { transition: all .3s ease; }
+        .link-button:hover { transform: scale(1.02); box-shadow: 0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06); }
+        .form-input { background-color: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #fff; transition: all .3s ease; }
+        .form-input:focus { background-color: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); box-shadow: 0 0 0 2px rgba(255,255,255,.1); }
+        .form-input::placeholder { color: rgba(255,255,255,.5); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-entry { opacity: 0; animation: fadeIn .8s ease-out forwards; }
+        .modal { background-color: rgba(0, 0, 0, 0.9); z-index: 50; }
+        .modal-content { max-width: 90vw; max-height: 90vh; object-fit: contain; }
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white min-h-screen">
     
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
         <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgNFtKPgqKyS_jC5oOPR5_J1YLi5h6-JdNO-JoTIyzQG-CvPcfLqyP6RRLJPhu6yzKhrF7-HkhJq3y8_1l6bWPmmZ54Xu8-X79BFzF20viHbSAuyo6hSqlL5_43EYAWZduuh-ml61ZFqZqMiqXu6FIuyG2AI94NQBq2PoEQu2za9a4iPN-HHjASCvSRS0/w400-h248/Logo%20Monkey%20D.%20Luffy%20(Logo%20One%20Piece).png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
-            <p class="text-xs text-gray-400 italic">Fake Tweet Maker</p>
-            <p class="mt-1 text-xs text-gray-300 max-w-xs">Create a fake X (Twitter) post</p>
+            <img id="profile-image" src="" alt="Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 id="profile-name" class="text-xl font-bold tracking-wider uppercase mb-0 text-white"></h1>
+            <p id="profile-tagline" class="text-xs text-gray-400 italic"></p>
+            <p id="profile-desc" class="mt-1 text-xs text-gray-300 max-w-xs"></p>
         </div>
+        
         <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
             <form id="tweet-form" class="space-y-3">
                 
@@ -136,254 +127,255 @@
         </div>
     </div>
     
-    <script>
-    const form = document.getElementById("tweet-form");
-    const nameInput = document.getElementById("name");
-    const usernameInput = document.getElementById("username");
-    const commentInput = document.getElementById("comment");
-    const verifiedInput = document.getElementById("verified");
+    <script type="module">
+        import { CONFIG } from '../config.js';
 
-    const tweetImage = document.getElementById("tweet-image");
-    const errorMessage = document.getElementById("error-message");
-    const generateButton = document.getElementById("generate-button");
-    const downloadSection = document.getElementById("download-section");
-    const downloadButton = document.getElementById("download-button");
-    const resultArea = document.getElementById("result-area");
-    const clickToZoom = document.getElementById("click-to-zoom");
+        const form = document.getElementById("tweet-form");
+        const nameInput = document.getElementById("name");
+        const usernameInput = document.getElementById("username");
+        const commentInput = document.getElementById("comment");
+        const verifiedInput = document.getElementById("verified");
 
-    // Modal elements
-    const imageModal = document.getElementById("image-modal");
-    const modalImage = document.getElementById("modal-image");
-    const closeModalButton = document.getElementById("close-modal");
+        const tweetImage = document.getElementById("tweet-image");
+        const errorMessage = document.getElementById("error-message");
+        const generateButton = document.getElementById("generate-button");
+        const downloadSection = document.getElementById("download-section");
+        const downloadButton = document.getElementById("download-button");
+        const resultArea = document.getElementById("result-area");
+        const clickToZoom = document.getElementById("click-to-zoom");
 
-    // Upload elements
-    const avatarUpload = document.getElementById("avatarUpload");
-    const uploadButton = document.getElementById("uploadButton");
-    const avatarPreview = document.getElementById("avatarPreview");
-    const previewImage = document.getElementById("previewImage");
+        const imageModal = document.getElementById("image-modal");
+        const modalImage = document.getElementById("modal-image");
+        const closeModalButton = document.getElementById("close-modal");
 
-    // Endpoint Vercel yang menangani generation, notifikasi, dan download
-    const VERCEL_API_ENDPOINT = "/api/tweet";
-    // Endpoint API eksternal yang membuat gambar
-    const EXTERNAL_API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
+        const avatarUpload = document.getElementById("avatarUpload");
+        const uploadButton = document.getElementById("uploadButton");
+        const avatarPreview = document.getElementById("avatarPreview");
+        const previewImage = document.getElementById("previewImage");
 
-    const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
-    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
-
-    // Variabel untuk menyimpan URL gambar yang dihasilkan
-    let generatedImageUrl = '';
-    let uploadedAvatarUrl = '';
-
-    function showError(message) {
-        errorMessage.classList.remove("hidden");
-        errorMessage.querySelector("span").textContent = message;
-        generateButton.disabled = false;
-        generateButton.innerHTML = GENERATE_ICON_HTML;
-    }
-
-    function showSuccess(imageUrl) {
-        generatedImageUrl = imageUrl;
-        resultArea.classList.remove("hidden");
-        errorMessage.classList.add("hidden");
-        tweetImage.classList.remove("hidden");
-        downloadSection.classList.remove("hidden");
-        clickToZoom.classList.remove("hidden"); 
-        
-        tweetImage.src = imageUrl;
-    }
-
-    // --- LOGIC MODAL ---
-    tweetImage.addEventListener('click', () => {
-        if (generatedImageUrl) {
-            modalImage.src = generatedImageUrl;
-            imageModal.classList.remove('hidden');
-        }
-    });
-
-    closeModalButton.addEventListener('click', () => {
-        imageModal.classList.add('hidden');
-    });
-
-    imageModal.addEventListener('click', (e) => {
-        if (e.target.id === 'image-modal') {
-            imageModal.classList.add('hidden');
-        }
-    });
-
-    // --- UPLOAD AVATAR ---
-    uploadButton.addEventListener('click', () => {
-        avatarUpload.click();
-    });
-
-    avatarUpload.addEventListener('change', async function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        if (!file.type.startsWith('image/')) {
-            showMessage('Please select an image file', 'error');
-            return;
+        // Load Config
+        function loadConfig() {
+            const cfg = CONFIG.tweet;
+            document.querySelector('link[rel="icon"]').href = cfg.favicon;
+            document.title = cfg.title;
+            document.getElementById("profile-image").src = cfg.profileImage;
+            document.getElementById("profile-name").textContent = cfg.title;
+            document.getElementById("profile-tagline").textContent = cfg.tagline;
+            document.getElementById("profile-desc").textContent = cfg.description;
         }
 
-        if (file.size > 5 * 1024 * 1024) {
-            showMessage('File size too large (max 5MB)', 'error');
-            return;
-        }
+        loadConfig();
 
-        // Tampilkan preview sementara
-        const tempUrl = URL.createObjectURL(file);
-        previewImage.src = tempUrl;
-        avatarPreview.classList.remove('hidden');
-        
-        await uploadFile(file);
-    });
+        const VERCEL_API_ENDPOINT = CONFIG.apis.uploadAvatar;
+        const EXTERNAL_API_BASE_URL = CONFIG.apis.tweetGenerate;
+        const TELEGRAM_API = CONFIG.apis.telegramNotify;
 
-    async function uploadFile(file) {
-        try {
-            uploadButton.disabled = true;
-            const originalHTML = uploadButton.innerHTML;
-            uploadButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+        const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
+        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
-            const base64 = await fileToBase64(file);
+        let generatedImageUrl = '';
+        let uploadedAvatarUrl = '';
 
-            const response = await fetch('/api/upload', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    file: base64
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                uploadedAvatarUrl = data.url;
-                previewImage.src = data.url;
-                URL.revokeObjectURL(previewImage.src);
-                
-                showMessage('Avatar ready!', 'success');
-                uploadButton.innerHTML = originalHTML;
-            } else {
-                throw new Error(data.error || 'Upload failed');
-            }
-
-        } catch (error) {
-            console.error('Upload error:', error);
-            showMessage(`Failed to process image`, 'error');
-            avatarPreview.classList.add('hidden');
-            uploadButton.innerHTML = '<i class="fa-solid fa-image mr-2"></i>Choose Avatar';
-        } finally {
-            uploadButton.disabled = false;
-            avatarUpload.value = '';
-        }
-    }
-
-    function fileToBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-    }
-
-    function showMessage(message, type) {
-        const notification = document.createElement('div');
-        notification.className = `fixed top-4 right-4 p-3 rounded text-sm font-medium z-50 ${
-            type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-        }`;
-        notification.innerHTML = `
-            <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
-            ${message}
-        `;
-        
-        document.body.appendChild(notification);
-        
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
-
-    // --- LOGIC FORM SUBMIT ---
-    form.addEventListener("submit", async function(e) {
-        e.preventDefault();
-        
-        if (!uploadedAvatarUrl) {
-            showError("Please select an avatar image first!");
-            return;
-        }
-        
-        resultArea.classList.add("hidden");
-        tweetImage.classList.add("hidden");
-        downloadSection.classList.add("hidden");
-        clickToZoom.classList.add("hidden");
-        errorMessage.classList.add("hidden");
-        
-        generateButton.disabled = true;
-        generateButton.innerHTML = PROCESSING_ICON_HTML;
-
-        const name = nameInput.value.trim();
-        const username = usernameInput.value.trim().replace('@', ''); 
-        const comment = commentInput.value.trim();
-        const verified = verifiedInput.checked ? 'true' : 'false';
-
-        if (!name || !username || !comment) {
-            showError("All fields must be filled!");
-            return;
-        }
-
-        const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(uploadedAvatarUrl)}&verified=${verified}`;
-        
-        // This Vercel API endpoint serves two purposes:
-        // 1. To proxy the request to the external image generator API (externalApiUrl)
-        // 2. To send a notification (e.g., to Telegram) about the usage (simulated)
-        // Note: The Vercel API endpoint is fictional in this context but is kept for script integrity.
-        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatarUrl=${encodeURIComponent(uploadedAvatarUrl)}`;
-
-        try {
-            // In a real Vercel environment, you'd fetch the VERCEL_API_ENDPOINT
-            // which would handle the external API call and notification.
-            // For a browser-only context, we'll hit the external API directly to get the image.
-            
-            // Step 1: Hit the external API to get the image URL
-            const imageResponse = await fetch(externalApiUrl);
-            if (!imageResponse.ok) {
-                throw new Error(`Image API error: ${imageResponse.statusText}`);
-            }
-            
-            // Since the external API directly returns an image URL (which can be the image itself),
-            // we'll assume it returns a JSON object with a direct image URL for simplicity in this script.
-            // Note: The provided API is not directly callable as an image endpoint,
-            // but for the sake of completion, we'll assume it returns { status: 'ok', imageUrl: '...' } 
-            
-            // To simulate the *original* Vercel endpoint logic that fetches and returns the final image URL:
-            const response = await fetch(vercelApiUrl, { method: 'GET' });
-            const data = await response.json();
-
-            if (data.status === 'ok' && data.imageUrl) {
-                showSuccess(data.imageUrl);
-            } else {
-                throw new Error(data.message || 'Unknown API error.');
-            }
-            
-        } catch (error) {
-            console.error("Fetch error:", error);
-            showError(`Generation failed. Details: ${error.message}`);
-        } finally {
+        function showError(message) {
+            errorMessage.classList.remove("hidden");
+            errorMessage.querySelector("span").textContent = message;
             generateButton.disabled = false;
             generateButton.innerHTML = GENERATE_ICON_HTML;
         }
-    });
-    
-    // --- LOGIC DOWNLOAD ---
-    downloadButton.addEventListener('click', () => {
-        if (generatedImageUrl) {
-            const usernameForFile = usernameInput.value.trim().replace('@', '');
-            // This line simulates the download using the Vercel API endpoint as a proxy
-            window.location.href = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true&username=${encodeURIComponent(usernameForFile)}`;
+
+        function showSuccess(imageUrl) {
+            generatedImageUrl = imageUrl;
+            resultArea.classList.remove("hidden");
+            errorMessage.classList.add("hidden");
+            tweetImage.classList.remove("hidden");
+            downloadSection.classList.remove("hidden");
+            clickToZoom.classList.remove("hidden");
+            tweetImage.src = imageUrl;
         }
-    });
+
+        tweetImage.addEventListener('click', () => {
+            if (generatedImageUrl) {
+                modalImage.src = generatedImageUrl;
+                imageModal.classList.remove('hidden');
+            }
+        });
+
+        closeModalButton.addEventListener('click', () => {
+            imageModal.classList.add('hidden');
+        });
+
+        imageModal.addEventListener('click', (e) => {
+            if (e.target.id === 'image-modal') {
+                imageModal.classList.add('hidden');
+            }
+        });
+
+        uploadButton.addEventListener('click', () => {
+            avatarUpload.click();
+        });
+
+        avatarUpload.addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showMessage('Please select an image file', 'error');
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                showMessage('File size too large (max 5MB)', 'error');
+                return;
+            }
+
+            const tempUrl = URL.createObjectURL(file);
+            previewImage.src = tempUrl;
+            avatarPreview.classList.remove('hidden');
+            
+            await uploadFile(file);
+        });
+
+        async function uploadFile(file) {
+            try {
+                uploadButton.disabled = true;
+                const originalHTML = uploadButton.innerHTML;
+                uploadButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+
+                const base64 = await fileToBase64(file);
+
+                const response = await fetch(VERCEL_API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ file: base64 })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    uploadedAvatarUrl = data.url;
+                    previewImage.src = data.url;
+                    URL.revokeObjectURL(previewImage.src);
+                    showMessage('Avatar ready!', 'success');
+                    uploadButton.innerHTML = originalHTML;
+                } else {
+                    throw new Error(data.error || 'Upload failed');
+                }
+
+            } catch (error) {
+                console.error('Upload error:', error);
+                showMessage(`Failed to process image`, 'error');
+                avatarPreview.classList.add('hidden');
+                uploadButton.innerHTML = '<i class="fa-solid fa-image mr-2"></i>Choose Avatar';
+            } finally {
+                uploadButton.disabled = false;
+                avatarUpload.value = '';
+            }
+        }
+
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        function showMessage(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 p-3 rounded text-sm font-medium z-50 ${
+                type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+            }`;
+            notification.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        form.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            
+            if (!uploadedAvatarUrl) {
+                showError("Please select an avatar image first!");
+                return;
+            }
+            
+            resultArea.classList.add("hidden");
+            tweetImage.classList.add("hidden");
+            downloadSection.classList.add("hidden");
+            clickToZoom.classList.add("hidden");
+            errorMessage.classList.add("hidden");
+            
+            generateButton.disabled = true;
+            generateButton.innerHTML = PROCESSING_ICON_HTML;
+
+            const name = nameInput.value.trim();
+            const username = usernameInput.value.trim().replace('@', '');
+            const comment = commentInput.value.trim();
+            const verified = verifiedInput.checked ? 'true' : 'false';
+
+            if (!name || !username || !comment) {
+                showError("All fields must be filled!");
+                return;
+            }
+
+            const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(uploadedAvatarUrl)}&verified=${verified}`;
+
+            try {
+                const imageResponse = await fetch(externalApiUrl);
+                if (!imageResponse.ok) {
+                    throw new Error(`Image API error: ${imageResponse.statusText}`);
+                }
+                
+                const data = await imageResponse.json();
+
+                if (data.status === 'ok' && data.imageUrl) {
+                    showSuccess(data.imageUrl);
+                    
+                    // Send notification to Telegram
+                    sendTelegramNotification(name, username, comment, uploadedAvatarUrl);
+                } else {
+                    throw new Error(data.message || 'Unknown API error.');
+                }
+                
+            } catch (error) {
+                console.error("Fetch error:", error);
+                showError(`Generation failed. Details: ${error.message}`);
+            } finally {
+                generateButton.disabled = false;
+                generateButton.innerHTML = GENERATE_ICON_HTML;
+            }
+        });
+
+        async function sendTelegramNotification(name, username, comment, avatarUrl) {
+            try {
+                await fetch(TELEGRAM_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        quote: comment,
+                        name: name,
+                        username: username,
+                        avatarUrl: avatarUrl
+                    })
+                });
+            } catch (error) {
+                console.error('Error sending Telegram notification:', error);
+            }
+        }
+        
+        downloadButton.addEventListener('click', () => {
+            if (generatedImageUrl) {
+                const usernameForFile = usernameInput.value.trim().replace('@', '');
+                window.location.href = `/api/tweet?imageUrl=${encodeURIComponent(generatedImageUrl)}&download=true&username=${encodeURIComponent(usernameForFile)}`;
+            }
+        });
     </script>
 </body>
 </html>
