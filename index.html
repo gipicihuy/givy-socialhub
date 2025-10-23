@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png">
+    <link rel="icon" type="image/png" id="favicon-link">
     <title>Givy Ajah</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        /* MENGATUR SEMUA FONT MENJADI COUSINE */
         body {
             font-family: 'Cousine', monospace;
         }
@@ -24,7 +23,7 @@
 <body class="pure-black-bg p-4 text-white">
     <div class="flex flex-col items-center w-full min-h-screen">
         <div id="profile-section" class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg animate-entry" style="animation-delay:.1s;">
-            <img src="https://raw.githubusercontent.com/upload-file-lab/fileupload6/main/uploads/1760408834748.png" alt="Givy Profile" class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <img id="profile-img" alt="Givy Profile" class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out">
             <h1 class="text-2xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
             <p class="text-sm text-gray-400 italic">Social Media</p>
             <p class="mt-2 text-xs text-gray-300 max-w-xs">My digital life. One link. Simple hub.</p>
@@ -50,5 +49,11 @@
             <p>Givy | Made with <span class="text-white">🤍</span></p>
         </div>
     </div>
+
+    <script type="module">
+        import { ASSETS } from '../config/assets.js';
+        document.getElementById('favicon-link').href = ASSETS.favicon;
+        document.getElementById('profile-img').src = ASSETS.profileImage;
+    </script>
 </body>
 </html>
