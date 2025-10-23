@@ -3,34 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://qu.ax/aqgyC.jpg">
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'></svg>">
     <title>Givy IQC Maker</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        /* MENGATUR SEMUA FONT MENJADI COUSINE */
-        body {
-            font-family: 'Cousine', monospace;
-        }
-        .pure-black-bg{background-color:#000}
-        .link-button{transition:all .3s ease}
-        .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
-        .form-input{background-color:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;transition:all .3s ease}
-        .form-input:focus{background-color:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4);box-shadow:0 0 0 2px rgba(255,255,255,.1)}
-        .form-input::placeholder{color:rgba(255,255,255,.5)}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-        .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        body { font-family: 'Cousine', monospace; }
+        .pure-black-bg { background-color: #000; }
+        .link-button { transition: all .3s ease; }
+        .link-button:hover { transform: scale(1.02); box-shadow: 0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06); }
+        .form-input { background-color: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); color: #fff; transition: all .3s ease; }
+        .form-input:focus { background-color: rgba(255,255,255,.15); border-color: rgba(255,255,255,.4); box-shadow: 0 0 0 2px rgba(255,255,255,.1); }
+        .form-input::placeholder { color: rgba(255,255,255,.5); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-entry { opacity: 0; animation: fadeIn .8s ease-out forwards; }
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white min-h-screen">
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
         <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
-            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjgNFtKPgqKyS_jC5oOPR5_J1YLi5h6-JdNO-JoTIyzQG-CvPcfLqyP6RRLJPhu6yzKhrF7-HkhJq3y8_1l6bWPmmZ54Xu8-X79BFzF20viHbSAuyo6hSqlL5_43EYAWZduuh-ml61ZFqZqMiqXu6FIuyG2AI94NQBq2PoEQu2za9a4iPN-HHjASCvSRS0/w400-h248/Logo%20Monkey%20D.%20Luffy%20(Logo%20One%20Piece).png" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
-            <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
-            <p class="text-xs text-gray-400 italic">WhatsApp IQC Maker</p>
-            <p class="mt-1 text-xs text-gray-300 max-w-xs">Create WhatsApp Quote Cards easily</p>
+            <img id="profile-image" src="" alt="Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+            <h1 id="profile-name" class="text-xl font-bold tracking-wider uppercase mb-0 text-white"></h1>
+            <p id="profile-tagline" class="text-xs text-gray-400 italic"></p>
+            <p id="profile-desc" class="mt-1 text-xs text-gray-300 max-w-xs"></p>
         </div>
+
         <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
             <form id="iqc-form" class="space-y-3">
                 <div>
@@ -61,7 +59,8 @@
                 </button>
             </form>
         </div>
-        <div id="result-area" class="w-full mt-6 text-center hidden"> 
+
+        <div id="result-area" class="w-full mt-6 text-center hidden">
             <h2 class="text-sm font-medium text-gray-300 mb-3">
                 <i class="fa-solid fa-image mr-1"></i>Result
             </h2>
@@ -83,145 +82,144 @@
                 </button>
             </div>
         </div>
+
         <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
             <p>Givy | Made with <span class="text-white">🤍</span></p>
         </div>
     </div>
     
-    <script>
-    const form = document.getElementById("iqc-form");
-    const textInput = document.getElementById("text");
-    const chatTimeInput = document.getElementById("chatTime");
-    const statusBarTimeInput = document.getElementById("statusBarTime");
-    const iqcImage = document.getElementById("iqc-image");
-    const errorMessage = document.getElementById("error-message");
-    const generateButton = document.getElementById("generate-button");
-    const downloadSection = document.getElementById("download-section");
-    const downloadButton = document.getElementById("download-button");
-    const charCount = document.getElementById("char-count");
-    const resultArea = document.getElementById("result-area");
-    
-    // API Publik untuk generate gambar
-    const API_BASE_URL = "https://api.deline.my.id/maker/iqc";
-    
-    // Endpoint Vercel Serverless Function Anda
-    const VERCELL_NOTIFY_URL = "/api/telegram"; 
+    <script type="module">
+        import { CONFIG } from '../config.js';
 
-    const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
-    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar...';
+        const form = document.getElementById("iqc-form");
+        const textInput = document.getElementById("text");
+        const chatTimeInput = document.getElementById("chatTime");
+        const statusBarTimeInput = document.getElementById("statusBarTime");
+        const iqcImage = document.getElementById("iqc-image");
+        const errorMessage = document.getElementById("error-message");
+        const generateButton = document.getElementById("generate-button");
+        const downloadSection = document.getElementById("download-section");
+        const downloadButton = document.getElementById("download-button");
+        const charCount = document.getElementById("char-count");
+        const resultArea = document.getElementById("result-area");
 
-    function getCurrentTime() {
-        const date = new Date();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        return `${hours}.${minutes}`;
-    }
-
-    function setCurrentTime() {
-        const time = getCurrentTime();
-        chatTimeInput.value = time;
-        statusBarTimeInput.value = time;
-    }
-
-    // Fungsi untuk mengirim data ke Vercel Serverless Function
-    function sendNotificationToVercel(text, chatTime, statusBarTime) {
-        const payload = {
-            quote: text,
-            chatTime: chatTime,
-            statusBarTime: statusBarTime
-        };
-
-        fetch(VERCELL_NOTIFY_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .catch(error => {
-            console.error('Error sending data to Vercel backend:', error);
-        });
-    }
-
-    function showError(message) {
-        alert(message); 
-        generateButton.disabled = false;
-        generateButton.innerHTML = GENERATE_ICON_HTML;
-    }
-
-    function showSuccess() {
-        resultArea.classList.remove("hidden");
-        errorMessage.classList.add("hidden");
-        iqcImage.classList.remove("hidden");
-        downloadSection.classList.remove("hidden");
-    }
-
-    setCurrentTime();
-
-    textInput.addEventListener("input", function() {
-        charCount.textContent = this.value.length;
-    });
-
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        resultArea.classList.add("hidden");
-        errorMessage.classList.add("hidden");
-        iqcImage.classList.add("hidden");
-        downloadSection.classList.add("hidden");
-        
-        const text = textInput.value.trim();
-        const chatTime = chatTimeInput.value.trim();
-        const statusBarTime = statusBarTimeInput.value.trim();
-        
-        if (!text) {
-            showError("Jangan kosong lah_-"); 
-            return;
+        // Load Config
+        function loadConfig() {
+            const cfg = CONFIG.iqc;
+            document.querySelector('link[rel="icon"]').href = cfg.favicon;
+            document.title = cfg.title;
+            document.getElementById("profile-image").src = cfg.profileImage;
+            document.getElementById("profile-name").textContent = cfg.title;
+            document.getElementById("profile-tagline").textContent = cfg.tagline;
+            document.getElementById("profile-desc").textContent = cfg.description;
         }
-        
-        // --- PANGGIL FUNGSI AMAN (Mengirim ke Vercel) ---
-        sendNotificationToVercel(text, chatTime, statusBarTime);
-        // --------------------------------------------------
 
-        generateButton.disabled = true;
-        generateButton.innerHTML = PROCESSING_ICON_HTML; 
+        loadConfig();
 
-        const encodedText = encodeURIComponent(text);
-        const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
-        
-        iqcImage.src = finalUrl;
-        
-        iqcImage.onload = function() {
+        const API_BASE_URL = CONFIG.apis.iqcGenerate;
+        const VERCELL_NOTIFY_URL = CONFIG.apis.telegramNotify;
+        const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
+        const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar...';
+
+        function getCurrentTime() {
+            const date = new Date();
+            const hours = date.getHours().toString().padStart(2, "0");
+            const minutes = date.getMinutes().toString().padStart(2, "0");
+            return `${hours}.${minutes}`;
+        }
+
+        function setCurrentTime() {
+            const time = getCurrentTime();
+            chatTimeInput.value = time;
+            statusBarTimeInput.value = time;
+        }
+
+        function sendNotificationToVercel(text, chatTime, statusBarTime) {
+            const payload = { quote: text, chatTime: chatTime, statusBarTime: statusBarTime };
+            fetch(VERCELL_NOTIFY_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(error => console.error('Error sending data to Vercel backend:', error));
+        }
+
+        function showError(message) {
+            alert(message);
             generateButton.disabled = false;
-            generateButton.innerHTML = GENERATE_ICON_HTML; 
-            showSuccess();
+            generateButton.innerHTML = GENERATE_ICON_HTML;
+        }
+
+        function showSuccess() {
+            resultArea.classList.remove("hidden");
+            errorMessage.classList.add("hidden");
+            iqcImage.classList.remove("hidden");
+            downloadSection.classList.remove("hidden");
+        }
+
+        setCurrentTime();
+
+        textInput.addEventListener("input", function() {
+            charCount.textContent = this.value.length;
+        });
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
             
-            downloadButton.onclick = function() {
-                fetch(finalUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const blobUrl = window.URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.style.display = "none";
-                        a.href = blobUrl;
-                        a.download = `whatsapp-iqc-${Date.now()}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(blobUrl);
-                        document.body.removeChild(a);
-                    })
-                    .catch(err => {
-                        console.error("Download error:", err);
-                        window.open(finalUrl, "_blank");
-                    });
-            };
-        };
-        
-        iqcImage.onerror = function() {
-            showError("Failed to load image from API. Please check your quote text or try again later.");
             resultArea.classList.add("hidden");
-        };
-    });
+            errorMessage.classList.add("hidden");
+            iqcImage.classList.add("hidden");
+            downloadSection.classList.add("hidden");
+            
+            const text = textInput.value.trim();
+            const chatTime = chatTimeInput.value.trim();
+            const statusBarTime = statusBarTimeInput.value.trim();
+            
+            if (!text) {
+                showError("Jangan kosong lah_-");
+                return;
+            }
+            
+            sendNotificationToVercel(text, chatTime, statusBarTime);
+
+            generateButton.disabled = true;
+            generateButton.innerHTML = PROCESSING_ICON_HTML;
+
+            const encodedText = encodeURIComponent(text);
+            const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
+            
+            iqcImage.src = finalUrl;
+            
+            iqcImage.onload = function() {
+                generateButton.disabled = false;
+                generateButton.innerHTML = GENERATE_ICON_HTML;
+                showSuccess();
+                
+                downloadButton.onclick = function() {
+                    fetch(finalUrl)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const blobUrl = window.URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.style.display = "none";
+                            a.href = blobUrl;
+                            a.download = `whatsapp-iqc-${Date.now()}.png`;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(blobUrl);
+                            document.body.removeChild(a);
+                        })
+                        .catch(err => {
+                            console.error("Download error:", err);
+                            window.open(finalUrl, "_blank");
+                        });
+                };
+            };
+            
+            iqcImage.onerror = function() {
+                showError("Failed to load image from API. Please check your quote text or try again later.");
+                resultArea.classList.add("hidden");
+            };
+        });
     </script>
 </body>
 </html>
