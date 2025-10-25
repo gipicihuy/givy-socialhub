@@ -62,6 +62,15 @@
                     </label>
                     <input type="number" id="count" name="count" min="1" max="9999" value="10" class="form-input w-full py-2 px-3 rounded text-sm text-center">
                 </div>
+                <div>
+                    <label for="ip-mode" class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-network-wired mr-1"></i>IP Mode
+                    </label>
+                    <select id="ip-mode" name="ip-mode" class="form-input w-full py-2 px-3 rounded text-sm">
+                        <option value="random">Random IP (Recommended)</option>
+                        <option value="single">Single IP</option>
+                    </select>
+                </div>
                 <button type="submit" id="send-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4 button-disabled" disabled>
                     <i class="fa-solid fa-paper-plane mr-2 text-sm"></i>Start NGL Spam
                 </button>
@@ -142,6 +151,7 @@
             usernameInput = document.getElementById("username"),
             messageInput = document.getElementById("message"),
             countInput = document.getElementById("count"),
+            ipModeSelect = document.getElementById("ip-mode"),
             sendButton = document.getElementById("send-button"),
             errorMessage = document.getElementById("error-message"),
             nglResultDisplay = document.getElementById("ngl-result-display"),
@@ -165,6 +175,49 @@
         let usernameCheckTimeout;
         let lastCheckedUsername = '';
         let isUsernameValid = false;
+
+        // Fungsi untuk menghasilkan IP acak menggunakan regex
+        function generateRandomIP() {
+            // Format IP: xxx.xxx.xxx.xxx
+            // Range valid: 1-255 untuk oktet pertama, 0-255 untuk oktet lainnya
+            const firstOctet = Math.floor(Math.random() * 254) + 1; // 1-254
+            const secondOctet = Math.floor(Math.random() * 256); // 0-255
+            const thirdOctet = Math.floor(Math.random() * 256); // 0-255
+            const fourthOctet = Math.floor(Math.random() * 254) + 1; // 1-254
+            
+            return `${firstOctet}.${secondOctet}.${thirdOctet}.${fourthOctet}`;
+        }
+
+        // Validasi IP menggunakan regex
+        function isValidIP(ip) {
+            const ipRegex = /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            return ipRegex.test(ip);
+        }
+
+        // Fungsi untuk mengirim permintaan dengan IP acak
+        async function sendRequestWithRandomIP(url) {
+            const randomIP = generateRandomIP();
+            
+            // Validasi IP yang dihasilkan
+            if (!isValidIP(randomIP)) {
+                console.warn("Generated invalid IP, retrying...");
+                return sendRequestWithRandomIP(url); // Coba lagi jika IP tidak valid
+            }
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'X-Forwarded-For': randomIP,
+                        'X-Real-IP': randomIP,
+                        'CF-Connecting-IP': randomIP
+                    }
+                });
+                return response;
+            } catch (error) {
+                console.error("Error sending request with random IP:", error);
+                throw error;
+            }
+        }
 
         function showError(message) {
             alert(message);
@@ -293,6 +346,7 @@
             
             const username = usernameInput.value.trim();
             const count = parseInt(countInput.value.trim());
+            const ipMode = ipModeSelect.value;
 
             if (count < 1 || count > 9999 || isNaN(count)) {
                 alert("Mau kirim berapa pesan? 1-9999 aja ya!");
@@ -308,7 +362,16 @@
             const finalUrl = `${SPAM_API_BASE_URL}?username=${username}&message=${encodedMessage}&count=${count}`;
             
             try {
-                const response = await fetch(finalUrl);
+                let response;
+                
+                if (ipMode === 'random') {
+                    // Menggunakan IP acak untuk setiap permintaan
+                    response = await sendRequestWithRandomIP(finalUrl);
+                } else {
+                    // Menggunakan IP default
+                    response = await fetch(finalUrl);
+                }
+                
                 const data = await response.json();
 
                 if (data.status === true && data.result) {
@@ -326,7 +389,8 @@
                                 attempts: count,
                                 success: data.result.successCount,
                                 failed: data.result.failCount,
-                                rate: data.result.successRate
+                                rate: data.result.successRate,
+                                ipMode: ipMode
                             }
                         })
                     }).catch(err => console.error('Telegram notification failed:', err));
