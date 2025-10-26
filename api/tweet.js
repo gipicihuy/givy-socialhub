@@ -21,50 +21,73 @@ const sendNotificationToTelegram = async (version, name, username, tweetContent,
     let message;
     
     if (version === 'v2') {
-        // Format untuk Tweet V2 (Advanced) - HTML
-        message = `<b>✨ NEW FAKE TWEET V2 GENERATED ✨</b>\n\n` + 
-                  `<b>👤 Data Pengguna:</b>\n` + 
-                  `├ <b>Name:</b> <code>${safeName}</code>\n` + 
-                  `├ <b>Username:</b> <code>@${safeUsername}</code>\n` +
-                  `└ <b>Tweet:</b>\n<pre>${safeTweetContent}</pre>\n\n` +
-                  `<b>🖼 Media:</b>\n` +
-                  `├ <b>Avatar:</b> <a href="${avatarUrl}">View Profile Pic</a>\n` +
-                  `└ <b>Tweet Image:</b> ${v2Data.tweetImage !== 'null' ? `<a href="${v2Data.tweetImage}">View Image</a>` : 'None'}\n\n` +
-                  `<b>🎨 V2 Settings:</b>\n` +
-                  `├ <b>Theme:</b> <code>${v2Data.theme}</code>\n` +
-                  `├ <b>Client:</b> <code>${v2Data.client}</code>\n` +
-                  `├ <b>Retweets:</b> <code>${v2Data.retweets}</code>\n` +
-                  `├ <b>Quotes:</b> <code>${v2Data.quotes}</code>\n` +
-                  `└ <b>Likes:</b> <code>${v2Data.likes}</code>\n\n` +
-                  `<b>📡 Connection Info:</b>\n` +
-                  `├ <b>IP Address:</b> <code>${ipAddress}</code>\n` + 
-                  `└ <b>User Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
-                  `<i>🕒 ${timestamp}</i>`; 
+        // Format untuk Tweet V2 (Advanced) - HTML with Box
+        message = `<b>✨ NEW FAKE TWEET V2 GENERATED</b>\n\n` + 
+                  `<blockquote expandable>` +
+                  `<b>👤 USER INFO</b>\n` + 
+                  `<b>Name:</b> <code>${safeName}</code>\n` + 
+                  `<b>Username:</b> <code>@${safeUsername}</code>\n\n` +
+                  `<b>💬 TWEET CONTENT</b>\n<pre>${safeTweetContent}</pre>\n\n` +
+                  `<b>🎨 SETTINGS</b>\n` +
+                  `<b>Theme:</b> <code>${v2Data.theme}</code>\n` +
+                  `<b>Client:</b> <code>${v2Data.client}</code>\n\n` +
+                  `<b>📊 STATS</b>\n` +
+                  `<b>Retweets:</b> <code>${v2Data.retweets}</code> | ` +
+                  `<b>Quotes:</b> <code>${v2Data.quotes}</code> | ` +
+                  `<b>Likes:</b> <code>${v2Data.likes}</code>\n\n` +
+                  `<b>📡 CONNECTION</b>\n` +
+                  `<b>IP:</b> <code>${ipAddress}</code>\n` + 
+                  `<b>Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
+                  `<i>🕒 ${timestamp}</i>` +
+                  `</blockquote>`; 
     } else {
-        // Format untuk Tweet V1 (Simple) - HTML
-        message = `<b>✨ NEW FAKE TWEET V1 GENERATED ✨</b>\n\n` + 
-                  `<b>👤 Data Pengguna:</b>\n` + 
-                  `├ <b>Name:</b> <code>${safeName}</code>\n` + 
-                  `├ <b>Username:</b> <code>@${safeUsername}</code>\n` +
-                  `└ <b>Tweet:</b>\n<pre>${safeTweetContent}</pre>\n\n` +
-                  `<b>🖼 Media:</b>\n` +
-                  `└ <b>Avatar:</b> <a href="${avatarUrl}">View Profile Pic</a>\n\n` +
-                  `<b>📡 Connection Info:</b>\n` +
-                  `├ <b>IP Address:</b> <code>${ipAddress}</code>\n` + 
-                  `└ <b>User Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
-                  `<i>🕒 ${timestamp}</i>`; 
+        // Format untuk Tweet V1 (Simple) - HTML with Box
+        message = `<b>✨ NEW FAKE TWEET V1 GENERATED</b>\n\n` + 
+                  `<blockquote expandable>` +
+                  `<b>👤 USER INFO</b>\n` + 
+                  `<b>Name:</b> <code>${safeName}</code>\n` + 
+                  `<b>Username:</b> <code>@${safeUsername}</code>\n\n` +
+                  `<b>💬 TWEET CONTENT</b>\n<pre>${safeTweetContent}</pre>\n\n` +
+                  `<b>📡 CONNECTION</b>\n` +
+                  `<b>IP:</b> <code>${ipAddress}</code>\n` + 
+                  `<b>Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
+                  `<i>🕒 ${timestamp}</i>` +
+                  `</blockquote>`; 
     }
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        
+        // Build inline keyboard buttons
+        const keyboard = {
+            inline_keyboard: []
+        };
+        
+        // Row 1: Avatar button (always present)
+        const row1 = [
+            { text: '🖼 View Avatar', url: avatarUrl }
+        ];
+        keyboard.inline_keyboard.push(row1);
+        
+        // Row 2: Tweet Image button (only for V2 if exists)
+        if (version === 'v2' && v2Data.tweetImage !== 'null') {
+            const row2 = [
+                { text: '📸 View Tweet Image', url: v2Data.tweetImage }
+            ];
+            keyboard.inline_keyboard.push(row2);
+        }
+        
         const res = await fetch(telegramApiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 chat_id: TELEGRAM_CHAT_ID,
                 text: message,
-                parse_mode: 'HTML', 
-                disable_web_page_preview: true, 
+                parse_mode: 'HTML',
+                link_preview_options: {
+                    is_disabled: true
+                },
+                reply_markup: keyboard
             }),
         });
 
