@@ -530,8 +530,20 @@
             name: name,
             username: username,
             comment: comment,
-            avatarUrl: uploadedAvatarUrl
+            avatarUrl: uploadedAvatarUrl,
+            version: currentVersion
         });
+        
+        // Tambahan parameter untuk V2
+        if (currentVersion === 'v2') {
+            vercelParams.append('theme', themeInput.value);
+            vercelParams.append('client', clientInput.value);
+            vercelParams.append('retweets', retweetsInput.value);
+            vercelParams.append('quotes', quotesInput.value);
+            vercelParams.append('likes', likesInput.value);
+            vercelParams.append('tweetImage', uploadedTweetImageUrl);
+        }
+        
         const vercelApiUrl = `${VERCEL_API_ENDPOINT}?${vercelParams.toString()}`;
 
         try {
