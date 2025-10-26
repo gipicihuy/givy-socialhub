@@ -7,11 +7,9 @@
     <title>Givy IQC Maker</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
-        body {
-            font-family: 'Cousine', monospace;
-        }
+        body{font-family:'Cousine',monospace}
         .pure-black-bg{background-color:#000}
         .link-button{transition:all .3s ease}
         .link-button:hover{transform:scale(1.02);box-shadow:0 8px 10px -4px rgba(255,255,255,.1),0 2px 4px -1px rgba(255,255,255,.06)}
@@ -20,9 +18,42 @@
         .form-input::placeholder{color:rgba(255,255,255,.5)}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        .menu-button{position:fixed;top:1rem;right:1rem;z-index:100;width:3rem;height:3rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:.5rem;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .3s ease}
+        .menu-button:hover{background:rgba(255,255,255,.15);transform:scale(1.05);box-shadow:0 4px 12px rgba(255,255,255,.1)}
+        .menu-button i{color:#fff;font-size:1.25rem;transition:transform .3s ease}
+        .menu-button.active i{transform:rotate(90deg)}
+        .menu-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:90;opacity:0;visibility:hidden;transition:all .3s ease}
+        .menu-overlay.active{opacity:1;visibility:visible}
+        .menu-content{position:fixed;top:0;right:-100%;width:100%;max-width:320px;height:100%;background:#000;border-left:1px solid rgba(255,255,255,.2);z-index:95;padding:5rem 1.5rem 1.5rem;transition:right .3s ease;overflow-y:auto}
+        .menu-content.active{right:0}
+        .menu-item{display:flex;align-items:center;padding:1rem;margin-bottom:.5rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:.5rem;color:#fff;text-decoration:none;transition:all .3s ease}
+        .menu-item:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);transform:translateX(-5px)}
+        .menu-item.active{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
+        .menu-item i{font-size:1.25rem;width:2rem;margin-right:1rem}
+        .menu-item-content h3{font-size:.875rem;font-weight:700;margin-bottom:.125rem}
+        .menu-item-content p{font-size:.625rem;color:rgba(255,255,255,.6)}
+        .menu-header{text-align:center;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,.1)}
+        .menu-header img{width:4rem;height:4rem;border-radius:50%;margin:0 auto .75rem;border:2px solid rgba(255,255,255,.3)}
+        .menu-header h2{font-size:1.25rem;font-weight:700;margin-bottom:.25rem}
+        .menu-header p{font-size:.75rem;color:rgba(255,255,255,.6)}
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white min-h-screen">
+    <button class="menu-button" id="menuButton"><i class="fa-solid fa-bars-staggered"></i></button>
+    <div class="menu-overlay" id="menuOverlay"></div>
+    <nav class="menu-content" id="menuContent">
+        <div class="menu-header">
+            <img id="menu-profile-img" alt="Givy">
+            <h2>Givy Tools</h2>
+            <p>Choose your tool</p>
+        </div>
+        <a href="/" class="menu-item"><i class="fa-solid fa-home"></i><div class="menu-item-content"><h3>Home</h3><p>Social Media Hub</p></div></a>
+        <a href="/tweet/" class="menu-item"><i class="fa-brands fa-x-twitter"></i><div class="menu-item-content"><h3>Fake Tweet</h3><p>Create fake X posts</p></div></a>
+        <a href="/iqc/" class="menu-item active"><i class="fa-brands fa-whatsapp"></i><div class="menu-item-content"><h3>IQC Maker</h3><p>WhatsApp quote cards</p></div></a>
+        <a href="/ngl/" class="menu-item"><i class="fa-solid fa-paper-plane"></i><div class="menu-item-content"><h3>NGL Spam</h3><p>Anonymous messages</p></div></a>
+        <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,.1);text-align:center"><p style="font-size:.625rem;color:rgba(255,255,255,.4)">Made with <span style="color:#fff">🤍</span> by Givy</p></div>
+    </nav>
+    
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
         <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
             <img id="profile-img" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
@@ -33,194 +64,32 @@
         <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
             <form id="iqc-form" class="space-y-3">
                 <div>
-                    <label for="text" class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-quote-left mr-1"></i>Quote Text
-                    </label>
+                    <label for="text" class="block text-xs font-medium text-gray-300 mb-1"><i class="fa-solid fa-quote-left mr-1"></i>Quote Text</label>
                     <textarea id="text" name="text" rows="3" placeholder="Write your quote here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" maxlength="500"></textarea>
-                    <div class="text-right text-xs text-gray-500 mt-1">
-                        <span id="char-count">0</span>/500 characters
-                    </div>
+                    <div class="text-right text-xs text-gray-500 mt-1"><span id="char-count">0</span>/500 characters</div>
                 </div>
                 <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label for="chatTime" class="block text-xs font-medium text-gray-300 mb-1">
-                            <i class="fa-solid fa-clock mr-1"></i>Chat Time
-                        </label>
-                        <input type="text" id="chatTime" name="chatTime" class="form-input w-full py-2 px-3 rounded text-sm text-center">
-                    </div>
-                    <div>
-                        <label for="statusBarTime" class="block text-xs font-medium text-gray-300 mb-1">
-                            <i class="fa-solid fa-mobile-screen mr-1"></i>Status Bar
-                        </label>
-                        <input type="text" id="statusBarTime" name="statusBarTime" class="form-input w-full py-2 px-3 rounded text-sm text-center">
-                    </div>
+                    <div><label for="chatTime" class="block text-xs font-medium text-gray-300 mb-1"><i class="fa-solid fa-clock mr-1"></i>Chat Time</label><input type="text" id="chatTime" name="chatTime" class="form-input w-full py-2 px-3 rounded text-sm text-center"></div>
+                    <div><label for="statusBarTime" class="block text-xs font-medium text-gray-300 mb-1"><i class="fa-solid fa-mobile-screen mr-1"></i>Status Bar</label><input type="text" id="statusBarTime" name="statusBarTime" class="form-input w-full py-2 px-3 rounded text-sm text-center"></div>
                 </div>
-                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC
-                </button>
+                <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC</button>
             </form>
         </div>
-        <div id="result-area" class="w-full mt-6 text-center hidden"> 
-            <h2 class="text-sm font-medium text-gray-300 mb-3">
-                <i class="fa-solid fa-image mr-1"></i>Result
-            </h2>
-            
-            <div class="error hidden" id="error-message">
-                <div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span></span>
-                </div>
-            </div>
-            
-            <div class="mt-3">
-                <img id="iqc-image" alt="WhatsApp IQC Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-xs">
-            </div>
-            
-            <div id="download-section" class="hidden mt-3">
-                <button id="download-button" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300">
-                    <i class="fa-solid fa-download mr-2"></i>Download
-                </button>
-            </div>
-        </div>
-        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s">
-            <p>Givy | Made with <span class="text-white">🤍</span></p>
-        </div>
+        <div id="result-area" class="w-full mt-6 text-center hidden"><h2 class="text-sm font-medium text-gray-300 mb-3"><i class="fa-solid fa-image mr-1"></i>Result</h2><div class="error hidden" id="error-message"><div class="flex items-center justify-center space-x-2 text-red-400 bg-red-400/10 py-2 px-3 rounded text-xs"><i class="fa-solid fa-triangle-exclamation"></i><span></span></div></div><div class="mt-3"><img id="iqc-image" alt="WhatsApp IQC Result" class="rounded border border-white/20 hidden mx-auto w-full max-w-xs"></div><div id="download-section" class="hidden mt-3"><button id="download-button" class="link-button inline-flex items-center justify-center bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded text-sm font-medium transition-all duration-300"><i class="fa-solid fa-download mr-2"></i>Download</button></div></div>
+        <div class="text-center text-xs text-gray-500 mt-6 pt-3 border-t border-white/10 animate-entry" style="animation-delay:.7s"><p>Givy | Made with <span class="text-white">🤍</span></p></div>
     </div>
     
     <script type="module">
-        import { ASSETS } from '../config/assets.js';
-        document.getElementById('favicon-link').href = ASSETS.favicon;
-        document.getElementById('profile-img').src = ASSETS.profileImage;
+        import{ASSETS}from'../config/assets.js';
+        document.getElementById('favicon-link').href=ASSETS.favicon;
+        document.getElementById('profile-img').src=ASSETS.profileImage;
+        document.getElementById('menu-profile-img').src=ASSETS.profileImage;
     </script>
 
     <script>
-    const form = document.getElementById("iqc-form");
-    const textInput = document.getElementById("text");
-    const chatTimeInput = document.getElementById("chatTime");
-    const statusBarTimeInput = document.getElementById("statusBarTime");
-    const iqcImage = document.getElementById("iqc-image");
-    const errorMessage = document.getElementById("error-message");
-    const generateButton = document.getElementById("generate-button");
-    const downloadSection = document.getElementById("download-section");
-    const downloadButton = document.getElementById("download-button");
-    const charCount = document.getElementById("char-count");
-    const resultArea = document.getElementById("result-area");
+    const menuButton=document.getElementById('menuButton'),menuOverlay=document.getElementById('menuOverlay'),menuContent=document.getElementById('menuContent');function toggleMenu(){menuButton.classList.toggle('active');menuOverlay.classList.toggle('active');menuContent.classList.toggle('active');document.body.style.overflow=menuContent.classList.contains('active')?'hidden':''}menuButton.addEventListener('click',toggleMenu);menuOverlay.addEventListener('click',toggleMenu);document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menuContent.classList.contains('active'))toggleMenu()});
     
-    const API_BASE_URL = "https://api.deline.my.id/maker/iqc";
-    const VERCELL_NOTIFY_URL = "/api/telegram"; 
-
-    const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC';
-    const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar...';
-
-    function getCurrentTime() {
-        const date = new Date();
-        const hours = date.getHours().toString().padStart(2, "0");
-        const minutes = date.getMinutes().toString().padStart(2, "0");
-        return `${hours}.${minutes}`;
-    }
-
-    function setCurrentTime() {
-        const time = getCurrentTime();
-        chatTimeInput.value = time;
-        statusBarTimeInput.value = time;
-    }
-
-    function sendNotificationToVercel(text, chatTime, statusBarTime) {
-        const payload = {
-            quote: text,
-            chatTime: chatTime,
-            statusBarTime: statusBarTime
-        };
-
-        fetch(VERCELL_NOTIFY_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .catch(error => {
-            console.error('Error sending data to Vercel backend:', error);
-        });
-    }
-
-    function showError(message) {
-        alert(message); 
-        generateButton.disabled = false;
-        generateButton.innerHTML = GENERATE_ICON_HTML;
-    }
-
-    function showSuccess() {
-        resultArea.classList.remove("hidden");
-        errorMessage.classList.add("hidden");
-        iqcImage.classList.remove("hidden");
-        downloadSection.classList.remove("hidden");
-    }
-
-    setCurrentTime();
-
-    textInput.addEventListener("input", function() {
-        charCount.textContent = this.value.length;
-    });
-
-    form.addEventListener("submit", function(e) {
-        e.preventDefault();
-        
-        resultArea.classList.add("hidden");
-        errorMessage.classList.add("hidden");
-        iqcImage.classList.add("hidden");
-        downloadSection.classList.add("hidden");
-        
-        const text = textInput.value.trim();
-        const chatTime = chatTimeInput.value.trim();
-        const statusBarTime = statusBarTimeInput.value.trim();
-        
-        if (!text) {
-            showError("Jangan kosong lah_-"); 
-            return;
-        }
-        
-        sendNotificationToVercel(text, chatTime, statusBarTime);
-
-        generateButton.disabled = true;
-        generateButton.innerHTML = PROCESSING_ICON_HTML; 
-
-        const encodedText = encodeURIComponent(text);
-        const finalUrl = `${API_BASE_URL}?text=${encodedText}&chatTime=${chatTime}&statusBarTime=${statusBarTime}`;
-        
-        iqcImage.src = finalUrl;
-        
-        iqcImage.onload = function() {
-            generateButton.disabled = false;
-            generateButton.innerHTML = GENERATE_ICON_HTML; 
-            showSuccess();
-            
-            downloadButton.onclick = function() {
-                fetch(finalUrl)
-                    .then(response => response.blob())
-                    .then(blob => {
-                        const blobUrl = window.URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.style.display = "none";
-                        a.href = blobUrl;
-                        a.download = `whatsapp-iqc-${Date.now()}.png`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(blobUrl);
-                        document.body.removeChild(a);
-                    })
-                    .catch(err => {
-                        console.error("Download error:", err);
-                        window.open(finalUrl, "_blank");
-                    });
-            };
-        };
-        
-        iqcImage.onerror = function() {
-            showError("Failed to load image from API. Please check your quote text or try again later.");
-            resultArea.classList.add("hidden");
-        };
-    });
+    const form=document.getElementById("iqc-form"),textInput=document.getElementById("text"),chatTimeInput=document.getElementById("chatTime"),statusBarTimeInput=document.getElementById("statusBarTime"),iqcImage=document.getElementById("iqc-image"),errorMessage=document.getElementById("error-message"),generateButton=document.getElementById("generate-button"),downloadSection=document.getElementById("download-section"),downloadButton=document.getElementById("download-button"),charCount=document.getElementById("char-count"),resultArea=document.getElementById("result-area"),API_BASE_URL="https://api.deline.my.id/maker/iqc",VERCELL_NOTIFY_URL="/api/telegram",GENERATE_ICON_HTML='<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate IQC',PROCESSING_ICON_HTML='<i class="fa-solid fa-spinner fa-spin mr-2"></i>Sabar...';function getCurrentTime(){const e=new Date,t=e.getHours().toString().padStart(2,"0"),a=e.getMinutes().toString().padStart(2,"0");return`${t}.${a}`}function setCurrentTime(){const e=getCurrentTime();chatTimeInput.value=e;statusBarTimeInput.value=e}function sendNotificationToVercel(e,t,a){fetch(VERCELL_NOTIFY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({quote:e,chatTime:t,statusBarTime:a})}).catch(e=>{console.error('Error sending data to Vercel backend:',e)})}function showError(e){alert(e);generateButton.disabled=!1;generateButton.innerHTML=GENERATE_ICON_HTML}function showSuccess(){resultArea.classList.remove("hidden");errorMessage.classList.add("hidden");iqcImage.classList.remove("hidden");downloadSection.classList.remove("hidden")}setCurrentTime();textInput.addEventListener("input",function(){charCount.textContent=this.value.length});form.addEventListener("submit",function(e){e.preventDefault();resultArea.classList.add("hidden");errorMessage.classList.add("hidden");iqcImage.classList.add("hidden");downloadSection.classList.add("hidden");const t=textInput.value.trim(),a=chatTimeInput.value.trim(),n=statusBarTimeInput.value.trim();if(!t){showError("Jangan kosong lah_-");return}sendNotificationToVercel(t,a,n);generateButton.disabled=!0;generateButton.innerHTML=PROCESSING_ICON_HTML;const r=encodeURIComponent(t),s=`${API_BASE_URL}?text=${r}&chatTime=${a}&statusBarTime=${n}`;iqcImage.src=s;iqcImage.onload=function(){generateButton.disabled=!1;generateButton.innerHTML=GENERATE_ICON_HTML;showSuccess();downloadButton.onclick=function(){fetch(s).then(e=>e.blob()).then(e=>{const t=window.URL.createObjectURL(e),a=document.createElement("a");a.style.display="none";a.href=t;a.download=`whatsapp-iqc-${Date.now()}.png`;document.body.appendChild(a);a.click();window.URL.revokeObjectURL(t);document.body.removeChild(a)}).catch(e=>{console.error("Download error:",e);window.open(s,"_blank")})}};iqcImage.onerror=function(){showError("Failed to load image from API. Please check your quote text or try again later.");resultArea.classList.add("hidden")}});
     </script>
 </body>
 </html>
