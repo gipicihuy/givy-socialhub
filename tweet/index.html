@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" type="image/png" id="favicon-link">
-    <title>Givy Tweet</title>
+    <link rel="icon" type="image/png" href="/assets/icon.png">
+    <title>Givy Tweet Maker</title>
     <link href="https://fonts.googleapis.com/css2?family=Cousine:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <style>
         body {
             font-family: 'Cousine', monospace;
@@ -29,17 +29,38 @@
             max-height: 90vh;
             object-fit: contain;
         }
+        select.form-input {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white min-h-screen">
     
     <div class="flex flex-col items-center w-full max-w-md mx-auto py-6">
-        <div id="profile-section" class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
-            <img id="profile-img" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
+        <div class="flex flex-col items-center mb-6 text-center w-full animate-entry" style="animation-delay:.1s">
+            <img src="/assets/logo.jpg" alt="Givy Profile" class="w-16 h-16 rounded-full object-cover border-2 border-white/50 mb-2 transform hover:scale-105 transition-transform duration-300 ease-in-out">
             <h1 class="text-xl font-bold tracking-wider uppercase mb-0 text-white">Givy</h1>
             <p class="text-xs text-gray-400 italic">Fake Tweet Maker</p>
-            <p class="mt-1 text-xs text-gray-300 max-w-xs">Create a fake X (Twitter) post</p>
+            <p class="mt-1 text-xs text-gray-300 max-w-xs">Create fake X (Twitter) posts</p>
         </div>
+
+        <div class="w-full mb-4 animate-entry" style="animation-delay:.2s">
+            <label for="version-select" class="block text-xs font-medium text-gray-300 mb-1">
+                <i class="fa-solid fa-code-branch mr-1"></i>Select Version
+            </label>
+            <select id="version-select" class="form-input w-full py-2 px-3 rounded text-sm">
+                <option value="v1">Tweet V1 (Simple)</option>
+                <option value="v2">Tweet V2 (Advanced)</option>
+            </select>
+        </div>
+        
         <div class="w-full space-y-3 animate-entry" style="animation-delay:.3s">
             <form id="tweet-form" class="space-y-3">
                 
@@ -48,13 +69,13 @@
                         <label for="name" class="block text-xs font-medium text-gray-300 mb-1">
                             <i class="fa-solid fa-user mr-1"></i>Name
                         </label>
-                        <input type="text" id="name" name="name" placeholder="Example: Givy" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                        <input type="text" id="name" placeholder="Example: Givy" class="form-input w-full py-2 px-3 rounded text-sm" required>
                     </div>
                     <div>
                         <label for="username" class="block text-xs font-medium text-gray-300 mb-1">
                             <i class="fa-solid fa-at mr-1"></i>Username
                         </label>
-                        <input type="text" id="username" name="username" placeholder="Example: @gipii_" class="form-input w-full py-2 px-3 rounded text-sm" required>
+                        <input type="text" id="username" placeholder="Example: gipii_" class="form-input w-full py-2 px-3 rounded text-sm" required>
                     </div>
                 </div>
 
@@ -62,14 +83,13 @@
                     <label for="comment" class="block text-xs font-medium text-gray-300 mb-1">
                         <i class="fa-solid fa-comment mr-1"></i>Tweet Content
                     </label>
-                    <textarea id="comment" name="comment" rows="3" placeholder="Write the tweet content here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" required></textarea>
+                    <textarea id="comment" rows="3" placeholder="Write the tweet content here..." class="form-input w-full py-2 px-3 rounded text-sm resize-none" required></textarea>
                 </div>
 
                 <div>
                     <label class="block text-xs font-medium text-gray-300 mb-1">
-                        <i class="fa-solid fa-user-circle mr-1"></i>Avatar
+                        <i class="fa-solid fa-user-circle mr-1"></i><span id="avatar-label">Avatar</span>
                     </label>
-                    
                     <div class="flex items-center space-x-3">
                         <div class="flex-1">
                             <input type="file" id="avatarUpload" accept="image/*" class="hidden">
@@ -77,18 +97,84 @@
                                 <i class="fa-solid fa-image mr-2"></i>Choose Avatar
                             </button>
                         </div>
-                        
                         <div id="avatarPreview" class="hidden">
                             <img id="previewImage" class="w-12 h-12 rounded-full object-cover border-2 border-white/30">
                         </div>
                     </div>
                 </div>
-                
-                <div class="flex items-center justify-between py-2">
+
+                <!-- V2 ONLY: Tweet Image -->
+                <div id="v2-tweet-image" class="hidden">
+                    <label class="block text-xs font-medium text-gray-300 mb-1">
+                        <i class="fa-solid fa-image mr-1"></i>Tweet Image (Optional)
+                    </label>
+                    <div class="flex items-center space-x-3">
+                        <div class="flex-1">
+                            <input type="file" id="tweetImageUpload" accept="image/*" class="hidden">
+                            <button type="button" id="uploadTweetImageButton" class="link-button flex items-center justify-center bg-white/10 hover:bg-white/20 text-white py-2 px-3 rounded text-sm font-medium transition-all duration-300 w-full border border-white/20">
+                                <i class="fa-solid fa-camera mr-2"></i>Add Image
+                            </button>
+                        </div>
+                        <div id="tweetImagePreview" class="hidden">
+                            <img id="previewTweetImage" class="w-12 h-12 rounded object-cover border-2 border-white/30">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- V1 ONLY: Verified Checkbox -->
+                <div id="v1-verified" class="flex items-center justify-between py-2">
                     <label for="verified" class="block text-xs font-medium text-gray-300">
                         <i class="fa-solid fa-circle-check mr-1 text-blue-400"></i> Verified Account (Blue Check)
                     </label>
-                    <input type="checkbox" id="verified" name="verified" class="form-input h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <input type="checkbox" id="verified" class="form-input h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                </div>
+
+                <!-- V2 ONLY: Theme & Client -->
+                <div id="v2-options" class="hidden">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label for="theme" class="block text-xs font-medium text-gray-300 mb-1">
+                                <i class="fa-solid fa-palette mr-1"></i>Theme
+                            </label>
+                            <select id="theme" class="form-input w-full py-2 px-3 rounded text-sm">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="dim">Dim</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="client" class="block text-xs font-medium text-gray-300 mb-1">
+                                <i class="fa-solid fa-mobile mr-1"></i>Client
+                            </label>
+                            <select id="client" class="form-input w-full py-2 px-3 rounded text-sm">
+                                <option value="Twitter for iPhone">iPhone</option>
+                                <option value="Twitter for Android">Android</option>
+                                <option value="Twitter Web App">Web App</option>
+                                <option value="Twitter for iPad">iPad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-3 mt-3">
+                        <div>
+                            <label for="retweets" class="block text-xs font-medium text-gray-300 mb-1">
+                                <i class="fa-solid fa-retweet mr-1"></i>Retweets
+                            </label>
+                            <input type="number" id="retweets" value="1000" min="0" class="form-input w-full py-2 px-3 rounded text-sm text-center">
+                        </div>
+                        <div>
+                            <label for="quotes" class="block text-xs font-medium text-gray-300 mb-1">
+                                <i class="fa-solid fa-quote-left mr-1"></i>Quotes
+                            </label>
+                            <input type="number" id="quotes" value="200" min="0" class="form-input w-full py-2 px-3 rounded text-sm text-center">
+                        </div>
+                        <div>
+                            <label for="likes" class="block text-xs font-medium text-gray-300 mb-1">
+                                <i class="fa-solid fa-heart mr-1"></i>Likes
+                            </label>
+                            <input type="number" id="likes" value="5000" min="0" class="form-input w-full py-2 px-3 rounded text-sm text-center">
+                        </div>
+                    </div>
                 </div>
 
                 <button type="submit" id="generate-button" class="link-button flex items-center justify-center w-full bg-white/10 text-white py-2 px-3 rounded text-sm font-medium tracking-wide text-center hover:bg-white/20 transition-all duration-300 mt-4 border border-white/20">
@@ -134,19 +220,24 @@
             <img id="modal-image" class="modal-content" src="" alt="Enlarged Fake Tweet">
         </div>
     </div>
-    
-    <script type="module">
-        import { ASSETS } from '../config/assets.js';
-        document.getElementById('favicon-link').href = ASSETS.favicon;
-        document.getElementById('profile-img').src = ASSETS.profileImage;
-    </script>
 
     <script>
+    const versionSelect = document.getElementById("version-select");
     const form = document.getElementById("tweet-form");
     const nameInput = document.getElementById("name");
     const usernameInput = document.getElementById("username");
     const commentInput = document.getElementById("comment");
     const verifiedInput = document.getElementById("verified");
+    const themeInput = document.getElementById("theme");
+    const clientInput = document.getElementById("client");
+    const retweetsInput = document.getElementById("retweets");
+    const quotesInput = document.getElementById("quotes");
+    const likesInput = document.getElementById("likes");
+
+    const v1Verified = document.getElementById("v1-verified");
+    const v2Options = document.getElementById("v2-options");
+    const v2TweetImage = document.getElementById("v2-tweet-image");
+    const avatarLabel = document.getElementById("avatar-label");
 
     const tweetImage = document.getElementById("tweet-image");
     const errorMessage = document.getElementById("error-message");
@@ -165,14 +256,42 @@
     const avatarPreview = document.getElementById("avatarPreview");
     const previewImage = document.getElementById("previewImage");
 
+    const tweetImageUpload = document.getElementById("tweetImageUpload");
+    const uploadTweetImageButton = document.getElementById("uploadTweetImageButton");
+    const tweetImagePreview = document.getElementById("tweetImagePreview");
+    const previewTweetImage = document.getElementById("previewTweetImage");
+
     const VERCEL_API_ENDPOINT = "/api/tweet";
-    const EXTERNAL_API_BASE_URL = "https://api.deline.my.id/maker/faketweet";
+    const API_V1 = "https://api.deline.my.id/maker/faketweet";
+    const API_V2 = "https://api.deline.my.id/maker/faketweet2";
 
     const GENERATE_ICON_HTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2 text-sm"></i>Generate Tweet';
     const PROCESSING_ICON_HTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
 
     let generatedImageUrl = '';
     let uploadedAvatarUrl = '';
+    let uploadedTweetImageUrl = 'null';
+    let currentVersion = 'v1';
+
+    // Toggle V1 / V2 Form
+    versionSelect.addEventListener('change', function() {
+        currentVersion = this.value;
+        
+        if (currentVersion === 'v1') {
+            v1Verified.classList.remove('hidden');
+            v2Options.classList.add('hidden');
+            v2TweetImage.classList.add('hidden');
+            avatarLabel.textContent = 'Avatar';
+        } else {
+            v1Verified.classList.add('hidden');
+            v2Options.classList.remove('hidden');
+            v2TweetImage.classList.remove('hidden');
+            avatarLabel.textContent = 'Profile Picture';
+        }
+        
+        // Reset result area
+        resultArea.classList.add('hidden');
+    });
 
     function showError(message) {
         errorMessage.classList.remove("hidden");
@@ -213,6 +332,10 @@
         avatarUpload.click();
     });
 
+    uploadTweetImageButton.addEventListener('click', () => {
+        tweetImageUpload.click();
+    });
+
     avatarUpload.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -231,14 +354,36 @@
         previewImage.src = tempUrl;
         avatarPreview.classList.remove('hidden');
         
-        await uploadFile(file);
+        await uploadFile(file, 'avatar');
     });
 
-    async function uploadFile(file) {
+    tweetImageUpload.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+            showMessage('Please select an image file', 'error');
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            showMessage('File size too large (max 5MB)', 'error');
+            return;
+        }
+
+        const tempUrl = URL.createObjectURL(file);
+        previewTweetImage.src = tempUrl;
+        tweetImagePreview.classList.remove('hidden');
+        
+        await uploadFile(file, 'tweetImage');
+    });
+
+    async function uploadFile(file, type) {
         try {
-            uploadButton.disabled = true;
-            const originalHTML = uploadButton.innerHTML;
-            uploadButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Processing...';
+            const button = type === 'avatar' ? uploadButton : uploadTweetImageButton;
+            button.disabled = true;
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Uploading...';
 
             const base64 = await fileToBase64(file);
 
@@ -255,24 +400,40 @@
             const data = await response.json();
 
             if (data.success) {
-                uploadedAvatarUrl = data.url;
-                previewImage.src = data.url;
-                URL.revokeObjectURL(previewImage.src);
+                if (type === 'avatar') {
+                    uploadedAvatarUrl = data.url;
+                    previewImage.src = data.url;
+                    URL.revokeObjectURL(previewImage.src);
+                } else {
+                    uploadedTweetImageUrl = data.url;
+                    previewTweetImage.src = data.url;
+                    URL.revokeObjectURL(previewTweetImage.src);
+                }
                 
-                showMessage('Avatar ready!', 'success');
-                uploadButton.innerHTML = originalHTML;
+                showMessage(`${type === 'avatar' ? 'Avatar' : 'Image'} uploaded!`, 'success');
+                button.innerHTML = originalHTML;
             } else {
                 throw new Error(data.error || 'Upload failed');
             }
 
         } catch (error) {
             console.error('Upload error:', error);
-            showMessage(`Failed to process image`, 'error');
-            avatarPreview.classList.add('hidden');
-            uploadButton.innerHTML = '<i class="fa-solid fa-image mr-2"></i>Choose Avatar';
+            showMessage(`Failed to upload image`, 'error');
+            if (type === 'avatar') {
+                avatarPreview.classList.add('hidden');
+                uploadButton.innerHTML = '<i class="fa-solid fa-image mr-2"></i>Choose Avatar';
+            } else {
+                tweetImagePreview.classList.add('hidden');
+                uploadTweetImageButton.innerHTML = '<i class="fa-solid fa-camera mr-2"></i>Add Image';
+            }
         } finally {
-            uploadButton.disabled = false;
-            avatarUpload.value = '';
+            if (type === 'avatar') {
+                uploadButton.disabled = false;
+                avatarUpload.value = '';
+            } else {
+                uploadTweetImageButton.disabled = false;
+                tweetImageUpload.value = '';
+            }
         }
     }
 
@@ -306,7 +467,7 @@
         e.preventDefault();
         
         if (!uploadedAvatarUrl) {
-            showError("Please select an avatar image first!");
+            showError(currentVersion === 'v1' ? "Please select an avatar first!" : "Please upload a profile picture first!");
             return;
         }
         
@@ -322,16 +483,56 @@
         const name = nameInput.value.trim();
         const username = usernameInput.value.trim().replace('@', ''); 
         const comment = commentInput.value.trim();
-        const verified = verifiedInput.checked ? 'true' : 'false';
 
         if (!name || !username || !comment) {
             showError("All fields must be filled!");
             return;
         }
 
-        const externalApiUrl = `${EXTERNAL_API_BASE_URL}?name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatar=${encodeURIComponent(uploadedAvatarUrl)}&verified=${verified}`;
+        let externalApiUrl;
+
+        if (currentVersion === 'v1') {
+            // V1 API
+            const verified = verifiedInput.checked ? 'true' : 'false';
+            const params = new URLSearchParams({
+                name: name,
+                username: username,
+                comment: comment,
+                avatar: uploadedAvatarUrl,
+                verified: verified
+            });
+            externalApiUrl = `${API_V1}?${params.toString()}`;
+        } else {
+            // V2 API
+            const theme = themeInput.value;
+            const client = clientInput.value;
+            const retweets = retweetsInput.value;
+            const quotes = quotesInput.value;
+            const likes = likesInput.value;
+            
+            const params = new URLSearchParams({
+                profile: uploadedAvatarUrl,
+                name: name,
+                username: username,
+                tweet: comment,
+                image: uploadedTweetImageUrl,
+                theme: theme,
+                retweets: retweets,
+                quotes: quotes,
+                likes: likes,
+                client: client
+            });
+            externalApiUrl = `${API_V2}?${params.toString()}`;
+        }
         
-        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?imageUrl=${encodeURIComponent(externalApiUrl)}&name=${encodeURIComponent(name)}&username=${encodeURIComponent(username)}&comment=${encodeURIComponent(comment)}&avatarUrl=${encodeURIComponent(uploadedAvatarUrl)}`;
+        const vercelParams = new URLSearchParams({
+            imageUrl: externalApiUrl,
+            name: name,
+            username: username,
+            comment: comment,
+            avatarUrl: uploadedAvatarUrl
+        });
+        const vercelApiUrl = `${VERCEL_API_ENDPOINT}?${vercelParams.toString()}`;
 
         try {
             const imageResponse = await fetch(externalApiUrl);
