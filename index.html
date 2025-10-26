@@ -18,9 +18,207 @@
         .link-button i{color:#fff}
         @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
         .animate-entry{opacity:0;animation:fadeIn .8s ease-out forwards}
+        
+        /* Menu Button */
+        .menu-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 100;
+            width: 3rem;
+            height: 3rem;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-button:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+        }
+        
+        .menu-button i {
+            color: #fff;
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .menu-button.active i {
+            transform: rotate(90deg);
+        }
+        
+        /* Menu Overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 90;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Menu Content */
+        .menu-content {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            max-width: 320px;
+            height: 100%;
+            background: #000;
+            border-left: 1px solid rgba(255,255,255,0.2);
+            z-index: 95;
+            padding: 5rem 1.5rem 1.5rem;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .menu-content.active {
+            right: 0;
+        }
+        
+        /* Menu Items */
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 0.5rem;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.3);
+            transform: translateX(-5px);
+        }
+        
+        .menu-item.active {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+        }
+        
+        .menu-item i {
+            font-size: 1.25rem;
+            width: 2rem;
+            margin-right: 1rem;
+        }
+        
+        .menu-item-content h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 0.125rem;
+        }
+        
+        .menu-item-content p {
+            font-size: 0.625rem;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        /* Menu Header */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .menu-header img {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            margin: 0 auto 0.75rem;
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .menu-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+        
+        .menu-header p {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+        }
     </style>
 </head>
 <body class="pure-black-bg p-4 text-white">
+    
+    <!-- Menu Button -->
+    <button class="menu-button" id="menuButton">
+        <i class="fa-solid fa-bars-staggered"></i>
+    </button>
+    
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+    
+    <!-- Menu Content -->
+    <nav class="menu-content" id="menuContent">
+        <div class="menu-header">
+            <img id="menu-profile-img" alt="Givy">
+            <h2>Givy Tools</h2>
+            <p>Choose your tool</p>
+        </div>
+        
+        <a href="/" class="menu-item active">
+            <i class="fa-solid fa-home"></i>
+            <div class="menu-item-content">
+                <h3>Home</h3>
+                <p>Social Media Hub</p>
+            </div>
+        </a>
+        
+        <a href="/tweet/" class="menu-item">
+            <i class="fa-brands fa-x-twitter"></i>
+            <div class="menu-item-content">
+                <h3>Fake Tweet</h3>
+                <p>Create fake X posts</p>
+            </div>
+        </a>
+        
+        <a href="/iqc/" class="menu-item">
+            <i class="fa-brands fa-whatsapp"></i>
+            <div class="menu-item-content">
+                <h3>IQC Maker</h3>
+                <p>WhatsApp quote cards</p>
+            </div>
+        </a>
+        
+        <a href="/ngl/" class="menu-item">
+            <i class="fa-solid fa-paper-plane"></i>
+            <div class="menu-item-content">
+                <h3>NGL Spam</h3>
+                <p>Anonymous messages</p>
+            </div>
+        </a>
+        
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+            <p style="font-size: 0.625rem; color: rgba(255,255,255,0.4);">
+                Made with <span style="color: #fff;">🤍</span> by Givy
+            </p>
+        </div>
+    </nav>
+    
     <div class="flex flex-col items-center w-full min-h-screen">
         <div id="profile-section" class="flex flex-col items-center mt-8 mb-6 text-center w-full max-w-lg animate-entry" style="animation-delay:.1s;">
             <img id="profile-img" alt="Givy Profile" class="w-24 h-24 rounded-full object-cover border-2 border-white/50 mb-3 transform hover:scale-105 transition-transform duration-300 ease-in-out">
@@ -51,9 +249,37 @@
     </div>
 
     <script type="module">
-        import { ASSETS } from '../config/assets.js';
+        import { ASSETS } from './config/assets.js';
         document.getElementById('favicon-link').href = ASSETS.favicon;
         document.getElementById('profile-img').src = ASSETS.profileImage;
+        document.getElementById('menu-profile-img').src = ASSETS.profileImage;
+    </script>
+    
+    <script>
+        const menuButton = document.getElementById('menuButton');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuContent = document.getElementById('menuContent');
+        
+        function toggleMenu() {
+            menuButton.classList.toggle('active');
+            menuOverlay.classList.toggle('active');
+            menuContent.classList.toggle('active');
+            
+            if (menuContent.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        }
+        
+        menuButton.addEventListener('click', toggleMenu);
+        menuOverlay.addEventListener('click', toggleMenu);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && menuContent.classList.contains('active')) {
+                toggleMenu();
+            }
+        });
     </script>
 </body>
 </html>
