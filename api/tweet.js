@@ -1,22 +1,46 @@
-// File: api/tweet.js (FIXED VERSION: Reliable Telegram Notification)
+// File: api/tweet.js (UPDATED: Support V1 & V2 with Telegram Notification)
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
-const sendNotificationToTelegram = async (name, username, tweetContent, avatarUrl, ipAddress, userAgent) => {
+const sendNotificationToTelegram = async (version, name, username, tweetContent, avatarUrl, ipAddress, userAgent, v2Data = null) => {
     const timestamp = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
     const formattedTweetContent = "\x60\x60\x60\n" + tweetContent.substring(0, 500) + "\n\x60\x60\x60"; 
 
-    const message = `*✨ NEW FAKE TWEET GENERATED ✨*\n\n` + 
-                    `*👤 Data Pengguna:*\n` + 
-                    `- Name: \`${name}\`\n` + 
-                    `- Username: \`@${username}\`\n` +
-                    `- Tweet:\n${formattedTweetContent}\n` + 
-                    `- Avatar URL: ${avatarUrl}\n` + 
-                    `- IP Address: \`${ipAddress}\`\n` + 
-                    `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
-                    `\n_🕒 Dibuat pada: ${timestamp}_`; 
+    let message;
+    
+    if (version === 'v2') {
+        // Format untuk Tweet V2 (Advanced)
+        message = `*✨ NEW FAKE TWEET V2 GENERATED ✨*\n\n` + 
+                  `*👤 Data Pengguna:*\n` + 
+                  `- Name: \`${name}\`\n` + 
+                  `- Username: \`@${username}\`\n` +
+                  `- Tweet:\n${formattedTweetContent}\n` +
+                  `- Avatar URL: ${avatarUrl}\n` +
+                  `\n*🎨 V2 Settings:*\n` +
+                  `- Theme: \`${v2Data.theme}\`\n` +
+                  `- Client: \`${v2Data.client}\`\n` +
+                  `- Retweets: \`${v2Data.retweets}\`\n` +
+                  `- Quotes: \`${v2Data.quotes}\`\n` +
+                  `- Likes: \`${v2Data.likes}\`\n` +
+                  `- Tweet Image: ${v2Data.tweetImage !== 'null' ? v2Data.tweetImage : 'None'}\n` +
+                  `\n*📡 Connection Info:*\n` +
+                  `- IP Address: \`${ipAddress}\`\n` + 
+                  `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                  `\n_🕒 Dibuat pada: ${timestamp}_`; 
+    } else {
+        // Format untuk Tweet V1 (Simple)
+        message = `*✨ NEW FAKE TWEET V1 GENERATED ✨*\n\n` + 
+                  `*👤 Data Pengguna:*\n` + 
+                  `- Name: \`${name}\`\n` + 
+                  `- Username: \`@${username}\`\n` +
+                  `- Tweet:\n${formattedTweetContent}\n` + 
+                  `- Avatar URL: ${avatarUrl}\n` + 
+                  `- IP Address: \`${ipAddress}\`\n` + 
+                  `- User Agent: \`${userAgent.substring(0, 50)}...\`\n` +
+                  `\n_🕒 Dibuat pada: ${timestamp}_`; 
+    }
 
     try {
         const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
@@ -45,7 +69,21 @@ const sendNotificationToTelegram = async (name, username, tweetContent, avatarUr
 };
 
 export default async function handler(request, response) {
-    const { imageUrl, download, name, username, comment, avatarUrl } = request.query; 
+    const { 
+        imageUrl, 
+        download, 
+        name, 
+        username, 
+        comment, 
+        avatarUrl, 
+        version,
+        theme,
+        client,
+        retweets,
+        quotes,
+        likes,
+        tweetImage
+    } = request.query; 
 
     const userAgent = request.headers['user-agent'] || 'N/A';
     const ipAddress = request.headers['x-real-ip'] || request.headers['x-forwarded-for'] || 'N/A';
@@ -79,15 +117,28 @@ export default async function handler(request, response) {
 
     // --- Proses Pembuatan (Generate) dan Notifikasi (GET) ---
     
-    // ✅ PENTING: GUNAKAN AWAIT untuk memastikan notifikasi terkirim SEBELUM merespons
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const tweetName = name || 'N/A';
         const tweetUsername = username || 'N/A';
         const tweetContent = comment || 'N/A'; 
         const urlAvatar = avatarUrl || 'N/A';
+        const tweetVersion = version || 'v1';
+        
+        // Data tambahan untuk V2
+        let v2Data = null;
+        if (tweetVersion === 'v2') {
+            v2Data = {
+                theme: theme || 'light',
+                client: client || 'Twitter for iPhone',
+                retweets: retweets || '0',
+                quotes: quotes || '0',
+                likes: likes || '0',
+                tweetImage: tweetImage || 'null'
+            };
+        }
         
         // Tunggu sampai Telegram notification berhasil dikirim
-        await sendNotificationToTelegram(tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent);
+        await sendNotificationToTelegram(tweetVersion, tweetName, tweetUsername, tweetContent, urlAvatar, cleanIp, userAgent, v2Data);
     }
 
     // Setelah notifikasi berhasil, baru kirim respons ke frontend
