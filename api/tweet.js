@@ -16,41 +16,32 @@ const sendNotificationToTelegram = async (version, name, username, tweetContent,
     const safeName = escapeHtml(name);
     const safeUsername = escapeHtml(username);
     const safeTweetContent = escapeHtml(tweetContent.substring(0, 500));
-    const safeUserAgent = escapeHtml(userAgent.substring(0, 50));
 
     let message;
     
     if (version === 'v2') {
-        // Format untuk Tweet V2 (Advanced) - HTML with Box
-        message = `<b>✨ NEW FAKE TWEET V2 GENERATED</b>\n\n` + 
+        // Format V2 - Simple & Clean
+        message = `<b>✨ TWEET V2 GENERATED</b>\n\n` + 
                   `<blockquote expandable>` +
-                  `<b>👤 USER INFO</b>\n` + 
                   `<b>Name:</b> <code>${safeName}</code>\n` + 
-                  `<b>Username:</b> <code>@${safeUsername}</code>\n\n` +
-                  `<b>💬 TWEET CONTENT</b>\n<pre>${safeTweetContent}</pre>\n\n` +
-                  `<b>🎨 SETTINGS</b>\n` +
-                  `<b>Theme:</b> <code>${v2Data.theme}</code>\n` +
-                  `<b>Client:</b> <code>${v2Data.client}</code>\n\n` +
-                  `<b>📊 STATS</b>\n` +
-                  `<b>Retweets:</b> <code>${v2Data.retweets}</code> | ` +
-                  `<b>Quotes:</b> <code>${v2Data.quotes}</code> | ` +
-                  `<b>Likes:</b> <code>${v2Data.likes}</code>\n\n` +
-                  `<b>📡 CONNECTION</b>\n` +
+                  `<b>Username:</b> <code>@${safeUsername}</code>\n` + 
+                  `<b>Tweet:</b> <pre>${safeTweetContent}</pre>\n` +
+                  `<b>Theme:</b> <code>${v2Data.theme}</code> | ` +
+                  `<b>Client:</b> <code>${v2Data.client}</code>\n` +
+                  `<b>Stats:</b> <code>${v2Data.retweets} RT</code> | ` +
+                  `<code>${v2Data.quotes} Q</code> | ` +
+                  `<code>${v2Data.likes} ❤️</code>\n` +
                   `<b>IP:</b> <code>${ipAddress}</code>\n` + 
-                  `<b>Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
                   `<i>🕒 ${timestamp}</i>` +
                   `</blockquote>`; 
     } else {
-        // Format untuk Tweet V1 (Simple) - HTML with Box
-        message = `<b>✨ NEW FAKE TWEET V1 GENERATED</b>\n\n` + 
+        // Format V1 - Simple & Clean
+        message = `<b>✨ TWEET V1 GENERATED</b>\n\n` + 
                   `<blockquote expandable>` +
-                  `<b>👤 USER INFO</b>\n` + 
                   `<b>Name:</b> <code>${safeName}</code>\n` + 
-                  `<b>Username:</b> <code>@${safeUsername}</code>\n\n` +
-                  `<b>💬 TWEET CONTENT</b>\n<pre>${safeTweetContent}</pre>\n\n` +
-                  `<b>📡 CONNECTION</b>\n` +
+                  `<b>Username:</b> <code>@${safeUsername}</code>\n` + 
+                  `<b>Tweet:</b> <pre>${safeTweetContent}</pre>\n` +
                   `<b>IP:</b> <code>${ipAddress}</code>\n` + 
-                  `<b>Agent:</b> <code>${safeUserAgent}...</code>\n\n` +
                   `<i>🕒 ${timestamp}</i>` +
                   `</blockquote>`; 
     }
